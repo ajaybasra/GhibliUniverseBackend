@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Text;
 
 namespace GhibliUniverse;
 
@@ -55,4 +56,17 @@ public class FilmUniverse
     {
         return _filmUniverse.ToImmutableList();
     }
+
+    public string BuildFilmUniverse()
+    {
+        var stringBuilder = new StringBuilder();
+        foreach (var film in _filmUniverse)
+        {
+            stringBuilder.Append(film);
+            stringBuilder.Append('\n');
+        }
+
+        return stringBuilder.ToString();
+    }
+    
 }

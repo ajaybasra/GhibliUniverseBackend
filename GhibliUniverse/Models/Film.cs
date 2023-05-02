@@ -2,7 +2,7 @@ namespace GhibliUniverse;
 
 public record Film()
 {
-    public int FilmId { get; set; }
+    public int FilmId { get; init; }
     public string Title { get; set; }
     public string Description { get; set; }
     public string Director { get; set; }
