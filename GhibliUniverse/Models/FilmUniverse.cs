@@ -45,6 +45,7 @@ public class FilmUniverse
         {
             _filmUniverse.Remove(film);
         }
+        // _filmUniverse.First(film => film.FilmId == filmId)
     }
 
     public Film GetFilmById(int filmId)
