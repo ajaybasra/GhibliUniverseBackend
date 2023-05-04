@@ -9,3 +9,10 @@ steps:
     command: 'docker build -t test --target test .'
     agents:
       queue: fma-dev
+
+  - wait
+
+  - label: 'Building image and pushing to Cloudsmith'
+    command: docker build -t docker.myob.com/future-makers-academy/ghibli-universe:latest . && docker push docker.myob.com/future-makers-academy/ghibli-universe:latest
+    agents:
+      queue: fma-dev
