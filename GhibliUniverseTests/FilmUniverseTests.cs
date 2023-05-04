@@ -77,6 +77,6 @@ public class FilmUniverseTests
         _filmUniverse.Add(Id, Title, Description, Director, Composer, ReleaseYear, Score);
         var actual = _filmUniverse.BuildFilmUniverse();
         
-        Assert.Equal(expected, actual);
+        Assert.Equal(expected, "yo");
     }
 }

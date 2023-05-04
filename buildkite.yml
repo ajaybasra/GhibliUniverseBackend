@@ -4,3 +4,10 @@ steps:
     command: 'echo hello, engineer'
     agents:
       queue: fma-dev
+
+  - label: 'Running tests'
+  command: 'docker build -t test --target test .'
+      agents:
+      queue: fma-dev
+
+
