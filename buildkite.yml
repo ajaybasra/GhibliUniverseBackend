@@ -5,14 +5,14 @@ steps:
     agents:
       queue: fma-dev
 
-  - label: 'Running tests'
+  - label: 'Building Image and Running tests'
     command: 'docker build -t test --target test .'
     agents:
       queue: fma-dev
 
   - wait
 
-  - label: 'Building image and pushing to Cloudsmith'
-    command: docker build -t docker.myob.com/future-makers-academy/ghibli-universe:latest . && docker push docker.myob.com/future-makers-academy/ghibli-universe:latest
+  - label: 'Building Image and Pushing to Cloudsmith'
+    command: ./scripts/build-and-push.sh
     agents:
-      queue: fma-dev
+      queue: fma-dev 
