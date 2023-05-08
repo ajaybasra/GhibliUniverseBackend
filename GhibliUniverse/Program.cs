@@ -2,7 +2,6 @@
 
 using GhibliUniverse;
 
-Console.WriteLine("Hello, World!");
-var filmUniverse = new FilmUniverse();
+var filmUniverse = new FilmList();
 var s = filmUniverse.BuildFilmUniverse();
 Console.WriteLine(s);

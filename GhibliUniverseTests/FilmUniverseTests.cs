@@ -4,8 +4,8 @@ namespace GhibliUniverseTests;
 
 public class FilmUniverseTests
 {
-    private readonly FilmUniverse _filmUniverse;
-    private const int Id = 2;
+    private readonly FilmList _filmList;
+    private static readonly Guid Id = new ("22222222-2222-2222-2222-222222222222");
     private const string Title = "Spirited Away";
 
     private const string Description = "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.";
@@ -13,18 +13,39 @@ public class FilmUniverseTests
     private const string Director = "Hayao Miyazaki";
     private const string Composer = "Joe Hisaishi";
     private const int ReleaseYear = 2001;
-    private const int Score = 10;
+
+    private static readonly List<VoiceActor> VoiceActors = new()
+    {
+        new VoiceActor
+        {
+            VoiceActorId = new Guid("22222222-2222-2222-2222-222222222222"),
+            FirstName = "John",
+            LastName = "Cena",
+            FilmId = new Guid("22222222-2222-2222-2222-222222222222")
+            
+        }
+    };
+
+    private static readonly List<FilmRating> FilmRatings = new()
+    {
+        new FilmRating
+        {
+            FilmRatingId = new Guid("22222222-2222-2222-2222-222222222222"),
+            Score = 10,
+            FilmId = new Guid("22222222-2222-2222-2222-222222222222")
+        }
+    };
 
     public FilmUniverseTests()
     {
-        _filmUniverse = new FilmUniverse();
+        _filmList = new FilmList();
     }
     
     [Fact]
     public void Add_AddsNewFilmRecordToFilmUniverse_WhenCalled()
     {
-        _filmUniverse.Add(Id, Title, Description, Director, Composer, ReleaseYear, Score);
-        var filmUniverseCount = _filmUniverse.GetAllFilms().Count;
+        _filmList.Add(Id, Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
+        var filmUniverseCount = _filmList.GetAllFilms().Count;
         
         Assert.Equivalent(2, filmUniverseCount);
     }
@@ -32,8 +53,8 @@ public class FilmUniverseTests
     [Fact]
     public void Remove_RemovesFilmWithMatchingIdFromFilmUniverse_WhenGivenFilmId()
     {
-        _filmUniverse.Remove(1);
-        var filmUniverseCount = _filmUniverse.GetAllFilms().Count;
+        _filmList.Remove(new Guid("11111111-1111-1111-1111-111111111111"));
+        var filmUniverseCount = _filmList.GetAllFilms().Count;
         
         Assert.Equivalent(0, filmUniverseCount);
     }
@@ -44,38 +65,57 @@ public class FilmUniverseTests
 
         var expectedFilm = new Film
         {
-            FilmId = 1,
+            FilmId = new Guid("11111111-1111-1111-1111-111111111111"),
             Title = Title,
             Description = Description,
             Director = Director,
             Composer = Composer,
             ReleaseYear = ReleaseYear,
-            Score = Score
+            VoiceActors = new List<VoiceActor>
+            {
+                new()
+                {
+                    VoiceActorId = new Guid("11111111-1111-1111-1111-111111111111"),
+                    FirstName = "John",
+                    LastName = "Cena",
+                    FilmId = new Guid("11111111-1111-1111-1111-111111111111")
+            
+                }
+            },
+            FilmRatings = new List<FilmRating>
+            {
+            new()
+            {
+            FilmRatingId = new Guid("11111111-1111-1111-1111-111111111111"),
+            Score = 10,
+            FilmId = new Guid("11111111-1111-1111-1111-111111111111")
+        }
+        }
         };
         
-        var actualFilm = _filmUniverse.GetFilmById(1);
-        
+        var actualFilm = _filmList.GetFilmById(new Guid("11111111-1111-1111-1111-111111111111"));
+
         Assert.Equivalent(expectedFilm, actualFilm);
     }
     
     [Fact]
-    public void GetAllFilms_ReturnsAllFilms_WhenCalled() //hmm
+    public void GetAllFilms_ReturnsAllFilms_WhenCalled() 
     {
-        _filmUniverse.Add(Id, Title, Description, Director, Composer, ReleaseYear, Score);
-        var actualFilm = _filmUniverse.GetAllFilms();
+        _filmList.Add(Id, Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
+        var actualFilm = _filmList.GetAllFilms();
         
-        Assert.Equivalent(2, actualFilm.Count);
+        Assert.Equal(2, actualFilm.Count);
     }
 
     [Fact]
     public void BuildFilmUniverse_ReturnsCorrectOutput_WhenCalled()
     {
         var expected =
-            "Film { FilmId = 1, Title = Spirited Away, Description = During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts., Director = Hayao Miyazaki, Composer = Joe Hisaishi, ReleaseYear = 2001, Score = 10 }\n" +
-            "Film { FilmId = 2, Title = Spirited Away, Description = During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts., Director = Hayao Miyazaki, Composer = Joe Hisaishi, ReleaseYear = 2001, Score = 10 }\n";
+            "[Title:Spirited Away,Description:During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2001,Voice Actors:[John Cena],Film Ratings:[10]\n" +
+            "[Title:Spirited Away,Description:During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2001,Voice Actors:[John Cena],Film Ratings:[10]\n";
         
-        _filmUniverse.Add(Id, Title, Description, Director, Composer, ReleaseYear, Score);
-        var actual = _filmUniverse.BuildFilmUniverse();
+        _filmList.Add(Id, Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
+        var actual = _filmList.BuildFilmUniverse();
         
         Assert.Equal(expected, actual);
     }
