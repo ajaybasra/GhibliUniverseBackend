@@ -138,7 +138,50 @@ public class FilmUniverseTests
     [Fact]
     public void GetAllVoiceActors_ReturnsAllVoiceActors_WhenCalled()
     {
-        var films = _filmList.GetAllFilms();
-        Assert.True(true);
+        var voiceActorsCount = _filmList.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000")).Count;
+        
+        Assert.Equal(2, voiceActorsCount);
+    }
+
+    [Fact]
+    public void GetVoiceActorById_ReturnsVoiceActorWithMatchingId_WhenGivenVoiceActorId()
+    {
+        var expectedVoiceActor = new VoiceActor()
+        {
+            VoiceActorId = new Guid("11111111-1111-1111-1111-111111111111"),
+            FirstName = "John",
+            LastName = "Doe",
+            FilmId = new Guid("00000000-0000-0000-0000-000000000000")
+        };
+
+        var actualVoiceActor = _filmList.GetVoiceActorById(new Guid("00000000-0000-0000-0000-000000000000"),
+            new Guid("11111111-1111-1111-1111-111111111111"));
+        
+        Assert.Equivalent(expectedVoiceActor, actualVoiceActor);
+    }
+
+    [Fact]
+    public void CreateVoiceActor_AddsNewRecordToVoiceActorList_WhenCalled()
+    {
+        _filmList.CreateVoiceActor(new Guid("31111111-1111-1111-1111-111111111111"), "First", "Last", new Guid("11111111-1111-1111-1111-111111111111"));
+        var voiceActorCount = _filmList.GetAllVoiceActors(new Guid("11111111-1111-1111-1111-111111111111")).Count;
+
+        var voiceActor = _filmList.GetVoiceActorById(new Guid("11111111-1111-1111-1111-111111111111"),
+            new Guid("31111111-1111-1111-1111-111111111111"));
+        
+        Assert.Equal(3, voiceActorCount);
+        Assert.Equal(new Guid("31111111-1111-1111-1111-111111111111"), voiceActor.VoiceActorId);
+    }
+
+    [Fact]
+    public void DeleteVoiceActor_RemovesActorWithMatchingIdFromVoiceActorList_WhenGivenVoiceActorId()
+    {
+        _filmList.DeleteVoiceActor(new Guid("00000000-0000-0000-0000-000000000000"),
+            new Guid("11111111-1111-1111-1111-111111111111"));
+
+        var voiceActorCount = _filmList.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000")).Count;
+        
+        Assert.Equal(1, voiceActorCount);
+
     }
 }

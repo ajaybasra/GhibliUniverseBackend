@@ -38,38 +38,7 @@ public class FilmList
     {
         _filmUniverse.RemoveAll(film => film.FilmId == filmId);
     }
-    public void CreateVoiceActor(Guid voiceActorId, string firstName, string lastName, Guid filmId)
-    {
-        var voiceActor = new VoiceActor()
-        {
-            VoiceActorId = voiceActorId,
-            FirstName = firstName,
-            LastName = lastName,
-            FilmId = filmId
-        };
 
-        foreach(var film in _filmUniverse.Where(film => film.FilmId == filmId))
-        {
-            film.VoiceActors.Add(voiceActor);
-        }
-    }
-    
-    public void CreateFilmRating(Guid voiceActorId, int rating, Guid filmId)
-    {
-        var filmRating = new FilmRating()
-        {
-            FilmRatingId = voiceActorId,
-            Rating = rating,
-            FilmId = filmId
-        };
-        
-        foreach(var film in _filmUniverse.Where(film => film.FilmId == filmId))
-        {
-            film.FilmRatings.Add(filmRating);
-        }
-
-    }
-    
     public string BuildFilmList()
     {
         var stringBuilder = new StringBuilder();
@@ -82,6 +51,49 @@ public class FilmList
         return stringBuilder.ToString();
     }
 
+    public ImmutableList<VoiceActor> GetAllVoiceActors(Guid filmId)
+    {
+        return _filmUniverse.First(film => film.FilmId == filmId).VoiceActors.ToImmutableList();
+    }
+
+    public VoiceActor? GetVoiceActorById(Guid filmId, Guid voiceActorId)
+    {//fix
+        var matchingFilm =  _filmUniverse.FirstOrDefault(film => film.FilmId == filmId);
+
+        return matchingFilm?.VoiceActors.First(voiceActor => voiceActor.VoiceActorId == voiceActorId);
+    }
+    public void CreateVoiceActor(Guid voiceActorId, string firstName, string lastName, Guid filmId)
+    {
+        var voiceActor = new VoiceActor()
+        {
+            VoiceActorId = voiceActorId,
+            FirstName = firstName,
+            LastName = lastName,
+            FilmId = filmId
+        };
+
+        _filmUniverse.First(film => film.FilmId == filmId).VoiceActors.Add(voiceActor);
+    }
+
+    public void DeleteVoiceActor(Guid filmId, Guid voiceActorId)
+    {//fix
+        var matchingFilm = _filmUniverse.FirstOrDefault(film => film.FilmId == filmId);
+
+        matchingFilm.VoiceActors.RemoveAll(voiceActor => voiceActor.VoiceActorId == voiceActorId);
+    }
+    
+    public void CreateFilmRating(Guid voiceActorId, int rating, Guid filmId)
+    {
+        var filmRating = new FilmRating()
+        {
+            FilmRatingId = voiceActorId,
+            Rating = rating,
+            FilmId = filmId
+        };
+        
+        _filmUniverse.First(film => film.FilmId == filmId).FilmRatings.Add(filmRating);
+
+    }
     private void PopulateFilmsList(int numberOfFilms)
     {
         var filmTitles = new List<string> { "Spirited Away", "My Neighbor Totoro", "Ponyo" };
