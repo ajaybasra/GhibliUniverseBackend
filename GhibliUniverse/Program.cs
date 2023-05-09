@@ -3,5 +3,6 @@
 using GhibliUniverse;
 
 var filmUniverse = new FilmList();
-var s = filmUniverse.BuildFilmUniverse();
+var s = filmUniverse.BuildFilmList();
+// Console.WriteLine(filmUniverse.GetAllFilms()[0].FilmId);
 Console.WriteLine(s);

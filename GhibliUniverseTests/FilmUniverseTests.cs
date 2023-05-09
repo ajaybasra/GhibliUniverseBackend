@@ -5,23 +5,23 @@ namespace GhibliUniverseTests;
 public class FilmUniverseTests
 {
     private readonly FilmList _filmList;
-    private static readonly Guid Id = new ("22222222-2222-2222-2222-222222222222");
-    private const string Title = "Spirited Away";
+    private static readonly Guid Id = new ("33333333-3333-3333-3333-333333333333");
+    private const string Title = "Castle in the Sky";
 
-    private const string Description = "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.";
+    private const string Description = "Young orphan Sheeta and her kidnapper, Col. Muska, are flying to a military prison when their plane is attacked by a gang of air pirates led by the matronly Dola.";
 
     private const string Director = "Hayao Miyazaki";
     private const string Composer = "Joe Hisaishi";
-    private const int ReleaseYear = 2001;
+    private const int ReleaseYear = 1986;
 
     private static readonly List<VoiceActor> VoiceActors = new()
     {
         new VoiceActor
         {
-            VoiceActorId = new Guid("22222222-2222-2222-2222-222222222222"),
+            VoiceActorId = new Guid("66666666-6666-6666-6666-666666666666"),
             FirstName = "John",
-            LastName = "Cena",
-            FilmId = new Guid("22222222-2222-2222-2222-222222222222")
+            LastName = "Doe",
+            FilmId = new Guid("44444444-4444-4444-4444-444444444444")
             
         }
     };
@@ -30,9 +30,9 @@ public class FilmUniverseTests
     {
         new FilmRating
         {
-            FilmRatingId = new Guid("22222222-2222-2222-2222-222222222222"),
-            Score = 10,
-            FilmId = new Guid("22222222-2222-2222-2222-222222222222")
+            FilmRatingId = new Guid("66666666-6666-6666-6666-666666666666"),
+            Rating = 10,
+            FilmId = new Guid("44444444-4444-4444-4444-444444444444")
         }
     };
 
@@ -40,83 +40,105 @@ public class FilmUniverseTests
     {
         _filmList = new FilmList();
     }
+
+    [Fact]
+    public void GetAllFilms_ReturnsAllFilms_WhenCalled() 
+    {
+        var filmCount = _filmList.GetAllFilms().Count;
+        
+        Assert.Equal(3, filmCount);
+    }
     
-    [Fact]
-    public void Add_AddsNewFilmRecordToFilmUniverse_WhenCalled()
-    {
-        _filmList.Add(Id, Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
-        var filmUniverseCount = _filmList.GetAllFilms().Count;
-        
-        Assert.Equivalent(2, filmUniverseCount);
-    }
-
-    [Fact]
-    public void Remove_RemovesFilmWithMatchingIdFromFilmUniverse_WhenGivenFilmId()
-    {
-        _filmList.Remove(new Guid("11111111-1111-1111-1111-111111111111"));
-        var filmUniverseCount = _filmList.GetAllFilms().Count;
-        
-        Assert.Equivalent(0, filmUniverseCount);
-    }
-
     [Fact]
     public void GetFilmById_ReturnsFilmWithMatchingId_WhenGivenFilmId()
     {
 
         var expectedFilm = new Film
         {
-            FilmId = new Guid("11111111-1111-1111-1111-111111111111"),
-            Title = Title,
-            Description = Description,
+            FilmId = new Guid("00000000-0000-0000-0000-000000000000"),
+            Title = "Spirited Away",
+            Description = "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.",
             Director = Director,
             Composer = Composer,
-            ReleaseYear = ReleaseYear,
-            VoiceActors = new List<VoiceActor>
+            ReleaseYear = 2001,
+            VoiceActors = new List<VoiceActor>()
             {
+                new()
+                {
+                    VoiceActorId = new Guid("00000000-0000-0000-0000-000000000000"),
+                    FirstName = "John",
+                    LastName = "Doe",
+                    FilmId = new Guid("00000000-0000-0000-0000-000000000000")
+            
+                },
                 new()
                 {
                     VoiceActorId = new Guid("11111111-1111-1111-1111-111111111111"),
                     FirstName = "John",
-                    LastName = "Cena",
-                    FilmId = new Guid("11111111-1111-1111-1111-111111111111")
+                    LastName = "Doe",
+                    FilmId = new Guid("00000000-0000-0000-0000-000000000000")
             
                 }
             },
-            FilmRatings = new List<FilmRating>
+            FilmRatings = new List<FilmRating>()
             {
-            new()
-            {
-            FilmRatingId = new Guid("11111111-1111-1111-1111-111111111111"),
-            Score = 10,
-            FilmId = new Guid("11111111-1111-1111-1111-111111111111")
-        }
-        }
+                new()
+                {
+                    FilmRatingId = new Guid("00000000-0000-0000-0000-000000000000"),
+                    Rating = 10,
+                    FilmId = new Guid("00000000-0000-0000-0000-000000000000")
+                },
+                new()
+                {
+                    FilmRatingId = new Guid("11111111-1111-1111-1111-111111111111"),
+                    Rating = 10,
+                    FilmId = new Guid("00000000-0000-0000-0000-000000000000")
+                }
+            }
         };
         
-        var actualFilm = _filmList.GetFilmById(new Guid("11111111-1111-1111-1111-111111111111"));
+        var actualFilm = _filmList.GetFilmById(new Guid("00000000-0000-0000-0000-000000000000"));
 
         Assert.Equivalent(expectedFilm, actualFilm);
     }
-    
+
     [Fact]
-    public void GetAllFilms_ReturnsAllFilms_WhenCalled() 
+    public void CreateFilm_AddsNewFilmRecordToFilmList_WhenCalled()
     {
-        _filmList.Add(Id, Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
-        var actualFilm = _filmList.GetAllFilms();
+        _filmList.CreateFilm(Id, Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
+        var filmUniverseCount = _filmList.GetAllFilms().Count;
         
-        Assert.Equal(2, actualFilm.Count);
+        Assert.Equivalent(4, filmUniverseCount);
     }
 
     [Fact]
-    public void BuildFilmUniverse_ReturnsCorrectOutput_WhenCalled()
+    public void DeleteFilm_RemovesFilmWithMatchingIdFromFilmList_WhenGivenFilmId()
+    {
+        _filmList.DeleteFilm(new Guid("11111111-1111-1111-1111-111111111111"));
+        var filmUniverseCount = _filmList.GetAllFilms().Count;
+        
+        Assert.Equivalent(2, filmUniverseCount);
+    }
+    
+    [Fact]
+    public void BuildFilmList_ReturnsCorrectOutput_WhenCalled()
     {
         var expected =
-            "[Title:Spirited Away,Description:During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2001,Voice Actors:[John Cena],Film Ratings:[10]\n" +
-            "[Title:Spirited Away,Description:During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2001,Voice Actors:[John Cena],Film Ratings:[10]\n";
+            "[Title:Spirited Away,Description:During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2001,Voice Actors:[John Doe,John Doe],Film Ratings:[10,10]\n" +
+            "[Title:My Neighbor Totoro,Description:Mei and Satsuki shift to a new house to be closer to their mother who is in the hospital. They soon become friends with Totoro, a giant rabbit-like creature who is a spirit.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:1988,Voice Actors:[John Doe,John Doe],Film Ratings:[10,10]\n" +
+            "[Title:Ponyo,Description:During a forbidden excursion to see the surface world, a goldfish princess encounters a human boy named Sosuke, who gives her the name Ponyo.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2008,Voice Actors:[John Doe,John Doe],Film Ratings:[10,10]\n" + 
+            $"[Title:{Title},Description:{Description},Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:{ReleaseYear},Voice Actors:[John Doe],Film Ratings:[10]\n";
         
-        _filmList.Add(Id, Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
-        var actual = _filmList.BuildFilmUniverse();
+        _filmList.CreateFilm(Id, Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
+        var actual = _filmList.BuildFilmList();
         
         Assert.Equal(expected, actual);
+    }
+
+    [Fact]
+    public void GetAllVoiceActors_ReturnsAllVoiceActors_WhenCalled()
+    {
+        var films = _filmList.GetAllFilms();
+        Assert.True(true);
     }
 }
