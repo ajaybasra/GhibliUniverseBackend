@@ -184,4 +184,53 @@ public class FilmUniverseTests
         Assert.Equal(1, voiceActorCount);
 
     }
+    [Fact]
+    public void GetAllFilmRatings_ReturnsAllFilmRatings_WhenCalled()
+    {
+        var filmReviewsCount = _filmList.GetAllFilmRatings(new Guid("00000000-0000-0000-0000-000000000000")).Count;
+        
+        Assert.Equal(2, filmReviewsCount);
+    }
+
+    [Fact]
+    public void GetFilmRatingById_ReturnsFilmRatingWithMatchingId_WhenGivenAFilmRatingId()
+    {
+        var expectedFilmRating = new FilmRating()
+        {
+            FilmRatingId = new Guid("11111111-1111-1111-1111-111111111111"),
+            Rating = 10,
+            FilmId = new Guid("00000000-0000-0000-0000-000000000000")
+        };
+
+        var actualFilmRating = _filmList.GetFilmRatingById(new Guid("00000000-0000-0000-0000-000000000000"),
+            new Guid("11111111-1111-1111-1111-111111111111"));
+
+        Assert.Equivalent(expectedFilmRating, actualFilmRating);
+    }
+
+    [Fact]
+    public void CreateFilmRating_AddsNewRecordToFilmRatingList_WhenCalled()
+    {
+        
+        _filmList.CreateFilmRating(new Guid("31111111-1111-1111-1111-111111111111"),10, new Guid("11111111-1111-1111-1111-111111111111"));
+        var filmRatingCount = _filmList.GetAllFilmRatings(new Guid("11111111-1111-1111-1111-111111111111")).Count;
+        
+        var filmRating = _filmList.GetFilmRatingById(new Guid("11111111-1111-1111-1111-111111111111"),
+            new Guid("31111111-1111-1111-1111-111111111111"));
+        
+        Assert.Equal(3, filmRatingCount);
+        Assert.Equal(new Guid("31111111-1111-1111-1111-111111111111"), filmRating.FilmRatingId);
+    }
+
+    [Fact]
+    public void DeleteFilmRating_RemovesRatingWithMatchingIdFromFilmRatingList_WhenGivenFilmRatingId()
+    {
+        _filmList.DeleteFilmRating(new Guid("00000000-0000-0000-0000-000000000000"),
+            new Guid("11111111-1111-1111-1111-111111111111"));
+        
+        var filmRatingCount = _filmList.GetAllFilmRatings(new Guid("00000000-0000-0000-0000-000000000000")).Count;
+        
+        Assert.Equal(1, filmRatingCount);
+    }
+
 }

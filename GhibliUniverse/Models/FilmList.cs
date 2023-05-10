@@ -82,6 +82,17 @@ public class FilmList
         matchingFilm.VoiceActors.RemoveAll(voiceActor => voiceActor.VoiceActorId == voiceActorId);
     }
     
+    public ImmutableList<FilmRating> GetAllFilmRatings(Guid filmId)
+    {
+        return _filmUniverse.First(film => film.FilmId == filmId).FilmRatings.ToImmutableList();
+    }
+
+    public FilmRating? GetFilmRatingById(Guid filmId, Guid filmRatingId)
+    {//fix
+        var matchingFilm =  _filmUniverse.FirstOrDefault(film => film.FilmId == filmId);
+
+        return matchingFilm?.FilmRatings.First(voiceActor => voiceActor.FilmRatingId == filmRatingId);
+    }
     public void CreateFilmRating(Guid voiceActorId, int rating, Guid filmId)
     {
         var filmRating = new FilmRating()
@@ -92,7 +103,13 @@ public class FilmList
         };
         
         _filmUniverse.First(film => film.FilmId == filmId).FilmRatings.Add(filmRating);
+    }
+    
+    public void DeleteFilmRating(Guid filmId, Guid filmRatingId)
+    {//fix
+        var matchingFilm = _filmUniverse.FirstOrDefault(film => film.FilmId == filmId);
 
+        matchingFilm.FilmRatings.RemoveAll(filmRating => filmRating.FilmRatingId == filmRatingId);
     }
     private void PopulateFilmsList(int numberOfFilms)
     {
