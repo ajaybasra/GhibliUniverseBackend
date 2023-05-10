@@ -4,7 +4,7 @@ namespace GhibliUniverseTests;
 
 public class FilmUniverseTests
 {
-    private readonly FilmList _filmList;
+    private readonly FilmUniverse _filmUniverse;
     private static readonly Guid Id = new ("33333333-3333-3333-3333-333333333333");
     private const string Title = "Castle in the Sky";
 
@@ -38,13 +38,13 @@ public class FilmUniverseTests
 
     public FilmUniverseTests()
     {
-        _filmList = new FilmList();
+        _filmUniverse = new FilmUniverse();
     }
 
     [Fact]
     public void GetAllFilms_ReturnsAllFilms_WhenCalled() 
     {
-        var filmCount = _filmList.GetAllFilms().Count;
+        var filmCount = _filmUniverse.GetAllFilms().Count;
         
         Assert.Equal(3, filmCount);
     }
@@ -52,7 +52,6 @@ public class FilmUniverseTests
     [Fact]
     public void GetFilmById_ReturnsFilmWithMatchingId_WhenGivenFilmId()
     {
-
         var expectedFilm = new Film
         {
             FilmId = new Guid("00000000-0000-0000-0000-000000000000"),
@@ -97,7 +96,7 @@ public class FilmUniverseTests
             }
         };
         
-        var actualFilm = _filmList.GetFilmById(new Guid("00000000-0000-0000-0000-000000000000"));
+        var actualFilm = _filmUniverse.GetFilmById(new Guid("00000000-0000-0000-0000-000000000000"));
 
         Assert.Equivalent(expectedFilm, actualFilm);
     }
@@ -105,8 +104,8 @@ public class FilmUniverseTests
     [Fact]
     public void CreateFilm_AddsNewFilmRecordToFilmList_WhenCalled()
     {
-        _filmList.CreateFilm(Id, Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
-        var filmUniverseCount = _filmList.GetAllFilms().Count;
+        _filmUniverse.CreateFilm(Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
+        var filmUniverseCount = _filmUniverse.GetAllFilms().Count;
         
         Assert.Equivalent(4, filmUniverseCount);
     }
@@ -114,8 +113,8 @@ public class FilmUniverseTests
     [Fact]
     public void DeleteFilm_RemovesFilmWithMatchingIdFromFilmList_WhenGivenFilmId()
     {
-        _filmList.DeleteFilm(new Guid("11111111-1111-1111-1111-111111111111"));
-        var filmUniverseCount = _filmList.GetAllFilms().Count;
+        _filmUniverse.DeleteFilm(new Guid("11111111-1111-1111-1111-111111111111"));
+        var filmUniverseCount = _filmUniverse.GetAllFilms().Count;
         
         Assert.Equivalent(2, filmUniverseCount);
     }
@@ -124,13 +123,13 @@ public class FilmUniverseTests
     public void BuildFilmList_ReturnsCorrectOutput_WhenCalled()
     {
         var expected =
-            "[Title:Spirited Away,Description:During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2001,Voice Actors:[John Doe,John Doe],Film Ratings:[10,10]\n" +
-            "[Title:My Neighbor Totoro,Description:Mei and Satsuki shift to a new house to be closer to their mother who is in the hospital. They soon become friends with Totoro, a giant rabbit-like creature who is a spirit.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:1988,Voice Actors:[John Doe,John Doe],Film Ratings:[10,10]\n" +
-            "[Title:Ponyo,Description:During a forbidden excursion to see the surface world, a goldfish princess encounters a human boy named Sosuke, who gives her the name Ponyo.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2008,Voice Actors:[John Doe,John Doe],Film Ratings:[10,10]\n" + 
-            $"[Title:{Title},Description:{Description},Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:{ReleaseYear},Voice Actors:[John Doe],Film Ratings:[10]\n";
+            "[Title:Spirited Away,Description:During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2001,Voice Actors:[John Doe,John Doe],Film Ratings:[10,10]]\n" +
+            "[Title:My Neighbor Totoro,Description:Mei and Satsuki shift to a new house to be closer to their mother who is in the hospital. They soon become friends with Totoro, a giant rabbit-like creature who is a spirit.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:1988,Voice Actors:[John Doe,John Doe],Film Ratings:[10,10]]\n" +
+            "[Title:Ponyo,Description:During a forbidden excursion to see the surface world, a goldfish princess encounters a human boy named Sosuke, who gives her the name Ponyo.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2008,Voice Actors:[John Doe,John Doe],Film Ratings:[10,10]]\n" + 
+            $"[Title:{Title},Description:{Description},Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:{ReleaseYear},Voice Actors:[John Doe],Film Ratings:[10]]\n";
         
-        _filmList.CreateFilm(Id, Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
-        var actual = _filmList.BuildFilmList();
+        _filmUniverse.CreateFilm(Title, Description, Director, Composer, ReleaseYear, VoiceActors, FilmRatings);
+        var actual = _filmUniverse.BuildFilmList();
         
         Assert.Equal(expected, actual);
     }
@@ -138,7 +137,7 @@ public class FilmUniverseTests
     [Fact]
     public void GetAllVoiceActors_ReturnsAllVoiceActors_WhenCalled()
     {
-        var voiceActorsCount = _filmList.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000")).Count;
+        var voiceActorsCount = _filmUniverse.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000")).Count;
         
         Assert.Equal(2, voiceActorsCount);
     }
@@ -154,7 +153,7 @@ public class FilmUniverseTests
             FilmId = new Guid("00000000-0000-0000-0000-000000000000")
         };
 
-        var actualVoiceActor = _filmList.GetVoiceActorById(new Guid("00000000-0000-0000-0000-000000000000"),
+        var actualVoiceActor = _filmUniverse.GetVoiceActorById(new Guid("00000000-0000-0000-0000-000000000000"),
             new Guid("11111111-1111-1111-1111-111111111111"));
         
         Assert.Equivalent(expectedVoiceActor, actualVoiceActor);
@@ -163,10 +162,10 @@ public class FilmUniverseTests
     [Fact]
     public void CreateVoiceActor_AddsNewRecordToVoiceActorList_WhenCalled()
     {
-        _filmList.CreateVoiceActor(new Guid("31111111-1111-1111-1111-111111111111"), "First", "Last", new Guid("11111111-1111-1111-1111-111111111111"));
-        var voiceActorCount = _filmList.GetAllVoiceActors(new Guid("11111111-1111-1111-1111-111111111111")).Count;
+        _filmUniverse.CreateVoiceActor(new Guid("31111111-1111-1111-1111-111111111111"), "First", "Last", new Guid("11111111-1111-1111-1111-111111111111"));
+        var voiceActorCount = _filmUniverse.GetAllVoiceActors(new Guid("11111111-1111-1111-1111-111111111111")).Count;
 
-        var voiceActor = _filmList.GetVoiceActorById(new Guid("11111111-1111-1111-1111-111111111111"),
+        var voiceActor = _filmUniverse.GetVoiceActorById(new Guid("11111111-1111-1111-1111-111111111111"),
             new Guid("31111111-1111-1111-1111-111111111111"));
         
         Assert.Equal(3, voiceActorCount);
@@ -176,10 +175,10 @@ public class FilmUniverseTests
     [Fact]
     public void DeleteVoiceActor_RemovesActorWithMatchingIdFromVoiceActorList_WhenGivenVoiceActorId()
     {
-        _filmList.DeleteVoiceActor(new Guid("00000000-0000-0000-0000-000000000000"),
+        _filmUniverse.DeleteVoiceActor(new Guid("00000000-0000-0000-0000-000000000000"),
             new Guid("11111111-1111-1111-1111-111111111111"));
 
-        var voiceActorCount = _filmList.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000")).Count;
+        var voiceActorCount = _filmUniverse.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000")).Count;
         
         Assert.Equal(1, voiceActorCount);
 
@@ -187,7 +186,7 @@ public class FilmUniverseTests
     [Fact]
     public void GetAllFilmRatings_ReturnsAllFilmRatings_WhenCalled()
     {
-        var filmReviewsCount = _filmList.GetAllFilmRatings(new Guid("00000000-0000-0000-0000-000000000000")).Count;
+        var filmReviewsCount = _filmUniverse.GetAllFilmRatings(new Guid("00000000-0000-0000-0000-000000000000")).Count;
         
         Assert.Equal(2, filmReviewsCount);
     }
@@ -202,7 +201,7 @@ public class FilmUniverseTests
             FilmId = new Guid("00000000-0000-0000-0000-000000000000")
         };
 
-        var actualFilmRating = _filmList.GetFilmRatingById(new Guid("00000000-0000-0000-0000-000000000000"),
+        var actualFilmRating = _filmUniverse.GetFilmRatingById(new Guid("00000000-0000-0000-0000-000000000000"),
             new Guid("11111111-1111-1111-1111-111111111111"));
 
         Assert.Equivalent(expectedFilmRating, actualFilmRating);
@@ -212,10 +211,10 @@ public class FilmUniverseTests
     public void CreateFilmRating_AddsNewRecordToFilmRatingList_WhenCalled()
     {
         
-        _filmList.CreateFilmRating(new Guid("31111111-1111-1111-1111-111111111111"),10, new Guid("11111111-1111-1111-1111-111111111111"));
-        var filmRatingCount = _filmList.GetAllFilmRatings(new Guid("11111111-1111-1111-1111-111111111111")).Count;
+        _filmUniverse.CreateFilmRating(new Guid("31111111-1111-1111-1111-111111111111"),10, new Guid("11111111-1111-1111-1111-111111111111"));
+        var filmRatingCount = _filmUniverse.GetAllFilmRatings(new Guid("11111111-1111-1111-1111-111111111111")).Count;
         
-        var filmRating = _filmList.GetFilmRatingById(new Guid("11111111-1111-1111-1111-111111111111"),
+        var filmRating = _filmUniverse.GetFilmRatingById(new Guid("11111111-1111-1111-1111-111111111111"),
             new Guid("31111111-1111-1111-1111-111111111111"));
         
         Assert.Equal(3, filmRatingCount);
@@ -225,12 +224,20 @@ public class FilmUniverseTests
     [Fact]
     public void DeleteFilmRating_RemovesRatingWithMatchingIdFromFilmRatingList_WhenGivenFilmRatingId()
     {
-        _filmList.DeleteFilmRating(new Guid("00000000-0000-0000-0000-000000000000"),
+        _filmUniverse.DeleteFilmRating(new Guid("00000000-0000-0000-0000-000000000000"),
             new Guid("11111111-1111-1111-1111-111111111111"));
         
-        var filmRatingCount = _filmList.GetAllFilmRatings(new Guid("00000000-0000-0000-0000-000000000000")).Count;
+        var filmRatingCount = _filmUniverse.GetAllFilmRatings(new Guid("00000000-0000-0000-0000-000000000000")).Count;
         
         Assert.Equal(1, filmRatingCount);
+    }
+
+    [Fact]
+    public void FilterFilmsByField_ReturnsCorrectlyFilteredList_WhenCalled()
+    {
+        var filteredFilms = _filmUniverse.GetFilmsFilteredByProperty("Title", "Spirited Away");
+        
+        Assert.Single(filteredFilms);
     }
 
 }

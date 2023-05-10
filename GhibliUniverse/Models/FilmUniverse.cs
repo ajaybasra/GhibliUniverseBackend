@@ -3,28 +3,52 @@ using System.Text;
 
 namespace GhibliUniverse;
 
-public class FilmList
+public class FilmUniverse
 {
-    private readonly List<Film> _filmUniverse = new();
-    public FilmList()
+    private readonly List<Film> _filmList = new();
+    public FilmUniverse()
     {
         PopulateFilmsList(3);
     }
     
-    public ImmutableList<Film> GetAllFilms()
+    public List<Film> GetAllFilms()
     {
-        return _filmUniverse.ToImmutableList();
+        return _filmList;
     }
     public Film GetFilmById(Guid filmId)
     {
-        return _filmUniverse.First(film => film.FilmId == filmId);
+        return _filmList.First(film => film.FilmId == filmId);
+    }
+
+    public List<Film> GetFilmsFilteredByProperty(string propertyName, string filterValue)
+    {
+        var propInfo = typeof(Film).GetProperty(propertyName);
+        if (propInfo == null) // property not found
+        {
+            throw new ArgumentException("That property does not exist.");
+        }
+        // film => propInfo.GetValue(film)!.Equals(parsedFilterValue)
+        return _filmList.Where(film => CheckMovieProperty(propertyName, propInfo.GetValue(film)!, filterValue)).ToList();
     }
     
-    public void CreateFilm(Guid filmId, string title, string description, string director, string composer, int releaseYear, List<VoiceActor> voiceActors, List<FilmRating> filmRatings)
+    private bool CheckMovieProperty(string propertyName, Object propertyValue, string filterValue)
     {
-        _filmUniverse.Add(new Film
+        return propertyName switch
         {
-            FilmId = filmId,
+            "Title" => propertyValue.ToString() == filterValue,
+            "Description" => propertyValue.ToString() == filterValue,
+            "Director" => propertyValue.ToString() == filterValue,
+            "Composer" => propertyValue.ToString() == filterValue,
+            "ReleaseYear" => int.Parse(propertyValue.ToString() ?? string.Empty) == int.Parse(filterValue),
+            _ => false
+        };
+    }
+    public void CreateFilm(string title, string description, string director, string composer, int releaseYear, List<VoiceActor> voiceActors, List<FilmRating> filmRatings)
+    {
+        
+        _filmList.Add(new Film
+        {
+            FilmId = Guid.NewGuid(),
             Title = title,
             Description = description,
             Director = director,
@@ -36,13 +60,13 @@ public class FilmList
     }
     public void DeleteFilm(Guid filmId)
     {
-        _filmUniverse.RemoveAll(film => film.FilmId == filmId);
+        _filmList.RemoveAll(film => film.FilmId == filmId);
     }
 
     public string BuildFilmList()
     {
         var stringBuilder = new StringBuilder();
-        foreach (var film in _filmUniverse)
+        foreach (var film in _filmList)
         {
             stringBuilder.Append(film);
             stringBuilder.Append('\n');
@@ -51,14 +75,14 @@ public class FilmList
         return stringBuilder.ToString();
     }
 
-    public ImmutableList<VoiceActor> GetAllVoiceActors(Guid filmId)
+    public List<VoiceActor> GetAllVoiceActors(Guid filmId)
     {
-        return _filmUniverse.First(film => film.FilmId == filmId).VoiceActors.ToImmutableList();
+        return _filmList.First(film => film.FilmId == filmId).VoiceActors;
     }
 
     public VoiceActor? GetVoiceActorById(Guid filmId, Guid voiceActorId)
     {//fix
-        var matchingFilm =  _filmUniverse.FirstOrDefault(film => film.FilmId == filmId);
+        var matchingFilm =  _filmList.FirstOrDefault(film => film.FilmId == filmId);
 
         return matchingFilm?.VoiceActors.First(voiceActor => voiceActor.VoiceActorId == voiceActorId);
     }
@@ -72,24 +96,24 @@ public class FilmList
             FilmId = filmId
         };
 
-        _filmUniverse.First(film => film.FilmId == filmId).VoiceActors.Add(voiceActor);
+        _filmList.First(film => film.FilmId == filmId).VoiceActors.Add(voiceActor);
     }
 
     public void DeleteVoiceActor(Guid filmId, Guid voiceActorId)
     {//fix
-        var matchingFilm = _filmUniverse.FirstOrDefault(film => film.FilmId == filmId);
+        var matchingFilm = _filmList.FirstOrDefault(film => film.FilmId == filmId);
 
         matchingFilm.VoiceActors.RemoveAll(voiceActor => voiceActor.VoiceActorId == voiceActorId);
     }
     
-    public ImmutableList<FilmRating> GetAllFilmRatings(Guid filmId)
+    public List<FilmRating> GetAllFilmRatings(Guid filmId)
     {
-        return _filmUniverse.First(film => film.FilmId == filmId).FilmRatings.ToImmutableList();
+        return _filmList.First(film => film.FilmId == filmId).FilmRatings;
     }
 
     public FilmRating? GetFilmRatingById(Guid filmId, Guid filmRatingId)
     {//fix
-        var matchingFilm =  _filmUniverse.FirstOrDefault(film => film.FilmId == filmId);
+        var matchingFilm =  _filmList.FirstOrDefault(film => film.FilmId == filmId);
 
         return matchingFilm?.FilmRatings.First(voiceActor => voiceActor.FilmRatingId == filmRatingId);
     }
@@ -102,12 +126,12 @@ public class FilmList
             FilmId = filmId
         };
         
-        _filmUniverse.First(film => film.FilmId == filmId).FilmRatings.Add(filmRating);
+        _filmList.First(film => film.FilmId == filmId).FilmRatings.Add(filmRating);
     }
     
     public void DeleteFilmRating(Guid filmId, Guid filmRatingId)
     {//fix
-        var matchingFilm = _filmUniverse.FirstOrDefault(film => film.FilmId == filmId);
+        var matchingFilm = _filmList.FirstOrDefault(film => film.FilmId == filmId);
 
         matchingFilm.FilmRatings.RemoveAll(filmRating => filmRating.FilmRatingId == filmRatingId);
     }
@@ -124,7 +148,7 @@ public class FilmList
         
         for (var i = 0; i < numberOfFilms; i++)
         {
-            _filmUniverse.Add(new Film
+            _filmList.Add(new Film
             {
                 FilmId = new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"),
                 Title = filmTitles[i],
@@ -135,7 +159,7 @@ public class FilmList
                 VoiceActors = new List<VoiceActor>(),
                 FilmRatings = new List<FilmRating>()
             });
-
+ 
             for (var j = 0; j < 2; j++)
             {
                 CreateVoiceActor(new Guid($"{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}"), "John", "Doe", new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"));

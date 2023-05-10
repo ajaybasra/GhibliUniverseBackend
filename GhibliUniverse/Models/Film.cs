@@ -30,6 +30,7 @@ public record Film()
         str.Append('[');
         str.Append(string.Join(",", FilmRatings));
         str.Append(']');
+        str.Append(']');
         return str.ToString();
     }
 
