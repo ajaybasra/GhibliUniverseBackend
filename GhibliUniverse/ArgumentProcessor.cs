@@ -28,9 +28,8 @@ public class ArgumentProcessor
                 break;
             case "cf":
                 var releaseYear = int.Parse(GetListOfPropertiesNeededToCreateFilm()[4]);
-                var voiceActors = new List<VoiceActor>();
-                var filmRatings = new List<FilmRating>();
-                _filmUniverse.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear, voiceActors, filmRatings);
+
+                _filmUniverse.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
                 ShowFilms(_filmUniverse.GetAllFilms());
                 break;
             case "df":

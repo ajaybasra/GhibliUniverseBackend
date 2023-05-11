@@ -4,7 +4,7 @@ namespace GhibliUniverse;
 
 public record FilmRating()
 {
-    public Guid FilmRatingId { get; init; }
+    public Guid Id { get; init; }
     public int Rating { get; set; }
     
     public Guid FilmId { get; set; }
