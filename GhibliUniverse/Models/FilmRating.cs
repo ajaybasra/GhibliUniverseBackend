@@ -8,6 +8,7 @@ public record FilmRating()
     public int Rating { get; set; }
     
     public Guid FilmId { get; set; }
+    public Film Film { get; set; } = null!;
     
     public override string ToString()
     {

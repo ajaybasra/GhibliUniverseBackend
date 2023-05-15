@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 
 namespace GhibliUniverse;
@@ -9,10 +10,28 @@ public record Film()
     public string Description { get; set; }
     public string Director { get; set; }
     public string Composer { get; set; }
-    public int ReleaseYear { get; set; }
-    public List<VoiceActor> VoiceActors { get; set; }
-    public List<FilmRating> FilmRatings { get; set; }
+    public int ReleaseYear { get; set; } 
     
+    public List<VoiceActor> VoiceActors { get; } = new(); 
+    public List<FilmRating> FilmRatings { get; set; } = new();
+
+    public void AddVoiceActor(VoiceActor voiceActor)
+    {
+        if (!VoiceActors.Contains(voiceActor))
+        {
+            VoiceActors.Add(voiceActor);
+            voiceActor.AddFilm(this);
+        }
+    }
+
+    public void RemoveVoiceActor(VoiceActor voiceActor)
+    {
+        if (VoiceActors.Contains(voiceActor))
+        {
+            VoiceActors.Remove(voiceActor);
+            voiceActor.RemoveFilm(this);
+        }
+    }
     public override string ToString()
     {
         var str = new StringBuilder();

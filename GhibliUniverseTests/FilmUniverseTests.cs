@@ -53,53 +53,11 @@ public class FilmUniverseTests
     [Fact]
     public void GetFilmById_ReturnsFilmWithMatchingId_WhenGivenFilmId()
     {
-        var expectedFilm = new Film
-        {
-            Id = new Guid("00000000-0000-0000-0000-000000000000"),
-            Title = "Spirited Away",
-            Description = "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.",
-            Director = Director,
-            Composer = Composer,
-            ReleaseYear = 2001,
-            VoiceActors = new List<VoiceActor>()
-            {
-                new()
-                {
-                    Id = new Guid("00000000-0000-0000-0000-000000000000"),
-                    FirstName = "John",
-                    LastName = "Doe",
-                    FilmId = new Guid("00000000-0000-0000-0000-000000000000")
-            
-                },
-                new()
-                {
-                    Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                    FirstName = "John",
-                    LastName = "Doe",
-                    FilmId = new Guid("00000000-0000-0000-0000-000000000000")
-            
-                }
-            },
-            FilmRatings = new List<FilmRating>()
-            {
-                new()
-                {
-                    Id = new Guid("00000000-0000-0000-0000-000000000000"),
-                    Rating = 10,
-                    FilmId = new Guid("00000000-0000-0000-0000-000000000000")
-                },
-                new()
-                {
-                    Id = new Guid("11111111-1111-1111-1111-111111111111"),
-                    Rating = 10,
-                    FilmId = new Guid("00000000-0000-0000-0000-000000000000")
-                }
-            }
-        };
-        
+        var expectedId = new Guid("00000000-0000-0000-0000-000000000000");
+
         var actualFilm = _filmUniverse.GetFilmById(new Guid("00000000-0000-0000-0000-000000000000"));
 
-        Assert.Equivalent(expectedFilm, actualFilm);
+        Assert.Equal(expectedId, actualFilm.Id);
     }
 
     [Fact]
@@ -146,16 +104,17 @@ public class FilmUniverseTests
     [Fact]
     public void GetVoiceActorById_ReturnsVoiceActorWithMatchingId_WhenGivenVoiceActorId()
     {
+        var voiceActorId = _filmUniverse.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000"))[0].Id;
+
         var expectedVoiceActor = new VoiceActor()
         {
-            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+            Id = voiceActorId,
             FirstName = "John",
             LastName = "Doe",
-            FilmId = new Guid("00000000-0000-0000-0000-000000000000")
         };
 
         var actualVoiceActor = _filmUniverse.GetVoiceActorById(new Guid("00000000-0000-0000-0000-000000000000"),
-            new Guid("11111111-1111-1111-1111-111111111111"));
+            voiceActorId);
         
         Assert.Equivalent(expectedVoiceActor, actualVoiceActor);
     }
@@ -163,26 +122,28 @@ public class FilmUniverseTests
     [Fact]
     public void CreateVoiceActor_AddsNewRecordToVoiceActorList_WhenCalled()
     {
-        _filmUniverse.CreateVoiceActor(new Guid("31111111-1111-1111-1111-111111111111"), "First", "Last", new Guid("11111111-1111-1111-1111-111111111111"));
+        _filmUniverse.CreateVoiceActor("First", "Last", new Guid("11111111-1111-1111-1111-111111111111"));
+        var voiceActorId = _filmUniverse.GetAllVoiceActors(new Guid("11111111-1111-1111-1111-111111111111"))[2].Id;
+        
         var voiceActorCount = _filmUniverse.GetAllVoiceActors(new Guid("11111111-1111-1111-1111-111111111111")).Count;
-
         var voiceActor = _filmUniverse.GetVoiceActorById(new Guid("11111111-1111-1111-1111-111111111111"),
-            new Guid("31111111-1111-1111-1111-111111111111"));
+            voiceActorId);
         
         Assert.Equal(3, voiceActorCount);
-        Assert.Equal(new Guid("31111111-1111-1111-1111-111111111111"), voiceActor.Id);
+        Assert.Equal(voiceActorId, voiceActor.Id);
     }
 
     [Fact]
     public void DeleteVoiceActor_RemovesActorWithMatchingIdFromVoiceActorList_WhenGivenVoiceActorId()
     {
-        _filmUniverse.DeleteVoiceActor(new Guid("00000000-0000-0000-0000-000000000000"),
-            new Guid("11111111-1111-1111-1111-111111111111"));
+        var voiceActorId = _filmUniverse.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000"))[0].Id;
 
+        
+        _filmUniverse.DeleteVoiceActor(new Guid("00000000-0000-0000-0000-000000000000"),
+            voiceActorId);
         var voiceActorCount = _filmUniverse.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000")).Count;
         
         Assert.Equal(1, voiceActorCount);
-
     }
     [Fact]
     public void GetAllFilmRatings_ReturnsAllFilmRatings_WhenCalled()
@@ -195,15 +156,17 @@ public class FilmUniverseTests
     [Fact]
     public void GetFilmRatingById_ReturnsFilmRatingWithMatchingId_WhenGivenAFilmRatingId()
     {
+        var filmRatingId = _filmUniverse.GetAllFilmRatings(new Guid("00000000-0000-0000-0000-000000000000"))[0].Id;
+
         var expectedFilmRating = new FilmRating()
         {
-            Id = new Guid("11111111-1111-1111-1111-111111111111"),
+            Id = filmRatingId,
             Rating = 10,
             FilmId = new Guid("00000000-0000-0000-0000-000000000000")
         };
 
         var actualFilmRating = _filmUniverse.GetFilmRatingById(new Guid("00000000-0000-0000-0000-000000000000"),
-            new Guid("11111111-1111-1111-1111-111111111111"));
+            filmRatingId);
 
         Assert.Equivalent(expectedFilmRating, actualFilmRating);
     }
@@ -211,23 +174,25 @@ public class FilmUniverseTests
     [Fact]
     public void CreateFilmRating_AddsNewRecordToFilmRatingList_WhenCalled()
     {
+        _filmUniverse.CreateFilmRating(10, new Guid("11111111-1111-1111-1111-111111111111"));
+        var filmRatingId = _filmUniverse.GetAllFilmRatings(new Guid("11111111-1111-1111-1111-111111111111"))[2].Id;
+
         
-        _filmUniverse.CreateFilmRating(new Guid("31111111-1111-1111-1111-111111111111"),10, new Guid("11111111-1111-1111-1111-111111111111"));
         var filmRatingCount = _filmUniverse.GetAllFilmRatings(new Guid("11111111-1111-1111-1111-111111111111")).Count;
-        
         var filmRating = _filmUniverse.GetFilmRatingById(new Guid("11111111-1111-1111-1111-111111111111"),
-            new Guid("31111111-1111-1111-1111-111111111111"));
+            filmRatingId);
         
         Assert.Equal(3, filmRatingCount);
-        Assert.Equal(new Guid("31111111-1111-1111-1111-111111111111"), filmRating.Id);
+        Assert.Equal(filmRatingId, filmRating.Id);
     }
 
     [Fact]
     public void DeleteFilmRating_RemovesRatingWithMatchingIdFromFilmRatingList_WhenGivenFilmRatingId()
     {
-        _filmUniverse.DeleteFilmRating(new Guid("00000000-0000-0000-0000-000000000000"),
-            new Guid("11111111-1111-1111-1111-111111111111"));
+        var filmRatingId = _filmUniverse.GetAllFilmRatings(new Guid("00000000-0000-0000-0000-000000000000"))[0].Id;
         
+        _filmUniverse.DeleteFilmRating(new Guid("00000000-0000-0000-0000-000000000000"),
+            filmRatingId);
         var filmRatingCount = _filmUniverse.GetAllFilmRatings(new Guid("00000000-0000-0000-0000-000000000000")).Count;
         
         Assert.Equal(1, filmRatingCount);

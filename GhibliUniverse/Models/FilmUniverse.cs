@@ -9,7 +9,7 @@ public class FilmUniverse
 
     public FilmUniverse()
     {
-        // PopulateFilmsList(1);
+        // PopulateFilmsList(2);
     }
     public List<Film> GetAllFilms()
     {
@@ -28,10 +28,10 @@ public class FilmUniverse
             throw new ArgumentException("That property does not exist.");
         }
         // film => propInfo.GetValue(film)!.Equals(parsedFilterValue)
-        return _filmList.Where(film => CheckMovieProperty(propertyName, propInfo.GetValue(film)!, filterValue)).ToList();
+        return _filmList.Where(film => CheckFilmProperty(propertyName, propInfo.GetValue(film)!, filterValue)).ToList();
     }
     
-    private bool CheckMovieProperty(string propertyName, Object propertyValue, string filterValue)
+    private bool CheckFilmProperty(string propertyName, Object propertyValue, string filterValue)
     {
         return propertyName switch
         {
@@ -54,8 +54,6 @@ public class FilmUniverse
             Director = director,
             Composer = composer,
             ReleaseYear = releaseYear,
-            VoiceActors = new List<VoiceActor>(),
-            FilmRatings = new List<FilmRating>()
         });
     }
     public void DeleteFilm(Guid filmId)
@@ -86,17 +84,17 @@ public class FilmUniverse
 
         return matchingFilm?.VoiceActors.First(voiceActor => voiceActor.Id == voiceActorId);
     }
-    public void CreateVoiceActor(Guid voiceActorId, string firstName, string lastName, Guid filmId)
+    public void CreateVoiceActor(string firstName, string lastName, Guid filmId)
     {
         var voiceActor = new VoiceActor()
         {
-            Id = voiceActorId,
+            Id = Guid.NewGuid(),
             FirstName = firstName,
             LastName = lastName,
-            FilmId = filmId
         };
 
-        _filmList.First(film => film.Id == filmId).VoiceActors.Add(voiceActor);
+        _filmList.First(film => film.Id == filmId).AddVoiceActor(voiceActor);
+        
     }
 
     public void DeleteVoiceActor(Guid filmId, Guid voiceActorId)
@@ -117,11 +115,11 @@ public class FilmUniverse
 
         return matchingFilm?.FilmRatings.First(voiceActor => voiceActor.Id == filmRatingId);
     }
-    public void CreateFilmRating(Guid voiceActorId, int rating, Guid filmId)
+    public void CreateFilmRating(int rating, Guid filmId)
     {
         var filmRating = new FilmRating()
         {
-            Id = voiceActorId,
+            Id = Guid.NewGuid(),
             Rating = rating,
             FilmId = filmId
         };
@@ -130,7 +128,7 @@ public class FilmUniverse
     }
     
     public void DeleteFilmRating(Guid filmId, Guid filmRatingId)
-    {//fix
+    {
         var matchingFilm = _filmList.FirstOrDefault(film => film.Id == filmId);
 
         matchingFilm.FilmRatings.RemoveAll(filmRating => filmRating.Id == filmRatingId);
@@ -156,17 +154,20 @@ public class FilmUniverse
                 Director = "Hayao Miyazaki",
                 Composer = "Joe Hisaishi",
                 ReleaseYear = releaseYears[i],
-                VoiceActors = new List<VoiceActor>(),
-                FilmRatings = new List<FilmRating>()
             });
  
-            for (var j = 0; j < 2; j++)
-            {
-                CreateVoiceActor(new Guid($"{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}"), "John", "Doe", new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"));
-                
-                CreateFilmRating(new Guid($"{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}-{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}{i+j+i}"), 10, new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"));
-            }
+                for (var j = 0; j < 2; j++)
+                {
+                    CreateVoiceActor( "John", "Doe", new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"));
+                    
+                    CreateFilmRating( 10, new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"));
+                }
 
         }
+    }
+
+    public void AddFilm(Film film)
+    {
+        _filmList.Add(film);
     }
 }

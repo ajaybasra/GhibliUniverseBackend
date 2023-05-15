@@ -17,24 +17,22 @@ public class ArgumentProcessor
     {
         switch (_programArguments[1])
         {
-            case "gaf":
+            case "get-all-films":
                 ShowFilms(_filmUniverse.GetAllFilms());
                 break;
-            case "gfbi":
+            case "get-film-by-id":
                 Console.WriteLine(_filmUniverse.GetFilmById(new Guid(_programArguments[2])));
                 break;
-            case "gffbp":
+            case "get-films-filtered-by-property":
                 ShowFilms(_filmUniverse.GetFilmsFilteredByProperty(_programArguments[2], GetFilterValuesSeperatedBySpaces()));
                 break;
-            case "cf":
+            case "create-film":
                 var releaseYear = int.Parse(GetListOfPropertiesNeededToCreateFilm()[4]);
 
                 _filmUniverse.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
-                ShowFilms(_filmUniverse.GetAllFilms());
                 break;
-            case "df":
+            case "delete-film":
                 _filmUniverse.DeleteFilm(new Guid(_programArguments[2]));
-                ShowFilms(_filmUniverse.GetAllFilms());
                 break;
         }
     }
