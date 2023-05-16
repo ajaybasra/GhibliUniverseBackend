@@ -7,11 +7,7 @@ public class FilmUniverse
 {
     private readonly List<Film> _filmList = new();
     private readonly List<VoiceActor> _voiceActorList = new();
-
-    public FilmUniverse()
-    {
-        // PopulateFilmsList(2);
-    }
+    
     public List<Film> GetAllFilms()
     {
         return _filmList;
@@ -74,35 +70,41 @@ public class FilmUniverse
         return stringBuilder.ToString();
     }
 
-    public List<VoiceActor> GetAllVoiceActors(Guid filmId)
+    public List<VoiceActor> GetAllVoiceActors()
     {
-        return _filmList.First(film => film.Id == filmId).VoiceActors;
+        return _voiceActorList;
     }
 
-    public VoiceActor? GetVoiceActorById(Guid filmId, Guid voiceActorId)
-    {//fix
-        var matchingFilm =  _filmList.FirstOrDefault(film => film.Id == filmId);
-
-        return matchingFilm?.VoiceActors.First(voiceActor => voiceActor.Id == voiceActorId);
-    }
-    public void CreateVoiceActor(string firstName, string lastName, Guid filmId)
+    public VoiceActor GetVoiceActorById(Guid voiceActorId)
     {
-        var voiceActor = new VoiceActor()
+        return _voiceActorList.First(voiceActor => voiceActor.Id == voiceActorId);
+    }
+    public void CreateVoiceActor(string firstName, string lastName)
+    {
+        _voiceActorList.Add(new VoiceActor
         {
             Id = Guid.NewGuid(),
             FirstName = firstName,
-            LastName = lastName,
-        };
-
-        _filmList.First(film => film.Id == filmId).AddVoiceActor(voiceActor);
+            LastName = lastName
+        });
         
     }
 
-    public void DeleteVoiceActor(Guid filmId, Guid voiceActorId)
-    {//fix
-        var matchingFilm = _filmList.FirstOrDefault(film => film.Id == filmId);
+    public void DeleteVoiceActor(Guid voiceActorId)
+    {
+        _voiceActorList.RemoveAll(voiceActor => voiceActor.Id == voiceActorId);
+    }
 
-        matchingFilm.VoiceActors.RemoveAll(voiceActor => voiceActor.Id == voiceActorId);
+    public string BuildVoiceActorList()
+    {
+        var stringBuilder = new StringBuilder();
+        foreach (var voiceActor in _voiceActorList)
+        {
+            stringBuilder.Append(voiceActor);
+            stringBuilder.Append('\n');
+        }
+
+        return stringBuilder.ToString();
     }
 
     public FilmRating? GetFilmRatingById(Guid filmId, Guid filmRatingId)
@@ -159,7 +161,8 @@ public class FilmUniverse
  
                 for (var j = 0; j < 2; j++)
                 {
-                    CreateVoiceActor( "John", "Doe", new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"));
+                    CreateVoiceActor( "John", "Doe");
+                    _filmList.Last().AddVoiceActor(_voiceActorList.Last());
                     
                     CreateFilmRating( 10, new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"));
                 }
@@ -167,8 +170,25 @@ public class FilmUniverse
         }
     }
 
+    public void PopulateVoiceActorsList(int numberOfVoiceActors)
+    {
+        for (var i = 0; i < numberOfVoiceActors; i++)
+        {
+            _voiceActorList.Add(new VoiceActor
+            {
+                Id = new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"),
+                FirstName = "John",
+                LastName = "Doe"
+            });
+        }
+    }
     public void AddFilm(Film film)
     {
         _filmList.Add(film);
+    }
+
+    public void AddVoiceActor(VoiceActor voiceActor)
+    {
+        _voiceActorList.Add(voiceActor);
     }
 }

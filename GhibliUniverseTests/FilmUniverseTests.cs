@@ -40,6 +40,7 @@ public class FilmUniverseTests
     {
         _filmUniverse = new FilmUniverse();
         _filmUniverse.PopulateFilmsList(3);
+        _filmUniverse.PopulateVoiceActorsList(2);
     }
 
     [Fact]
@@ -96,15 +97,15 @@ public class FilmUniverseTests
     [Fact]
     public void GetAllVoiceActors_ReturnsAllVoiceActors_WhenCalled()
     {
-        var voiceActorsCount = _filmUniverse.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000")).Count;
+        var voiceActorsCount = _filmUniverse.GetAllVoiceActors().Count;
         
-        Assert.Equal(2, voiceActorsCount);
+        Assert.Equal(8, voiceActorsCount);
     }
 
     [Fact]
     public void GetVoiceActorById_ReturnsVoiceActorWithMatchingId_WhenGivenVoiceActorId()
     {
-        var voiceActorId = _filmUniverse.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000"))[0].Id;
+        var voiceActorId = _filmUniverse.GetAllVoiceActors()[0].Id;
 
         var expectedVoiceActor = new VoiceActor()
         {
@@ -113,8 +114,7 @@ public class FilmUniverseTests
             LastName = "Doe",
         };
 
-        var actualVoiceActor = _filmUniverse.GetVoiceActorById(new Guid("00000000-0000-0000-0000-000000000000"),
-            voiceActorId);
+        var actualVoiceActor = _filmUniverse.GetVoiceActorById(voiceActorId);
         
         Assert.Equivalent(expectedVoiceActor, actualVoiceActor);
     }
@@ -122,28 +122,26 @@ public class FilmUniverseTests
     [Fact]
     public void CreateVoiceActor_AddsNewRecordToVoiceActorList_WhenCalled()
     {
-        _filmUniverse.CreateVoiceActor("First", "Last", new Guid("11111111-1111-1111-1111-111111111111"));
-        var voiceActorId = _filmUniverse.GetAllVoiceActors(new Guid("11111111-1111-1111-1111-111111111111"))[2].Id;
+        _filmUniverse.CreateVoiceActor("First", "Last");
+        var voiceActorId = _filmUniverse.GetAllVoiceActors()[2].Id;
         
-        var voiceActorCount = _filmUniverse.GetAllVoiceActors(new Guid("11111111-1111-1111-1111-111111111111")).Count;
-        var voiceActor = _filmUniverse.GetVoiceActorById(new Guid("11111111-1111-1111-1111-111111111111"),
-            voiceActorId);
+        var voiceActorCount = _filmUniverse.GetAllVoiceActors().Count;
+        var voiceActor = _filmUniverse.GetVoiceActorById(voiceActorId);
         
-        Assert.Equal(3, voiceActorCount);
+        Assert.Equal(9, voiceActorCount);
         Assert.Equal(voiceActorId, voiceActor.Id);
     }
 
     [Fact]
     public void DeleteVoiceActor_RemovesActorWithMatchingIdFromVoiceActorList_WhenGivenVoiceActorId()
     {
-        var voiceActorId = _filmUniverse.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000"))[0].Id;
+        var voiceActorId = _filmUniverse.GetAllVoiceActors()[0].Id;
 
         
-        _filmUniverse.DeleteVoiceActor(new Guid("00000000-0000-0000-0000-000000000000"),
-            voiceActorId);
-        var voiceActorCount = _filmUniverse.GetAllVoiceActors(new Guid("00000000-0000-0000-0000-000000000000")).Count;
+        _filmUniverse.DeleteVoiceActor(voiceActorId);
+        var voiceActorCount = _filmUniverse.GetAllVoiceActors().Count;
         
-        Assert.Equal(1, voiceActorCount);
+        Assert.Equal(7, voiceActorCount);
     }
     [Fact]
     public void GetAllFilmRatings_ReturnsAllFilmRatings_WhenCalled()
