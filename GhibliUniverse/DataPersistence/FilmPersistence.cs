@@ -34,7 +34,7 @@ public class FilmPersistence
     private void CreateFileHeader()
     {
         using var file = new StreamWriter(FilePath);
-        file.WriteLine("Id" + ";" + "Title" + ";" + "Description" + ";" + "Director" + ";" + "Composer" + ";" + "Release Year");
+        file.WriteLine("Id" + "," + "Title" + "," + "Description" + "," + "Director" + "," + "Composer" + "," + "Release Year");
     }
     
     private void AddFilmRecordFromFilmUniverseToCSV(Guid id, string title, string description, string director, string composer, int releaseYear)
@@ -42,7 +42,7 @@ public class FilmPersistence
         try
         {
             using var file = new StreamWriter(FilePath, true);
-            file.WriteLine(id + ";"  + title + ";" + description + ";" + director + ";" + composer + ";" + releaseYear);
+            file.WriteLine(id + ","  + title + "," + description.Replace(',', '*') + "," + director + "," + composer + "," + releaseYear);
             file.Close();
         }  
         catch(Exception ex)  
@@ -50,7 +50,6 @@ public class FilmPersistence
             Console.Write(ex.Message);  
         } 
     }
-
     private void ReadInFilmRecords()
     {
         var lines = File.ReadLines(FilePath).ToList();
@@ -59,9 +58,9 @@ public class FilmPersistence
             return;
         }
         lines.Skip(1)
-            .Select(line => line.Split(';'))
+            .Select(line => line.Split(','))
             .ToList()
-            .ForEach(properties => AddFilmFromCSVToFilmList(new Guid(properties[0]),properties[1], properties[2], properties[3], properties[4], int.Parse(properties[5])));
+            .ForEach(properties => AddFilmFromCSVToFilmList(new Guid(properties[0]),properties[1], properties[2].Replace('*', ','), properties[3], properties[4], int.Parse(properties[5])));
         
     }
     private void AddFilmFromCSVToFilmList(Guid id, string title, string description, string director, string composer, int releaseYear) // should this be here?

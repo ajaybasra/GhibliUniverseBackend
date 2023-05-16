@@ -6,6 +6,7 @@ namespace GhibliUniverse;
 public class FilmUniverse
 {
     private readonly List<Film> _filmList = new();
+    private readonly List<VoiceActor> _voiceActorList = new();
 
     public FilmUniverse()
     {
@@ -103,17 +104,17 @@ public class FilmUniverse
 
         matchingFilm.VoiceActors.RemoveAll(voiceActor => voiceActor.Id == voiceActorId);
     }
-    
-    public List<FilmRating> GetAllFilmRatings(Guid filmId)
-    {
-        return _filmList.First(film => film.Id == filmId).FilmRatings;
-    }
 
     public FilmRating? GetFilmRatingById(Guid filmId, Guid filmRatingId)
     {//fix
         var matchingFilm =  _filmList.FirstOrDefault(film => film.Id == filmId);
 
         return matchingFilm?.FilmRatings.First(voiceActor => voiceActor.Id == filmRatingId);
+    }
+    
+    public List<FilmRating> GetAllFilmRatings(Guid filmId)
+    {
+        return _filmList.First(film => film.Id == filmId).FilmRatings;
     }
     public void CreateFilmRating(int rating, Guid filmId)
     {
