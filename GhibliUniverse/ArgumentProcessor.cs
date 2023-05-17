@@ -18,25 +18,136 @@ public class ArgumentProcessor
         switch (_programArguments[1])
         {
             case "get-all-films":
-                ShowFilms(_filmUniverse.GetAllFilms());
+                HandleGetAllFilms();
                 break;
             case "get-film-by-id":
-                Console.WriteLine(_filmUniverse.GetFilmById(new Guid(_programArguments[2])));
+                HandleGetFilmById(_programArguments[2]);
                 break;
             case "get-films-filtered-by-property":
-                ShowFilms(_filmUniverse.GetFilmsFilteredByProperty(_programArguments[2], GetFilterValuesSeperatedBySpaces()));
+                HandleGetFilmsFilteredByProperty(_programArguments[2]);
                 break;
             case "create-film":
-                var releaseYear = int.Parse(GetListOfPropertiesNeededToCreateFilm()[4]);
-
-                _filmUniverse.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
+                HandleCreateFilm();
                 break;
             case "delete-film":
-                _filmUniverse.DeleteFilm(new Guid(_programArguments[2]));
+                HandleDeleteFilm(_programArguments[2]);
+                break;
+            case "get-all-voice-actors":
+                HandleGetAllVoiceActors();
+                break;
+            case "get-voice-actor-by-id":
+                HandleGetVoiceActorById(_programArguments[2]);
+                break;
+            case "create-voice-actor":
+                HandleCreateVoiceActor();
+                break;
+            case "delete-voice-actor":
+                HandleDeleteVoiceActor(_programArguments[2]);
+                break;
+            case "add-voice-actor-to-film":
+                HandleAddVoiceActorToFilm(_programArguments[2], _programArguments[3]);
+                break;
+            case "remove-voice-actor-from-film":
+                HandleRemoveVoiceActorFromFilm(_programArguments[2], _programArguments[3]);
+                break;
+            case "get-all-film-ratings":
+                HandleGetAllFilmRatings(_programArguments[2]);
+                break;
+            case "get-film-rating-by-id":
+                HandleGetFilmRatingById(_programArguments[2], _programArguments[3]);
+                break;
+            case "create-film-rating":
+                HandleCreateFilmRating(_programArguments[2], _programArguments[3]);
+                break;
+            case "delete-film-rating":
+                HandleDeleteFilmRating(_programArguments[2], _programArguments[3]);
                 break;
         }
     }
 
+    private void HandleGetAllFilms()
+    {
+        ShowFilms(_filmUniverse.GetAllFilms());
+    }
+
+    private void HandleGetFilmById(string filmId)
+    {
+        Console.WriteLine(_filmUniverse.GetFilmById(new Guid(filmId)));
+    }
+
+    private void HandleGetFilmsFilteredByProperty(string propertyName)
+    {
+        ShowFilms(_filmUniverse.GetFilmsFilteredByProperty(propertyName, GetFilterValuesSeperatedBySpaces()));
+    }
+
+    private void HandleCreateFilm()
+    {
+        var releaseYear = int.Parse(GetListOfPropertiesNeededToCreateFilm()[4]);
+
+        _filmUniverse.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
+    }
+
+    private void HandleDeleteFilm(string filmId)
+    {
+        _filmUniverse.DeleteFilm(new Guid(filmId));
+    }
+
+    private void HandleGetAllVoiceActors()
+    {
+        ShowVoiceActors(_filmUniverse.GetAllVoiceActors());
+    }
+
+    private void HandleGetVoiceActorById(string voiceActorId)
+    {
+        Console.WriteLine(_filmUniverse.GetVoiceActorById(new Guid(voiceActorId)));
+    }
+
+    private void HandleCreateVoiceActor()
+    {
+        _filmUniverse.CreateVoiceActor(_programArguments[2], _programArguments[3]);
+    }
+
+    private void HandleDeleteVoiceActor(string voiceActorId)
+    {
+        _filmUniverse.DeleteVoiceActor(new Guid(voiceActorId));
+    }
+
+    private void HandleAddVoiceActorToFilm(string filmId, string voiceActorId)
+    {
+        var movie = _filmUniverse.GetFilmById(new Guid(filmId));
+        var voiceActor = _filmUniverse.GetVoiceActorById(new Guid(voiceActorId));
+        
+        movie.AddVoiceActor(voiceActor);
+    }
+
+    private void HandleRemoveVoiceActorFromFilm(string filmId, string voiceActorId)
+    {
+        var movie = _filmUniverse.GetFilmById(new Guid(filmId));
+        var voiceActor = _filmUniverse.GetVoiceActorById(new Guid(voiceActorId));
+        
+        movie.RemoveVoiceActor(voiceActor);
+    }
+
+    private void HandleGetAllFilmRatings(string filmId)
+    {
+        ShowFilmRatings(_filmUniverse.GetAllFilmRatings(new Guid(filmId)));
+    }
+
+    private void HandleGetFilmRatingById(string filmId, string filmRatingId)
+    {
+        Console.Write(_filmUniverse.GetFilmRatingById(new Guid(filmId), new Guid(filmRatingId)));
+    }
+
+    private void HandleCreateFilmRating(string rating, string filmId)
+    {
+        var ratingAsInt = int.Parse(rating);
+        _filmUniverse.CreateFilmRating(ratingAsInt, new Guid(filmId));
+    }
+
+    private void HandleDeleteFilmRating(string filmId, string filmRatingId)
+    {
+        _filmUniverse.DeleteFilmRating(new Guid(filmId), new Guid(filmRatingId));
+    }
     private string GetFilterValuesSeperatedBySpaces()
     {
         var rawFilterValues = new List<string>();
@@ -44,12 +155,7 @@ public class ArgumentProcessor
         var filterValuesSeperatedBySpaces = string.Join(" ", rawFilterValues.Where(s => !String.IsNullOrEmpty(s)));
         return filterValuesSeperatedBySpaces;
     }
-
-    private void ShowFilms(List<Film> films)
-    {
-        films.ForEach(Console.WriteLine);
-    }
-
+    
     private List<string> GetListOfPropertiesNeededToCreateFilm()
     {
         var rawFilmProperties = new List<string>();
@@ -58,5 +164,20 @@ public class ArgumentProcessor
         var listOfProperties = filmPropertiesSeperatedBySpaces.Split("-");
         return listOfProperties.ToList();
 
+    }
+    
+    private void ShowFilms(List<Film> films)
+    {
+        films.ForEach(Console.WriteLine);
+    }
+
+    private void ShowVoiceActors(List<VoiceActor> voiceActors)
+    {
+        voiceActors.ForEach(Console.WriteLine);
+    }
+
+    private void ShowFilmRatings(List<FilmRating> filmRatings)
+    {
+        filmRatings.ForEach(Console.WriteLine);
     }
 }

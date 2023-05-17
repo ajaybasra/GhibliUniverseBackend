@@ -1,9 +1,10 @@
 using System.Text;
 using System.Text.Unicode;
+using GhibliUniverse.Interfaces;
 
 namespace GhibliUniverse.DataPersistence;
 
-public class FilmPersistence
+public class FilmPersistence : IPersistence
 {
     private readonly FilmUniverse _filmUniverse;
     private const string OldFilmsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/old-films.csv";
@@ -16,8 +17,8 @@ public class FilmPersistence
 
     public void ReadingStep()
     {
-        ReadInFilmRecords();
-        CreateOldFilmsCSVFile();
+        ReadInRecords();
+        CreateBackupCSVFile();
     }
 
     public void WritingStep()
@@ -50,7 +51,7 @@ public class FilmPersistence
             Console.Write(ex.Message);  
         } 
     }
-    private void ReadInFilmRecords()
+    private void ReadInRecords()
     {
         var lines = File.ReadLines(FilePath).ToList();
         if (lines.Count <= 1)
@@ -63,7 +64,7 @@ public class FilmPersistence
             .ForEach(properties => AddFilmFromCSVToFilmList(new Guid(properties[0]),properties[1], properties[2].Replace('*', ','), properties[3], properties[4], int.Parse(properties[5])));
         
     }
-    private void AddFilmFromCSVToFilmList(Guid id, string title, string description, string director, string composer, int releaseYear) // should this be here?
+    private void AddFilmFromCSVToFilmList(Guid id, string title, string description, string director, string composer, int releaseYear)
     {
         var film = new Film()
         {
@@ -78,14 +79,15 @@ public class FilmPersistence
         _filmUniverse.AddFilm(film);
     }
 
-    private void CreateOldFilmsCSVFile()
+    private void CreateBackupCSVFile()
     {
         var lines = File.ReadAllLines(FilePath);
         File.WriteAllLines(OldFilmsFilePath, lines);
     }
-    
-    public void ClearFile()
+
+    public bool FileExists()
     {
-        File.WriteAllText(FilePath,string.Empty);
+        return File.Exists(FilePath);
     }
+
 }

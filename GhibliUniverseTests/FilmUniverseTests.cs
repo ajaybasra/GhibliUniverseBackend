@@ -14,28 +14,6 @@ public class FilmUniverseTests
     private const string Composer = "Joe Hisaishi";
     private const int ReleaseYear = 1986;
 
-    // private static readonly List<VoiceActor> VoiceActors = new()
-    // {
-    //     new VoiceActor
-    //     {
-    //         Id = new Guid("66666666-6666-6666-6666-666666666666"),
-    //         FirstName = "John",
-    //         LastName = "Doe",
-    //         FilmId = new Guid("44444444-4444-4444-4444-444444444444")
-    //         
-    //     }
-    // };
-    //
-    // private static readonly List<FilmRating> FilmRatings = new()
-    // {
-    //     new FilmRating
-    //     {
-    //         Id = new Guid("66666666-6666-6666-6666-666666666666"),
-    //         Rating = 10,
-    //         FilmId = new Guid("44444444-4444-4444-4444-444444444444")
-    //     }
-    // };
-
     public FilmUniverseTests()
     {
         _filmUniverse = new FilmUniverse();
@@ -204,4 +182,13 @@ public class FilmUniverseTests
         Assert.Single(filteredFilms);
     }
 
+    [Fact]
+    public void BuildVoiceActorList_ReturnsCorrectOutput_WhenCalled()
+    {
+        var expected = "John Doe\nJohn Doe\nJohn Doe\nJohn Doe\nJohn Doe\nJohn Doe\nJohn Doe\nJohn Doe\n";
+
+        var actual = _filmUniverse.BuildVoiceActorList();
+        
+        Assert.Equal(expected, actual);
+    }
 }
