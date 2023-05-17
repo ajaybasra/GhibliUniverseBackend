@@ -49,5 +49,5 @@ filmVoiceActorPersistence.WritingStep();
 Console.WriteLine(filmUniverse.GetAllFilms().Count);
 var s = filmUniverse.BuildFilmList();
 Console.WriteLine(s);
-// var j = filmUniverse.BuildVoiceActorList();
-// Console.WriteLine(j);
+var j = filmUniverse.BuildVoiceActorList();
+Console.WriteLine(j);
