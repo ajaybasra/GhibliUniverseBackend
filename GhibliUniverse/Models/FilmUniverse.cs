@@ -91,6 +91,8 @@ public class FilmUniverse
 
     public void DeleteVoiceActor(Guid voiceActorId)
     {
+        var voiceActor = GetVoiceActorById(voiceActorId);
+        _filmList.ForEach(film => film.RemoveVoiceActor(voiceActor));
         _voiceActorList.RemoveAll(voiceActor => voiceActor.Id == voiceActorId);
     }
 
