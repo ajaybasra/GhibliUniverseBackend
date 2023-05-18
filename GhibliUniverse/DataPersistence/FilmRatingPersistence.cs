@@ -1,4 +1,5 @@
 using GhibliUniverse.Interfaces;
+using GhibliUniverse.ValueObjects;
 
 namespace GhibliUniverse.DataPersistence;
 
@@ -42,7 +43,7 @@ public class FilmRatingPersistence : IPersistence
         file.WriteLine("Id" + "," + "Rating" + "," + "Film Id");
     }
     
-    private void AddFilmRatingRecordFromFilmUniverseToCSV(Guid id, int rating, Guid filmId)
+    private void AddFilmRatingRecordFromFilmUniverseToCSV(Guid id, Rating rating, Guid filmId)
     {
         try
         {
@@ -75,7 +76,7 @@ public class FilmRatingPersistence : IPersistence
         var filmRating = new FilmRating()
         {
             Id = id,
-            Rating = ratingAsInt,
+            Rating = Rating.From(ratingAsInt),
             FilmId = filmId
         };
 

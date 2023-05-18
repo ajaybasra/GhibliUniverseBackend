@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Text;
+using GhibliUniverse.ValueObjects;
 
 namespace GhibliUniverse;
 
@@ -49,7 +50,7 @@ public class FilmUniverse
             Description = description,
             Director = director,
             Composer = composer,
-            ReleaseYear = releaseYear,
+            ReleaseYear = ReleaseYear.From(releaseYear),
         });
     }
     public void DeleteFilm(Guid filmId)
@@ -124,7 +125,7 @@ public class FilmUniverse
         var filmRating = new FilmRating()
         {
             Id = Guid.NewGuid(),
-            Rating = rating,
+            Rating = Rating.From(rating),
             FilmId = filmId
         };
         
@@ -157,7 +158,7 @@ public class FilmUniverse
                 Description = filmDescriptions[i],
                 Director = "Hayao Miyazaki",
                 Composer = "Joe Hisaishi",
-                ReleaseYear = releaseYears[i],
+                ReleaseYear = ReleaseYear.From(releaseYears[i]),
             });
  
                 for (var j = 0; j < 2; j++)

@@ -1,5 +1,6 @@
 using System.Security.Cryptography;
 using System.Text;
+using GhibliUniverse.ValueObjects;
 
 namespace GhibliUniverse;
 
@@ -10,7 +11,7 @@ public record Film()
     public string Description { get; set; }
     public string Director { get; set; }
     public string Composer { get; set; }
-    public int ReleaseYear { get; set; } 
+    public ReleaseYear ReleaseYear { get; set; } 
     
     public List<VoiceActor> VoiceActors { get; } = new(); 
     public List<FilmRating> FilmRatings { get; set; } = new();

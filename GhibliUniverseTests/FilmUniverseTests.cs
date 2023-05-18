@@ -1,4 +1,5 @@
 using GhibliUniverse;
+using GhibliUniverse.ValueObjects;
 
 namespace GhibliUniverseTests;
 
@@ -137,7 +138,7 @@ public class FilmUniverseTests
         var expectedFilmRating = new FilmRating()
         {
             Id = filmRatingId,
-            Rating = 10,
+            Rating = Rating.From(10),
             FilmId = new Guid("00000000-0000-0000-0000-000000000000")
         };
 

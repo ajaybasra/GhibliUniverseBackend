@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Unicode;
 using GhibliUniverse.Interfaces;
+using GhibliUniverse.ValueObjects;
 
 namespace GhibliUniverse.DataPersistence;
 
@@ -41,7 +42,7 @@ public class FilmPersistence : IPersistence
         file.WriteLine("Id" + "," + "Title" + "," + "Description" + "," + "Director" + "," + "Composer" + "," + "Release Year");
     }
     
-    private void AddFilmRecordFromFilmUniverseToCSV(Guid id, string title, string description, string director, string composer, int releaseYear)
+    private void AddFilmRecordFromFilmUniverseToCSV(Guid id, string title, string description, string director, string composer, ReleaseYear releaseYear)
     {
         try
         {
@@ -64,10 +65,10 @@ public class FilmPersistence : IPersistence
         lines.Skip(1)
             .Select(line => line.Split(','))
             .ToList()
-            .ForEach(properties => AddFilmFromCSVToFilmList(new Guid(properties[0]),properties[1], properties[2].Replace('*', ','), properties[3], properties[4], int.Parse(properties[5])));
+            .ForEach(properties => AddFilmFromCSVToFilmList(new Guid(properties[0]),properties[1], properties[2].Replace('*', ','), properties[3], properties[4], ReleaseYear.From(int.Parse(properties[5]))));
         
     }
-    private void AddFilmFromCSVToFilmList(Guid id, string title, string description, string director, string composer, int releaseYear)
+    private void AddFilmFromCSVToFilmList(Guid id, string title, string description, string director, string composer, ReleaseYear releaseYear)
     {
         var film = new Film()
         {
