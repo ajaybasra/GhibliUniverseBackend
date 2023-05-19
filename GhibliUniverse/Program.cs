@@ -3,6 +3,7 @@
 using GhibliUniverse;
 using GhibliUniverse.DataPersistence;
 using GhibliUniverse.Interfaces;
+using GhibliUniverse.ValueObjects;
 
 var filmUniverse = new FilmUniverse();
 var commandLine = new CommandLine();
@@ -35,8 +36,15 @@ filmPersistence.WritingStep();
 voiceActorPersistence.WritingStep();
 filmRatingPersistence.WritingStep();
 filmVoiceActorPersistence.WritingStep();
-// filmUniverse.CreateFilmRating(11, new Guid("00000000-0000-0000-0000-000000000000"));
-// filmUniverse.GetFilmById(new Guid("00040000-0000-0000-0000-000000000000"));
+filmUniverse.GetFilmById(new Guid("00040000-0000-0000-0000-000000000000"));
 Console.WriteLine(filmUniverse.GetAllFilms().Count);
 var s = filmUniverse.BuildFilmList();
 Console.WriteLine(s);
+// try
+// {
+//     filmUniverse.CreateFilmRating(99, new Guid("00000000-0000-0000-0000-000000000000"));
+// }
+// catch (Rating.RatingOutOfRangeException e)
+// {
+//     Console.WriteLine(e.Message);
+// }

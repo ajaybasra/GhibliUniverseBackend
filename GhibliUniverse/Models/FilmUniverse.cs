@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Text;
+using GhibliUniverse.Exceptions;
 using GhibliUniverse.ValueObjects;
 
 namespace GhibliUniverse;
@@ -14,7 +15,22 @@ public class FilmUniverse
     }
     public Film GetFilmById(Guid filmId)
     {
-        return _filmList.First(film => film.Id == filmId);
+        // try
+        // {
+        //     return _filmList.First(film => film.Id == filmId);
+        // }
+        // catch (InvalidOperationException ioe)
+        // {
+        //     Console.WriteLine(ioe.Message);
+        // }
+
+        var film = _filmList.FirstOrDefault(film => film.Id == filmId);
+        if (film == null)
+        {
+            throw new ModelNotFoundException(filmId);
+        }
+
+        return film;
     }
 
     public List<Film> GetFilmsFilteredByProperty(string propertyName, string filterValue)

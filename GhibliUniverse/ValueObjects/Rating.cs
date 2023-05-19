@@ -15,7 +15,7 @@ public class Rating : ValueOf<int, Rating>
         }
     }
 
-    private class RatingOutOfRangeException : Exception
+    public class RatingOutOfRangeException : Exception
     {
         public RatingOutOfRangeException(int rating) :
             base($"Rating must be between {MinimumRating} and {MaximumRating} inclusive. Current rating: {rating}.")

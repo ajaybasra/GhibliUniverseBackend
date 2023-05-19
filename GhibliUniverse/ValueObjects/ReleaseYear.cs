@@ -19,7 +19,7 @@ public class ReleaseYear : ValueOf<int, ReleaseYear>
         }
     }
 
-    private class ReleaseYearLessThanOldestReleaseYearException : Exception
+    public class ReleaseYearLessThanOldestReleaseYearException : Exception
     {
         public ReleaseYearLessThanOldestReleaseYearException(int releaseYear) :
             base($"Release year cannot be earlier than {OldestReleaseYear}. Current release year: {releaseYear}")
