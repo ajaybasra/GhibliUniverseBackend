@@ -104,7 +104,7 @@ public class ArgumentProcessor
 
     private void HandleCreateVoiceActor()
     {
-        _filmUniverse.CreateVoiceActor(_programArguments[2], _programArguments[3]);
+        _filmUniverse.CreateVoiceActor(_programArguments[2]);
     }
 
     private void HandleDeleteVoiceActor(string voiceActorId)

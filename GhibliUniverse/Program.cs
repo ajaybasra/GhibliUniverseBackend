@@ -36,7 +36,7 @@ filmPersistence.WritingStep();
 voiceActorPersistence.WritingStep();
 filmRatingPersistence.WritingStep();
 filmVoiceActorPersistence.WritingStep();
-filmUniverse.GetFilmById(new Guid("00040000-0000-0000-0000-000000000000"));
+// filmUniverse.GetFilmById(new Guid("00040000-0000-0000-0000-000000000000"));
 Console.WriteLine(filmUniverse.GetAllFilms().Count);
 var s = filmUniverse.BuildFilmList();
 Console.WriteLine(s);

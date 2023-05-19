@@ -30,22 +30,22 @@ public class VoiceActorPersistence : IPersistence
         if (allVoiceActors.Count <= 0) return;
         foreach (var voiceActor in allVoiceActors)
         {
-            AddVoiceActorRecordFromFilmUniverseToCSV(voiceActor.Id, voiceActor.FirstName, voiceActor.LastName);
+            AddVoiceActorRecordFromFilmUniverseToCSV(voiceActor.Id, voiceActor.Name);
         }
     }
     
     private void CreateFileHeader()
     {
         using var file = new StreamWriter(FilePath);
-        file.WriteLine("Id" + "," + "First Name" + "," + "Last Name");
+        file.WriteLine("Id" + "," + "Name");
     }
     
-    private void AddVoiceActorRecordFromFilmUniverseToCSV(Guid id, string firstName, string lastName)
+    private void AddVoiceActorRecordFromFilmUniverseToCSV(Guid id, string name)
     {
         try
         {
             using var file = new StreamWriter(FilePath, true);
-            file.WriteLine(id + ","  + firstName + "," + lastName);
+            file.WriteLine(id + ","  + name);
             file.Close();
         }  
         catch(Exception ex)  
@@ -64,16 +64,15 @@ public class VoiceActorPersistence : IPersistence
         lines.Skip(1)
             .Select(line => line.Split(','))
             .ToList()
-            .ForEach(properties => AddFilmFromCSVToVoiceActorList(new Guid(properties[0]),properties[1], properties[2]));
+            .ForEach(properties => AddFilmFromCSVToVoiceActorList(new Guid(properties[0]),properties[1]));
     }
     
-    private void AddFilmFromCSVToVoiceActorList(Guid id, string firstName, string lastName)
+    private void AddFilmFromCSVToVoiceActorList(Guid id, string name)
     {
         var voiceActor = new VoiceActor()
         {
             Id = id,
-            FirstName = firstName,
-            LastName = lastName
+            Name = name
         };
         
         _filmUniverse.AddVoiceActor(voiceActor);

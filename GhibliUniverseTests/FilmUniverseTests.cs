@@ -89,8 +89,7 @@ public class FilmUniverseTests
         var expectedVoiceActor = new VoiceActor()
         {
             Id = voiceActorId,
-            FirstName = "John",
-            LastName = "Doe",
+            Name = "John Doe"
         };
 
         var actualVoiceActor = _filmUniverse.GetVoiceActorById(voiceActorId);
@@ -101,7 +100,7 @@ public class FilmUniverseTests
     [Fact]
     public void CreateVoiceActor_AddsNewRecordToVoiceActorList_WhenCalled()
     {
-        _filmUniverse.CreateVoiceActor("First", "Last");
+        _filmUniverse.CreateVoiceActor("John Doe");
         var voiceActorId = _filmUniverse.GetAllVoiceActors()[2].Id;
         
         var voiceActorCount = _filmUniverse.GetAllVoiceActors().Count;

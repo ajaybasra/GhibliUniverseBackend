@@ -5,8 +5,7 @@ namespace GhibliUniverse;
 public record VoiceActor()
 {
     public Guid Id { get; init; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public string Name { get; set; }
 
     public List<Film> Films { get; }  = new();
 
@@ -29,7 +28,7 @@ public record VoiceActor()
     public override string ToString()
     {
         var str = new StringBuilder();
-        str.Append(FirstName + " " + LastName);
+        str.Append(Name);
         return str.ToString();
     }
 }

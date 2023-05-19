@@ -95,13 +95,12 @@ public class FilmUniverse
     {
         return _voiceActorList.First(voiceActor => voiceActor.Id == voiceActorId);
     }
-    public void CreateVoiceActor(string firstName, string lastName)
+    public void CreateVoiceActor(string name)
     {
         _voiceActorList.Add(new VoiceActor
         {
             Id = Guid.NewGuid(),
-            FirstName = firstName,
-            LastName = lastName
+            Name = name
         });
         
     }
@@ -179,7 +178,7 @@ public class FilmUniverse
  
                 for (var j = 0; j < 2; j++)
                 {
-                    CreateVoiceActor( "John", "Doe");
+                    CreateVoiceActor( "John Doe");
                     _filmList.Last().AddVoiceActor(_voiceActorList.Last());
                     
                     CreateFilmRating( 10, new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"));
@@ -195,8 +194,7 @@ public class FilmUniverse
             _voiceActorList.Add(new VoiceActor
             {
                 Id = new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"),
-                FirstName = "John",
-                LastName = "Doe"
+                Name = "John Doe"
             });
         }
     }
