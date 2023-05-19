@@ -5,18 +5,23 @@ namespace GhibliUniverse.DataPersistence;
 public class FilmVoiceActorPersistence : IPersistence
 {
     private readonly FilmUniverse _filmUniverse;
+    private readonly FileOperations _fileOperations;
     private const string OldFilmVoiceActorFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/old-film-and-voice-actor-ids.csv";
     private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/film-and-voice-actor-ids.csv";
 
-    public FilmVoiceActorPersistence(FilmUniverse filmUniverse)
+    public FilmVoiceActorPersistence(FilmUniverse filmUniverse, FileOperations fileOperations)
     {
         _filmUniverse = filmUniverse;
+        _fileOperations = fileOperations;
     }
     
     public void ReadingStep()
     {
-        ReadInRecords();
-        CreateBackupCSVFile();
+        if (_fileOperations.FileExists(FilePath))
+        {
+            ReadInRecords();
+            _fileOperations.CreateBackupCSVFile(FilePath, OldFilmVoiceActorFilePath);
+        }
     }
 
     public void WritingStep()
@@ -74,14 +79,4 @@ public class FilmVoiceActorPersistence : IPersistence
         film.AddVoiceActor(voiceActor);
     }
 
-    private void CreateBackupCSVFile()
-    {
-        var lines = File.ReadAllLines(FilePath);
-        File.WriteAllLines(OldFilmVoiceActorFilePath, lines);
-    }
-
-    public bool FileExists()
-    {
-        return File.Exists(FilePath);
-    }
 }
