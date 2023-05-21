@@ -15,21 +15,23 @@ public class FilmUniverse
     }
     public Film GetFilmById(Guid filmId)
     {
+        // var film = new Film();
         // try
         // {
-        //     return _filmList.First(film => film.Id == filmId);
+        //     film = _filmList.First(film => film.Id == filmId);
         // }
         // catch (InvalidOperationException ioe)
         // {
         //     Console.WriteLine(ioe.Message);
         // }
+        // return film;
 
-        var film = _filmList.FirstOrDefault(film => film.Id == filmId);
+        var film = _filmList.FirstOrDefault(f => f.Id == filmId);
         if (film == null)
         {
             throw new ModelNotFoundException(filmId);
         }
-
+        
         return film;
     }
 
@@ -58,20 +60,41 @@ public class FilmUniverse
     }
     public void CreateFilm(string title, string description, string director, string composer, int releaseYear)
     {
-        
-        _filmList.Add(new Film
+        try
         {
-            Id = Guid.NewGuid(),
-            Title = title,
-            Description = description,
-            Director = director,
-            Composer = composer,
-            ReleaseYear = ReleaseYear.From(releaseYear),
-        });
+            var film = new Film
+            {
+                Id = Guid.NewGuid(),
+                Title = ValidatedString.From(title),
+                Description = ValidatedString.From(description),
+                Director = ValidatedString.From(director),
+                Composer = ValidatedString.From(composer),
+                ReleaseYear = ReleaseYear.From(releaseYear)
+            };
+            _filmList.Add(film);
+        }
+        catch (ReleaseYear.NotFourCharactersException e)
+        {
+            Console.WriteLine(e);
+        }
+        catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
+        {
+            Console.WriteLine(e);
+        }
+        catch (ArgumentException ae)
+        {
+            Console.WriteLine(ae);
+        }
     }
     public void DeleteFilm(Guid filmId)
     {
-        _filmList.RemoveAll(film => film.Id == filmId);
+        var film = _filmList.FirstOrDefault(f => f.Id == filmId);
+        if (film == null)
+        {
+            throw new ModelNotFoundException(filmId);
+        }
+        _voiceActorList.ForEach(v => v.RemoveFilm(film));
+        _filmList.Remove(film);
     }
 
     public string BuildFilmList()
@@ -93,23 +116,42 @@ public class FilmUniverse
 
     public VoiceActor GetVoiceActorById(Guid voiceActorId)
     {
-        return _voiceActorList.First(voiceActor => voiceActor.Id == voiceActorId);
+        var voiceActor = _voiceActorList.FirstOrDefault(v => v.Id == voiceActorId);
+        if (voiceActor == null)
+        {
+            throw new ModelNotFoundException(voiceActorId);
+        }
+
+        return voiceActor;
     }
     public void CreateVoiceActor(string name)
     {
-        _voiceActorList.Add(new VoiceActor
+        try
         {
-            Id = Guid.NewGuid(),
-            Name = name
-        });
+            var voiceActor = new VoiceActor
+            {
+                Id = Guid.NewGuid(),
+                Name = ValidatedString.From(name)
+            };
+            _voiceActorList.Add(voiceActor);
+        }
+        catch (ArgumentException ae)
+        {
+            Console.WriteLine(ae);
+        }
         
     }
 
     public void DeleteVoiceActor(Guid voiceActorId)
     {
-        var voiceActor = GetVoiceActorById(voiceActorId);
-        _filmList.ForEach(film => film.RemoveVoiceActor(voiceActor));
-        _voiceActorList.RemoveAll(voiceActor => voiceActor.Id == voiceActorId);
+        var voiceActor = _voiceActorList.FirstOrDefault(f => f.Id == voiceActorId);
+        if (voiceActor == null)
+        {
+            throw new ModelNotFoundException(voiceActorId);
+        }
+        _filmList.ForEach(f => f.RemoveVoiceActor(voiceActor));
+        _voiceActorList.Remove(voiceActor);
+
     }
 
     public string BuildVoiceActorList()
@@ -123,35 +165,64 @@ public class FilmUniverse
 
         return stringBuilder.ToString();
     }
-
-    public FilmRating? GetFilmRatingById(Guid filmId, Guid filmRatingId)
-    {//fix
-        var matchingFilm =  _filmList.FirstOrDefault(film => film.Id == filmId);
-
-        return matchingFilm?.FilmRatings.First(voiceActor => voiceActor.Id == filmRatingId);
-    }
     
     public List<FilmRating> GetAllFilmRatings(Guid filmId)
     {
-        return _filmList.First(film => film.Id == filmId).FilmRatings;
+        return _filmList.First(f => f.Id == filmId).FilmRatings;
     }
+    
+    public FilmRating GetFilmRatingById(Guid filmId, Guid filmRatingId)
+    {
+        var matchingFilm =  _filmList.FirstOrDefault(f => f.Id == filmId);
+        if (matchingFilm == null)
+        {
+            throw new ModelNotFoundException(filmId);
+        }
+        var filmRating = matchingFilm.FilmRatings.FirstOrDefault(r => r.Id == filmRatingId);
+        if (filmRating == null)
+        {
+            throw new ModelNotFoundException(filmRatingId);
+        }
+
+        return filmRating;
+    }
+    
     public void CreateFilmRating(int rating, Guid filmId)
     {
-        var filmRating = new FilmRating()
+        try
         {
-            Id = Guid.NewGuid(),
-            Rating = Rating.From(rating),
-            FilmId = filmId
-        };
-        
-        _filmList.First(film => film.Id == filmId).FilmRatings.Add(filmRating);
+            var filmRating = new FilmRating
+            {
+                Id = Guid.NewGuid(),
+                Rating = Rating.From(rating),
+                FilmId = filmId
+            };
+            var film = GetFilmById(filmId);
+            film.FilmRatings.Add(filmRating);
+        }
+        catch (ModelNotFoundException e)
+        {
+            Console.WriteLine(e);
+        }
+        catch (Rating.RatingOutOfRangeException e)
+        {
+            Console.WriteLine(e);
+        }
     }
     
     public void DeleteFilmRating(Guid filmId, Guid filmRatingId)
     {
-        var matchingFilm = _filmList.FirstOrDefault(film => film.Id == filmId);
+        try
+        {
+            var matchingFilm = GetFilmById(filmId);
+            var filmRating = GetFilmRatingById(filmId, filmRatingId);
+            matchingFilm.FilmRatings.Remove(filmRating);
+        }
+        catch (ModelNotFoundException e)
+        {
+            Console.WriteLine(e);
+        }
 
-        matchingFilm.FilmRatings.RemoveAll(filmRating => filmRating.Id == filmRatingId);
     }
     public void PopulateFilmsList(int numberOfFilms)
     {
@@ -169,10 +240,10 @@ public class FilmUniverse
             _filmList.Add(new Film
             {
                 Id = new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"),
-                Title = filmTitles[i],
-                Description = filmDescriptions[i],
-                Director = "Hayao Miyazaki",
-                Composer = "Joe Hisaishi",
+                Title = ValidatedString.From(filmTitles[i]),
+                Description = ValidatedString.From(filmDescriptions[i]),
+                Director = ValidatedString.From("Hayao Miyazaki"),
+                Composer = ValidatedString.From("Joe Hisaishi"),
                 ReleaseYear = ReleaseYear.From(releaseYears[i]),
             });
  
@@ -194,7 +265,7 @@ public class FilmUniverse
             _voiceActorList.Add(new VoiceActor
             {
                 Id = new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"),
-                Name = "John Doe"
+                Name = ValidatedString.From("John Doe")
             });
         }
     }

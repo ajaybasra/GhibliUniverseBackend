@@ -28,7 +28,7 @@ public class ReleaseYear : ValueOf<int, ReleaseYear>
         }
     }
 
-    private class NotFourCharactersException : Exception
+    public class NotFourCharactersException : Exception
     {
         public NotFourCharactersException(int releaseYear) : base(
             $"Release year must be four characters to be valid. Current release year: {releaseYear}")

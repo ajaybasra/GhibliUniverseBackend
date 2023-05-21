@@ -44,12 +44,12 @@ public class FilmPersistence : IPersistence
         file.WriteLine("Id" + "," + "Title" + "," + "Description" + "," + "Director" + "," + "Composer" + "," + "Release Year");
     }
     
-    private void AddFilmRecordFromFilmUniverseToCSV(Guid id, string title, string description, string director, string composer, ReleaseYear releaseYear)
+    private void AddFilmRecordFromFilmUniverseToCSV(Guid id, ValidatedString title, ValidatedString description, ValidatedString director, ValidatedString composer, ReleaseYear releaseYear)
     {
         try
         {
             using var file = new StreamWriter(FilePath, true);
-            file.WriteLine(id + ","  + title + "," + description.Replace(',', '*') + "," + director + "," + composer + "," + releaseYear);
+            file.WriteLine(id + ","  + title + "," + description.ToString().Replace(',', '*') + "," + director + "," + composer + "," + releaseYear);
             file.Close();
         }  
         catch(Exception ex)  
@@ -67,19 +67,19 @@ public class FilmPersistence : IPersistence
         lines.Skip(1)
             .Select(line => line.Split(','))
             .ToList()
-            .ForEach(properties => AddFilmFromCSVToFilmList(new Guid(properties[0]),properties[1], properties[2].Replace('*', ','), properties[3], properties[4], ReleaseYear.From(int.Parse(properties[5]))));
+            .ForEach(properties => AddFilmFromCSVToFilmList(new Guid(properties[0]),properties[1], properties[2].Replace('*', ','), properties[3], properties[4], int.Parse(properties[5])));
         
     }
-    private void AddFilmFromCSVToFilmList(Guid id, string title, string description, string director, string composer, ReleaseYear releaseYear)
+    private void AddFilmFromCSVToFilmList(Guid id, string title, string description, string director, string composer, int releaseYear)
     {
         var film = new Film()
         {
             Id = id,
-            Title = title,
-            Description = description,
-            Director = director,
-            Composer = composer,
-            ReleaseYear = releaseYear
+            Title = ValidatedString.From(title),
+            Description = ValidatedString.From(description),
+            Director = ValidatedString.From(director),
+            Composer = ValidatedString.From(composer),
+            ReleaseYear = ReleaseYear.From(releaseYear)
         };
         
         _filmUniverse.AddFilm(film);

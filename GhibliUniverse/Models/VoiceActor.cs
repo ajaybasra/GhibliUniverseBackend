@@ -1,11 +1,12 @@
 using System.Text;
+using GhibliUniverse.ValueObjects;
 
 namespace GhibliUniverse;
 
 public record VoiceActor()
 {
     public Guid Id { get; init; }
-    public string Name { get; set; }
+    public ValidatedString Name { get; set; }
 
     public List<Film> Films { get; }  = new();
 

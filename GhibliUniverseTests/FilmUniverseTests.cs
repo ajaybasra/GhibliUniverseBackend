@@ -89,7 +89,7 @@ public class FilmUniverseTests
         var expectedVoiceActor = new VoiceActor()
         {
             Id = voiceActorId,
-            Name = "John Doe"
+            Name = ValidatedString.From("John Doe")
         };
 
         var actualVoiceActor = _filmUniverse.GetVoiceActorById(voiceActorId);

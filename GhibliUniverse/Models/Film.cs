@@ -7,10 +7,10 @@ namespace GhibliUniverse;
 public record Film()
 {
     public Guid Id { get; init; }
-    public string Title { get; set; }
-    public string Description { get; set; }
-    public string Director { get; set; }
-    public string Composer { get; set; }
+    public ValidatedString Title { get; set; }
+    public ValidatedString Description { get; set; }
+    public ValidatedString Director { get; set; }
+    public ValidatedString Composer { get; set; }
     public ReleaseYear ReleaseYear { get; set; } 
     
     public List<VoiceActor> VoiceActors { get; } = new(); 

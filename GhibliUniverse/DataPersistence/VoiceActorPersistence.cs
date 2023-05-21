@@ -1,4 +1,5 @@
 using GhibliUniverse.Interfaces;
+using GhibliUniverse.ValueObjects;
 
 namespace GhibliUniverse.DataPersistence;
 
@@ -40,7 +41,7 @@ public class VoiceActorPersistence : IPersistence
         file.WriteLine("Id" + "," + "Name");
     }
     
-    private void AddVoiceActorRecordFromFilmUniverseToCSV(Guid id, string name)
+    private void AddVoiceActorRecordFromFilmUniverseToCSV(Guid id, ValidatedString name)
     {
         try
         {
@@ -72,7 +73,7 @@ public class VoiceActorPersistence : IPersistence
         var voiceActor = new VoiceActor()
         {
             Id = id,
-            Name = name
+            Name = ValidatedString.From(name)
         };
         
         _filmUniverse.AddVoiceActor(voiceActor);
