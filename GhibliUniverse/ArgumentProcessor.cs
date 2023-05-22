@@ -1,3 +1,4 @@
+using GhibliUniverse.Exceptions;
 using GhibliUniverse.Interfaces;
 
 namespace GhibliUniverse;
@@ -72,12 +73,31 @@ public class ArgumentProcessor
 
     private void HandleGetFilmById(string filmId)
     {
-        Console.WriteLine(_filmUniverse.GetFilmById(new Guid(filmId)));
+        try
+        {
+            Console.WriteLine(_filmUniverse.GetFilmById(new Guid(filmId)));
+        }
+        catch (FormatException fe)
+        {
+            Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     private void HandleGetFilmsFilteredByProperty(string propertyName)
     {
-        ShowFilms(_filmUniverse.GetFilmsFilteredByProperty(propertyName, GetFilterValuesSeperatedBySpaces()));
+        try
+        {
+            ShowFilms(_filmUniverse.GetFilmsFilteredByProperty(propertyName, GetFilterValuesSeperatedBySpaces()));
+        }
+        catch (ArgumentException ae)
+        {
+            Console.WriteLine(ae);
+        }
+
     }
 
     private void HandleCreateFilm()
@@ -89,7 +109,18 @@ public class ArgumentProcessor
 
     private void HandleDeleteFilm(string filmId)
     {
-        _filmUniverse.DeleteFilm(new Guid(filmId));
+        try
+        {
+            _filmUniverse.DeleteFilm(new Guid(filmId));
+        }
+        catch (FormatException fe)
+        {
+            Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     private void HandleGetAllVoiceActors()
@@ -99,7 +130,18 @@ public class ArgumentProcessor
 
     private void HandleGetVoiceActorById(string voiceActorId)
     {
-        Console.WriteLine(_filmUniverse.GetVoiceActorById(new Guid(voiceActorId)));
+        try
+        {
+            Console.WriteLine(_filmUniverse.GetVoiceActorById(new Guid(voiceActorId)));
+        }
+        catch (FormatException fe)
+        {
+            Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     private void HandleCreateVoiceActor()
@@ -109,44 +151,113 @@ public class ArgumentProcessor
 
     private void HandleDeleteVoiceActor(string voiceActorId)
     {
-        _filmUniverse.DeleteVoiceActor(new Guid(voiceActorId));
+        try
+        {
+            _filmUniverse.DeleteVoiceActor(new Guid(voiceActorId));
+        }
+        catch (FormatException fe)
+        {
+            Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     private void HandleAddVoiceActorToFilm(string filmId, string voiceActorId)
     {
-        var movie = _filmUniverse.GetFilmById(new Guid(filmId));
-        var voiceActor = _filmUniverse.GetVoiceActorById(new Guid(voiceActorId));
-        
-        movie.AddVoiceActor(voiceActor);
+        try
+        {
+            var film = _filmUniverse.GetFilmById(new Guid(filmId));
+            var voiceActor = _filmUniverse.GetVoiceActorById(new Guid(voiceActorId));
+            film.AddVoiceActor(voiceActor);
+        }
+        catch (FormatException fe)
+        {
+            Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            Console.WriteLine(e);
+        }
+
     }
 
     private void HandleRemoveVoiceActorFromFilm(string filmId, string voiceActorId)
     {
-        var movie = _filmUniverse.GetFilmById(new Guid(filmId));
-        var voiceActor = _filmUniverse.GetVoiceActorById(new Guid(voiceActorId));
-        
-        movie.RemoveVoiceActor(voiceActor);
+        try
+        {
+            var film = _filmUniverse.GetFilmById(new Guid(filmId));
+            var voiceActor = _filmUniverse.GetVoiceActorById(new Guid(voiceActorId));
+
+            film.RemoveVoiceActor(voiceActor);
+        }
+        catch (FormatException fe)
+        {
+            Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     private void HandleGetAllFilmRatings(string filmId)
     {
-        ShowFilmRatings(_filmUniverse.GetAllFilmRatings(new Guid(filmId)));
+        try
+        {
+            ShowFilmRatings(_filmUniverse.GetAllFilmRatings(new Guid(filmId)));
+        }
+        catch (FormatException fe)
+        {
+            Console.WriteLine(fe);
+        }
     }
 
     private void HandleGetFilmRatingById(string filmId, string filmRatingId)
     {
-        Console.Write(_filmUniverse.GetFilmRatingById(new Guid(filmId), new Guid(filmRatingId)));
+        try
+        {
+            Console.Write(_filmUniverse.GetFilmRatingById(new Guid(filmId), new Guid(filmRatingId)));
+        }
+        catch (FormatException fe)
+        {
+            Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            Console.WriteLine(e);
+        }
     }
 
     private void HandleCreateFilmRating(string rating, string filmId)
     {
-        var ratingAsInt = int.Parse(rating);
-        _filmUniverse.CreateFilmRating(ratingAsInt, new Guid(filmId));
+        try
+        {
+            var ratingAsInt = int.Parse(rating);
+            _filmUniverse.CreateFilmRating(ratingAsInt, new Guid(filmId));
+        }
+        catch (FormatException fe)
+        {
+            Console.WriteLine(fe);
+        }
     }
 
     private void HandleDeleteFilmRating(string filmId, string filmRatingId)
     {
-        _filmUniverse.DeleteFilmRating(new Guid(filmId), new Guid(filmRatingId));
+        try
+        {
+            _filmUniverse.DeleteFilmRating(new Guid(filmId), new Guid(filmRatingId));
+        }
+        catch (FormatException fe)
+        {
+            Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            Console.WriteLine(e);
+        }
     }
     private string GetFilterValuesSeperatedBySpaces()
     {

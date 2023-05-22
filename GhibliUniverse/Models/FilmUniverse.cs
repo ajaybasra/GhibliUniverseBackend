@@ -15,17 +15,6 @@ public class FilmUniverse
     }
     public Film GetFilmById(Guid filmId)
     {
-        // var film = new Film();
-        // try
-        // {
-        //     film = _filmList.First(film => film.Id == filmId);
-        // }
-        // catch (InvalidOperationException ioe)
-        // {
-        //     Console.WriteLine(ioe.Message);
-        // }
-        // return film;
-
         var film = _filmList.FirstOrDefault(f => f.Id == filmId);
         if (film == null)
         {
