@@ -39,7 +39,7 @@ public class FilmController : Controller
     }
 // https://localhost:7212/api/film
     [HttpPost]
-    public IActionResult CreateFilm([FromBody]ValidatedString title, [FromBody]ValidatedString description, [FromBody]ValidatedString director, [FromBody]ValidatedString composer, [FromBody]ReleaseYear releaseYear)
+    public IActionResult CreateFilm([FromBody]Film film)
     {
         return Ok("yo");
     }
