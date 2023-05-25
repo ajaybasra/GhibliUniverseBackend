@@ -2,10 +2,10 @@ using GhibliUniverse.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GhibliUniverse.API.Controllers;
-// the two below are data  attributes
+
 [ApiController]
-[Route("api/[controller]")] // this is the route
-public class FilmController : Controller // db repo would be injected into constructor
+[Route("api/[controller]")]  
+public class FilmController : Controller  
 {
 
     [HttpGet]
@@ -25,7 +25,7 @@ public class FilmController : Controller // db repo would be injected into const
     // {
     //     throw new NotImplementedException();
     // }
-    //
+    
     // [HttpGet("{filmId:guid}/filmRatings/{filmRatingId:guid}")]
     // public IActionResult GetFilmRating(Guid filmId, Guid filmRatingId)
     // {
@@ -37,9 +37,9 @@ public class FilmController : Controller // db repo would be injected into const
     {
         throw new NotImplementedException();
     }
-// https://localhost:7212/api/film?title=Ponyo&description=wasd&director=lebron&composer=mj&releaseYear=2016
+// https://localhost:7212/api/film
     [HttpPost]
-    public IActionResult CreateFilm([FromQuery]ValidatedString title, [FromQuery]ValidatedString description, [FromQuery]ValidatedString director, [FromQuery]ValidatedString composer, [FromQuery]ReleaseYear releaseYear)
+    public IActionResult CreateFilm([FromBody]ValidatedString title, [FromBody]ValidatedString description, [FromBody]ValidatedString director, [FromBody]ValidatedString composer, [FromBody]ReleaseYear releaseYear)
     {
         return Ok("yo");
     }

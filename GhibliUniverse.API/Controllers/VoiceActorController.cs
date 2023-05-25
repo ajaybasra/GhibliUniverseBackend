@@ -26,7 +26,7 @@ public class VoiceActorController : Controller
     }
     
     [HttpPost]
-    public IActionResult CreateVoiceActor([FromQuery]ValidatedString name)
+    public IActionResult CreateVoiceActor([FromBody]ValidatedString name)
     {
         return Ok("yo");
     }
