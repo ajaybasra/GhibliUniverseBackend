@@ -20,17 +20,17 @@ public class FilmController : Controller // db repo would be injected into const
         throw new NotImplementedException();
     }
     
-    [HttpGet("{filmId:guid}/filmRatings")]
-    public IActionResult GetFilmRatings(Guid filmId)
-    {
-        throw new NotImplementedException();
-    }
-
-    [HttpGet("{filmId:guid}/filmRatings/{filmRatingId:guid}")]
-    public IActionResult GetFilmRating(Guid filmId, Guid filmRatingId)
-    {
-        throw new NotImplementedException();
-    }
+    // [HttpGet("{filmId:guid}/filmRatings")]
+    // public IActionResult GetFilmRatings(Guid filmId)
+    // {
+    //     throw new NotImplementedException();
+    // }
+    //
+    // [HttpGet("{filmId:guid}/filmRatings/{filmRatingId:guid}")]
+    // public IActionResult GetFilmRating(Guid filmId, Guid filmRatingId)
+    // {
+    //     throw new NotImplementedException();
+    // }
     
     [HttpGet("{filmId:guid}/voiceActors")]
     public IActionResult GetVoiceActorsByFilm(Guid filmId)
@@ -45,13 +45,13 @@ public class FilmController : Controller // db repo would be injected into const
     }
 
     [HttpPut("{filmId:guid}")]
-    public IActionResult UpdateFilm()
+    public IActionResult UpdateFilm(Guid filmId)
     {
         throw new NotImplementedException();
     }
 
     [HttpDelete("{filmId:guid}")]
-    public IActionResult DeleteFilm()
+    public IActionResult DeleteFilm(Guid filmId)
     {
         throw new NotImplementedException();
     }
