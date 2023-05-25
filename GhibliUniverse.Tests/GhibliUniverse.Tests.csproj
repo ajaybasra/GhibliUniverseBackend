@@ -6,6 +6,8 @@
         <Nullable>enable</Nullable>
 
         <IsPackable>false</IsPackable>
+
+        <RootNamespace>GhibliUniverseTests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GhibliUniverse\GhibliUniverse.csproj" />
+      <ProjectReference Include="..\GhibliUniverse.Console\GhibliUniverse.Console.csproj" />
     </ItemGroup>
 
 </Project>

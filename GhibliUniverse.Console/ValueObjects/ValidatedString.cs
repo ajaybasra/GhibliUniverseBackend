@@ -11,4 +11,5 @@ public class ValidatedString : ValueOf<string, ValidatedString>
             throw new ArgumentException("Value cannot be null or empty");
         }
     }
+    
 }
