@@ -4,14 +4,17 @@ EXPOSE 3000
 WORKDIR /app
 # .sln and .csproj are copied to the directories where they belong, * wildcard is used so that name doesn't have to be specified.
 COPY *.sln ./ 
-COPY ./GhibliUniverse/*.csproj ./GhibliUniverse/
-COPY ./GhibliUniverseTests/*.csproj ./GhibliUniverseTests/
+
+# Restores the dependencies/tools of the project as distinct layers.
+COPY ./GhibliUniverse.Console/*.csproj ./GhibliUniverse.Console/
+COPY ./GhibliUniverse.Api/*.csproj ./GhibliUniverse.Api/
+COPY ./GhibliUniverse.Tests/*.csproj ./GhibliUniverse.Tests/
 RUN dotnet restore
 COPY ./ ./
 RUN dotnet build
 
 FROM build AS test
-WORKDIR /app/GhibliUniverseTests
+WORKDIR /app/GhibliUniverse.Tests
 RUN dotnet test
 
 FROM build AS publish
