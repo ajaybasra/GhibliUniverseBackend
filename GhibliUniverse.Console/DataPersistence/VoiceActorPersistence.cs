@@ -1,7 +1,8 @@
-using GhibliUniverse.Interfaces;
-using GhibliUniverse.ValueObjects;
+using GhibliUniverse.Console.Interfaces;
+using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Domain.Models.ValueObjects;
 
-namespace GhibliUniverse.DataPersistence;
+namespace GhibliUniverse.Console.DataPersistence;
 
 public class VoiceActorPersistence : IPersistence
 {
@@ -51,7 +52,7 @@ public class VoiceActorPersistence : IPersistence
         }  
         catch(Exception ex)  
         {  
-            Console.Write(ex.Message);  
+            System.Console.Write(ex.Message);  
         } 
     }
     

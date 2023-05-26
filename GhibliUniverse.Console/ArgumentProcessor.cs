@@ -1,7 +1,8 @@
-using GhibliUniverse.Exceptions;
-using GhibliUniverse.Interfaces;
+using GhibliUniverse.Console.Interfaces;
+using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Domain.Models.Exceptions;
 
-namespace GhibliUniverse;
+namespace GhibliUniverse.Console;
 
 public class ArgumentProcessor
 {
@@ -75,15 +76,15 @@ public class ArgumentProcessor
     {
         try
         {
-            Console.WriteLine(_filmUniverse.GetFilmById(new Guid(filmId)));
+            System.Console.WriteLine(_filmUniverse.GetFilmById(new Guid(filmId)));
         }
         catch (FormatException fe)
         {
-            Console.WriteLine(fe);
+            System.Console.WriteLine(fe);
         }
         catch (ModelNotFoundException e)
         {
-            Console.WriteLine(e);
+            System.Console.WriteLine(e);
         }
     }
 
@@ -95,7 +96,7 @@ public class ArgumentProcessor
         }
         catch (ArgumentException ae)
         {
-            Console.WriteLine(ae);
+            System.Console.WriteLine(ae);
         }
 
     }
@@ -115,11 +116,11 @@ public class ArgumentProcessor
         }
         catch (FormatException fe)
         {
-            Console.WriteLine(fe);
+            System.Console.WriteLine(fe);
         }
         catch (ModelNotFoundException e)
         {
-            Console.WriteLine(e);
+            System.Console.WriteLine(e);
         }
     }
 
@@ -132,15 +133,15 @@ public class ArgumentProcessor
     {
         try
         {
-            Console.WriteLine(_filmUniverse.GetVoiceActorById(new Guid(voiceActorId)));
+            System.Console.WriteLine(_filmUniverse.GetVoiceActorById(new Guid(voiceActorId)));
         }
         catch (FormatException fe)
         {
-            Console.WriteLine(fe);
+            System.Console.WriteLine(fe);
         }
         catch (ModelNotFoundException e)
         {
-            Console.WriteLine(e);
+            System.Console.WriteLine(e);
         }
     }
 
@@ -157,11 +158,11 @@ public class ArgumentProcessor
         }
         catch (FormatException fe)
         {
-            Console.WriteLine(fe);
+            System.Console.WriteLine(fe);
         }
         catch (ModelNotFoundException e)
         {
-            Console.WriteLine(e);
+            System.Console.WriteLine(e);
         }
     }
 
@@ -175,11 +176,11 @@ public class ArgumentProcessor
         }
         catch (FormatException fe)
         {
-            Console.WriteLine(fe);
+            System.Console.WriteLine(fe);
         }
         catch (ModelNotFoundException e)
         {
-            Console.WriteLine(e);
+            System.Console.WriteLine(e);
         }
 
     }
@@ -195,11 +196,11 @@ public class ArgumentProcessor
         }
         catch (FormatException fe)
         {
-            Console.WriteLine(fe);
+            System.Console.WriteLine(fe);
         }
         catch (ModelNotFoundException e)
         {
-            Console.WriteLine(e);
+            System.Console.WriteLine(e);
         }
     }
 
@@ -211,7 +212,7 @@ public class ArgumentProcessor
         }
         catch (FormatException fe)
         {
-            Console.WriteLine(fe);
+            System.Console.WriteLine(fe);
         }
     }
 
@@ -219,15 +220,15 @@ public class ArgumentProcessor
     {
         try
         {
-            Console.Write(_filmUniverse.GetFilmRatingById(new Guid(filmId), new Guid(filmRatingId)));
+            System.Console.Write(_filmUniverse.GetFilmRatingById(new Guid(filmId), new Guid(filmRatingId)));
         }
         catch (FormatException fe)
         {
-            Console.WriteLine(fe);
+            System.Console.WriteLine(fe);
         }
         catch (ModelNotFoundException e)
         {
-            Console.WriteLine(e);
+            System.Console.WriteLine(e);
         }
     }
 
@@ -240,7 +241,7 @@ public class ArgumentProcessor
         }
         catch (FormatException fe)
         {
-            Console.WriteLine(fe);
+            System.Console.WriteLine(fe);
         }
     }
 
@@ -252,11 +253,11 @@ public class ArgumentProcessor
         }
         catch (FormatException fe)
         {
-            Console.WriteLine(fe);
+            System.Console.WriteLine(fe);
         }
         catch (ModelNotFoundException e)
         {
-            Console.WriteLine(e);
+            System.Console.WriteLine(e);
         }
     }
     private string GetFilterValuesSeperatedBySpaces()
@@ -279,16 +280,16 @@ public class ArgumentProcessor
     
     private void ShowFilms(List<Film> films)
     {
-        films.ForEach(Console.WriteLine);
+        films.ForEach(System.Console.WriteLine);
     }
 
     private void ShowVoiceActors(List<VoiceActor> voiceActors)
     {
-        voiceActors.ForEach(Console.WriteLine);
+        voiceActors.ForEach(System.Console.WriteLine);
     }
 
     private void ShowFilmRatings(List<FilmRating> filmRatings)
     {
-        filmRatings.ForEach(Console.WriteLine);
+        filmRatings.ForEach(System.Console.WriteLine);
     }
 }

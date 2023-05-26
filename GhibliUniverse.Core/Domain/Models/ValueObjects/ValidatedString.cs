@@ -1,6 +1,6 @@
 using ValueOf;
 
-namespace GhibliUniverse.ValueObjects;
+namespace GhibliUniverse.Core.Domain.Models.ValueObjects;
 
 public class ValidatedString : ValueOf<string, ValidatedString>
 {

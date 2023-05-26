@@ -1,4 +1,4 @@
-namespace GhibliUniverse.Exceptions;
+namespace GhibliUniverse.Core.Domain.Models.Exceptions;
 
 public class ModelNotFoundException : Exception
 {

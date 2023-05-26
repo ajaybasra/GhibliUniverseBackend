@@ -1,6 +1,6 @@
-using GhibliUniverse.Interfaces;
+using GhibliUniverse.Console.Interfaces;
 
-namespace GhibliUniverse;
+namespace GhibliUniverse.Console;
 
 public class CommandLine : ICommandLine
 {

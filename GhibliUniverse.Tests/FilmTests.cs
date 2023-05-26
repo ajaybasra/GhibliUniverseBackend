@@ -1,4 +1,5 @@
 using GhibliUniverse;
+using GhibliUniverse.Core.Domain.Models;
 
 namespace GhibliUniverseTests;
 

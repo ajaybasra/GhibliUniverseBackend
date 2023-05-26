@@ -1,4 +1,4 @@
-namespace GhibliUniverse.DataPersistence;
+namespace GhibliUniverse.Console.DataPersistence;
 
 public class FileOperations
 {

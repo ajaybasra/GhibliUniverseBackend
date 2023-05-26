@@ -1,4 +1,4 @@
-using GhibliUniverse.ValueObjects;
+using GhibliUniverse.Core.Domain.Models.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GhibliUniverse.API.Controllers;

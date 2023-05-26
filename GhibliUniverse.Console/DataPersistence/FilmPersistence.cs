@@ -1,9 +1,9 @@
-using System.Text;
-using System.Text.Unicode;
-using GhibliUniverse.Interfaces;
-using GhibliUniverse.ValueObjects;
+using System;
+using GhibliUniverse.Console.Interfaces;
+using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Domain.Models.ValueObjects;
 
-namespace GhibliUniverse.DataPersistence;
+namespace GhibliUniverse.Console.DataPersistence;
 
 public class FilmPersistence : IPersistence
 {
@@ -53,8 +53,8 @@ public class FilmPersistence : IPersistence
             file.Close();
         }  
         catch(Exception ex)  
-        {  
-            Console.Write(ex.Message);  
+        {
+            System.Console.Write(ex.Message);
         } 
     }
     private void ReadInRecords()

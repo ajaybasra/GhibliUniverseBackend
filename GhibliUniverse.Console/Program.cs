@@ -1,7 +1,8 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using GhibliUniverse;
-using GhibliUniverse.DataPersistence;
+using GhibliUniverse.Console;
+using GhibliUniverse.Console.DataPersistence;
+using GhibliUniverse.Core.Domain.Models;
 
 var filmUniverse = new FilmUniverse();
 var commandLine = new CommandLine();
@@ -16,8 +17,6 @@ filmPersistence.ReadingStep();
 voiceActorPersistence.ReadingStep();
 filmRatingPersistence.ReadingStep();
 filmVoiceActorPersistence.ReadingStep();
-
-
 // filmUniverse.PopulateFilmsList(1);
 // argumentProcessor.Process();
 // filmUniverse.PopulateFilmsList(2);

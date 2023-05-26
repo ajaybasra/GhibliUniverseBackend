@@ -1,4 +1,4 @@
-namespace GhibliUniverse.Interfaces;
+namespace GhibliUniverse.Console.Interfaces;
 
 public interface IPersistence
 {
