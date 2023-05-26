@@ -7,7 +7,7 @@ COPY *.sln ./
 
 # Restores the dependencies/tools of the project as distinct layers.
 COPY ./GhibliUniverse.Console/*.csproj ./GhibliUniverse.Console/
-COPY ./GhibliUniverse.API/*.csproj ./GhibliUniverse.API/
+COPY ./GhibliUniverse/*.csproj ./GhibliUniverse/
 COPY ./GhibliUniverse.Tests/*.csproj ./GhibliUniverse.Tests/
 RUN dotnet restore
 COPY ./ ./

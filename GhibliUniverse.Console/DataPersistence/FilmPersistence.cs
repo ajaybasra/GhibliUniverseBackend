@@ -1,7 +1,8 @@
 using System.Text;
 using System.Text.Unicode;
 using GhibliUniverse.Interfaces;
-using GhibliUniverse.ValueObjects;
+using GhibliUniverse.WebAPI.Domain.Models;
+using GhibliUniverse.WebAPI.Domain.Models.ValueObjects;
 
 namespace GhibliUniverse.DataPersistence;
 

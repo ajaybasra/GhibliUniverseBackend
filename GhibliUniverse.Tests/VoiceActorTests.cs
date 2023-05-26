@@ -1,6 +1,7 @@
-using GhibliUniverse;
+using GhibliUniverse.WebAPI;
+using GhibliUniverse.WebAPI.Domain.Models;
 
-namespace GhibliUniverseTests;
+namespace GhibliUniverse.Tests;
 
 public class VoiceActorTests
 {

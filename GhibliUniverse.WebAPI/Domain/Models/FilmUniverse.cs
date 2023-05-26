@@ -1,9 +1,8 @@
-using System.Collections.Immutable;
 using System.Text;
-using GhibliUniverse.Exceptions;
-using GhibliUniverse.ValueObjects;
+using GhibliUniverse.WebAPI.Domain.Models.Exceptions;
+using GhibliUniverse.WebAPI.Domain.Models.ValueObjects;
 
-namespace GhibliUniverse;
+namespace GhibliUniverse.WebAPI.Domain.Models;
 
 public class FilmUniverse
 {

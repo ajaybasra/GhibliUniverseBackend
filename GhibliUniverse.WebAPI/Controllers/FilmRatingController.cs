@@ -1,7 +1,7 @@
-using GhibliUniverse.ValueObjects;
+using GhibliUniverse.WebAPI.Domain.Models.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GhibliUniverse.API.Controllers;
+namespace GhibliUniverse.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

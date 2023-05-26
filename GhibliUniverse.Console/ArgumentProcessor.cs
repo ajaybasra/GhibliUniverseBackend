@@ -1,5 +1,6 @@
-using GhibliUniverse.Exceptions;
 using GhibliUniverse.Interfaces;
+using GhibliUniverse.WebAPI.Domain.Models;
+using GhibliUniverse.WebAPI.Domain.Models.Exceptions;
 
 namespace GhibliUniverse;
 

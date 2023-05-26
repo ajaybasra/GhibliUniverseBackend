@@ -11,10 +11,11 @@
       <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.5.0" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
       <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
+      <PackageReference Include="ValueOf" Version="2.0.31" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\GhibliUniverse.Console\GhibliUniverse.Console.csproj" />
+      <Folder Include="Domain" />
     </ItemGroup>
 
 </Project>
