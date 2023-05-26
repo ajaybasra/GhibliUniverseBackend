@@ -1,6 +1,6 @@
 using GhibliUniverse;
 using GhibliUniverse.Core.Domain.Models;
-using GhibliUniverse.Core.Domain.Models.ValueObjects;
+using GhibliUniverse.Core.Domain.ValueObjects;
 
 namespace GhibliUniverseTests;
 

@@ -1,7 +1,7 @@
 using System;
 using GhibliUniverse.Console.Interfaces;
 using GhibliUniverse.Core.Domain.Models;
-using GhibliUniverse.Core.Domain.Models.ValueObjects;
+using GhibliUniverse.Core.Domain.ValueObjects;
 
 namespace GhibliUniverse.Console.DataPersistence;
 
