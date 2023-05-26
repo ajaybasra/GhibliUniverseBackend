@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.Tests", "Ghi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.API", "GhibliUniverse.API\GhibliUniverse.API.csproj", "{8A00C449-92D2-4989-BEB2-254780540999}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.Core", "GhibliUniverse.Core\GhibliUniverse.Core.csproj", "{40A3E2D2-9429-48CE-AA2A-87A2539679DD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{8A00C449-92D2-4989-BEB2-254780540999}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A00C449-92D2-4989-BEB2-254780540999}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A00C449-92D2-4989-BEB2-254780540999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40A3E2D2-9429-48CE-AA2A-87A2539679DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A3E2D2-9429-48CE-AA2A-87A2539679DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A3E2D2-9429-48CE-AA2A-87A2539679DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A3E2D2-9429-48CE-AA2A-87A2539679DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
