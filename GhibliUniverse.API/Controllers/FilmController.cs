@@ -1,7 +1,7 @@
-using GhibliUniverse.WebAPI.Domain.Models;
+using GhibliUniverse.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
-namespace GhibliUniverse.WebAPI.Controllers;
+namespace GhibliUniverse.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]  
@@ -39,7 +39,7 @@ public class FilmController : Controller
     }
 // https://localhost:7212/api/film
     [HttpPost]
-    public IActionResult CreateFilm([FromBody]Film film)
+    public IActionResult CreateFilm([FromBody]ValidatedString title, [FromBody]ValidatedString description, [FromBody]ValidatedString director, [FromBody]ValidatedString composer, [FromBody]ReleaseYear releaseYear)
     {
         return Ok("yo");
     }

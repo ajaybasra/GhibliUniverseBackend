@@ -1,7 +1,8 @@
+using System.Security.Cryptography;
 using System.Text;
-using GhibliUniverse.WebAPI.Domain.Models.ValueObjects;
+using GhibliUniverse.ValueObjects;
 
-namespace GhibliUniverse.WebAPI.Domain.Models;
+namespace GhibliUniverse;
 
 public record Film()
 {

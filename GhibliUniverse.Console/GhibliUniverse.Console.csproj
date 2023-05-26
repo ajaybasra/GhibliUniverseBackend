@@ -12,8 +12,4 @@
       <PackageReference Include="ValueOf" Version="2.0.31" />
     </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\GhibliUniverse.WebAPI\GhibliUniverse.WebAPI.csproj" />
-    </ItemGroup>
-
 </Project>

@@ -1,5 +1,4 @@
 using GhibliUniverse.Interfaces;
-using GhibliUniverse.WebAPI.Domain.Models;
 
 namespace GhibliUniverse.DataPersistence;
 

@@ -1,6 +1,6 @@
 using ValueOf;
 
-namespace GhibliUniverse.WebAPI.Domain.Models.ValueObjects;
+namespace GhibliUniverse.ValueObjects;
 
 public class ReleaseYear : ValueOf<int, ReleaseYear>
 {

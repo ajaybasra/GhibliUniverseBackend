@@ -2,7 +2,9 @@
 
 using GhibliUniverse;
 using GhibliUniverse.DataPersistence;
-using GhibliUniverse.WebAPI.Domain.Models;
+using GhibliUniverse.Exceptions;
+using GhibliUniverse.Interfaces;
+using GhibliUniverse.ValueObjects;
 
 var filmUniverse = new FilmUniverse();
 var commandLine = new CommandLine();

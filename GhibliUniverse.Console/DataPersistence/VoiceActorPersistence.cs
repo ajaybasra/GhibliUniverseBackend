@@ -1,6 +1,5 @@
 using GhibliUniverse.Interfaces;
-using GhibliUniverse.WebAPI.Domain.Models;
-using GhibliUniverse.WebAPI.Domain.Models.ValueObjects;
+using GhibliUniverse.ValueObjects;
 
 namespace GhibliUniverse.DataPersistence;
 

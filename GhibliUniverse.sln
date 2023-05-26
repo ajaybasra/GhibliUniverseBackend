@@ -4,7 +4,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.Console", "G
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.Tests", "GhibliUniverse.Tests\GhibliUniverse.Tests.csproj", "{4972BD01-923B-4938-A5B0-B747BF1D72F3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.WebAPI", "GhibliUniverse.WebAPI\GhibliUniverse.WebAPI.csproj", "{8A00C449-92D2-4989-BEB2-254780540999}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.API", "GhibliUniverse.API\GhibliUniverse.API.csproj", "{8A00C449-92D2-4989-BEB2-254780540999}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

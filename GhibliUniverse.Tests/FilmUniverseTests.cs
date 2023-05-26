@@ -1,8 +1,7 @@
-using GhibliUniverse.WebAPI;
-using GhibliUniverse.WebAPI.Domain.Models;
-using GhibliUniverse.WebAPI.Domain.Models.ValueObjects;
+using GhibliUniverse;
+using GhibliUniverse.ValueObjects;
 
-namespace GhibliUniverse.Tests;
+namespace GhibliUniverseTests;
 
 public class FilmUniverseTests
 {
