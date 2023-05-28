@@ -10,8 +10,8 @@ public class ReviewPersistence : IPersistence
     private readonly IFilmService _filmService;
     private readonly IReviewService _reviewService;
     private readonly FileOperations _fileOperations;
-    private const string OldFilmRatingsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/old-reviews.csv";
-    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/reviews.csv";
+    private const string OldFilmRatingsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-reviews.csv";
+    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/reviews.csv";
 
     public ReviewPersistence(IFilmService filmService, IReviewService reviewService, FileOperations fileOperations)
     {

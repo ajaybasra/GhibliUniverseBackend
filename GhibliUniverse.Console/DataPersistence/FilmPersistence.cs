@@ -10,8 +10,8 @@ public class FilmPersistence : IPersistence
 {
     private readonly IFilmService _filmService;
     private readonly FileOperations _fileOperations;
-    private const string OldFilmsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/old-films.csv";
-    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/films.csv";
+    private const string OldFilmsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-films.csv";
+    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/films.csv";
 
     public FilmPersistence(IFilmService filmService, FileOperations fileOperations)
     {

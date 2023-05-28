@@ -9,8 +9,8 @@ public class FilmVoiceActorPersistence : IPersistence
     private readonly FilmService _filmService;
     private readonly VoiceActorService _voiceActorService;
     private readonly FileOperations _fileOperations;
-    private const string OldFilmVoiceActorFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/old-film-and-voice-actor-ids.csv";
-    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/film-and-voice-actor-ids.csv";
+    private const string OldFilmVoiceActorFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-film-and-voice-actor-ids.csv";
+    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/film-and-voice-actor-ids.csv";
 
     public FilmVoiceActorPersistence(FilmService filmService, VoiceActorService voiceActorService, FileOperations fileOperations)
     {
