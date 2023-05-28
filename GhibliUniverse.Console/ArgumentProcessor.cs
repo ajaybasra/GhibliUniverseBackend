@@ -288,7 +288,7 @@ public class ArgumentProcessor
         voiceActors.ForEach(System.Console.WriteLine);
     }
 
-    private void ShowFilmRatings(List<FilmRating> filmRatings)
+    private void ShowFilmRatings(List<Review> filmRatings)
     {
         filmRatings.ForEach(System.Console.WriteLine);
     }

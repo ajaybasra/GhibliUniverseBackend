@@ -3,26 +3,33 @@
 using GhibliUniverse.Console;
 using GhibliUniverse.Console.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Services;
 
 var filmUniverse = new FilmUniverse();
+var filmService = new FilmService();
+var voiceActorService = new VoiceActorService();
+var reviewService = new ReviewService(filmService);
 var commandLine = new CommandLine();
 var argumentProcessor = new ArgumentProcessor(commandLine, filmUniverse);
 var fileOperations = new FileOperations();
-var filmPersistence = new FilmPersistence(filmUniverse, fileOperations);
-var voiceActorPersistence = new VoiceActorPersistence(filmUniverse, fileOperations);
-var filmRatingPersistence = new FilmRatingPersistence(filmUniverse, fileOperations);
-var filmVoiceActorPersistence = new FilmVoiceActorPersistence(filmUniverse, fileOperations);
-
+var filmPersistence = new FilmPersistence(filmService, fileOperations);
+var voiceActorPersistence = new VoiceActorPersistence(voiceActorService, fileOperations);
+var reviewPersistence = new ReviewPersistence(filmService, reviewService, fileOperations);
+var filmVoiceActorPersistence = new FilmVoiceActorPersistence(filmService, voiceActorService, fileOperations);
 filmPersistence.ReadingStep();
+// filmService.PopulateFilmsList(1);
+// voiceActorService.PopulateVoiceActorsList(1);
+// reviewService.CreateReview(Guid.Parse("00000000-0000-0000-0000-000000000000"), 10);
+// voiceActorService.DeleteVoiceActor(Guid.Parse("c320db9c-cc9f-403f-a84b-1c1d36287d88"));
+// filmService.DeleteFilm(Guid.Parse("00000000-0000-0000-0000-000000000000"));
+// filmService.DeleteFilm(Guid.Parse("11111111-1111-1111-1111-111111111111"));
 voiceActorPersistence.ReadingStep();
-filmRatingPersistence.ReadingStep();
+reviewPersistence.ReadingStep();
+// var mov = filmService.GetAllFilms();
+// mov[0].VoiceActors.Add(voiceActorService.GetAllVoiceActors()[0]);
 filmVoiceActorPersistence.ReadingStep();
-// filmUniverse.PopulateFilmsList(1);
 // argumentProcessor.Process();
 // filmUniverse.PopulateFilmsList(2);
-// filmUniverse.DeleteFilm(new Guid("00000000-0000-0000-0000-000000000000"));
-// filmUniverse.DeleteFilm(new Guid("11111111-1111-1111-1111-111111111111"));
-// filmUniverse.DeleteFilm(new Guid("14be95a1-a589-40ed-bd39-f018007fa274"));
 // filmUniverse.CreateFilm("Batman Begins", "A man dresses up as; a bat, and fights crime, his name is, vengeance.", "Christopher Nolan", "Hans Zimmer", 1999);
 // // filmUniverse.CreateVoiceActor("Henry", "Dot");
 // filmUniverse.DeleteFilmRating(new Guid("00000000-0000-0000-0000-000000000000"), new Guid("62b20cb0-ae09-4156-a831-06065aa44e78"));
@@ -31,17 +38,13 @@ filmVoiceActorPersistence.ReadingStep();
 // filmUniverse.DeleteFilmRating(new Guid("00000000-0000-0000-0000-000000000000"), new Guid("1ddac2db-cb70-4fd8-b002-5dc21a96bbd5"));
 filmPersistence.WritingStep();
 voiceActorPersistence.WritingStep();
-filmRatingPersistence.WritingStep();
+reviewPersistence.WritingStep();
 filmVoiceActorPersistence.WritingStep();
-// try
-// {
-//     filmUniverse.CreateFilm("", "A man dresses up as; a bat, and fights crime, his name is, vengeance.", "Christopher Nolan", "Hans Zimmer", 1999);
-//
-// }
-// catch (ModelNotFoundException e)
-// {
-//     Console.WriteLine(e);
-// }
-var s = filmUniverse.BuildFilmList();
-Console.WriteLine(s);
-
+// var s = filmUniverse.BuildFilmList();
+// Console.WriteLine(s);
+var g = filmService.BuildFilmList();
+Console.WriteLine(g);
+var y = voiceActorService.BuildVoiceActorList();
+Console.WriteLine(y);
+var x = reviewService.BuildReviewList();
+Console.WriteLine(x);

@@ -135,7 +135,7 @@ public class FilmUniverseTests
     {
         var filmRatingId = _filmUniverse.GetAllFilmRatings(new Guid("00000000-0000-0000-0000-000000000000"))[0].Id;
 
-        var expectedFilmRating = new FilmRating()
+        var expectedFilmRating = new Review()
         {
             Id = filmRatingId,
             Rating = Rating.From(10),

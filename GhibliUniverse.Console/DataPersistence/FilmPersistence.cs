@@ -2,19 +2,20 @@ using System;
 using GhibliUniverse.Console.Interfaces;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Console.DataPersistence;
 
 public class FilmPersistence : IPersistence
 {
-    private readonly FilmUniverse _filmUniverse;
+    private readonly IFilmService _filmService;
     private readonly FileOperations _fileOperations;
     private const string OldFilmsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/old-films.csv";
     private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/films.csv";
 
-    public FilmPersistence(FilmUniverse filmUniverse, FileOperations fileOperations)
+    public FilmPersistence(IFilmService filmService, FileOperations fileOperations)
     {
-        _filmUniverse = filmUniverse;
+        _filmService = filmService;
         _fileOperations = fileOperations;
     }
 
@@ -29,7 +30,7 @@ public class FilmPersistence : IPersistence
 
     public void WritingStep()
     {
-        var allFilms = _filmUniverse.GetAllFilms();
+        var allFilms = _filmService.GetAllFilms();
         CreateFileHeader();
         if (allFilms.Count <= 0) return;
         foreach (var film in allFilms)
@@ -82,7 +83,7 @@ public class FilmPersistence : IPersistence
             ReleaseYear = ReleaseYear.From(releaseYear)
         };
         
-        _filmUniverse.AddFilm(film);
+        _filmService.AddFilm(film);
     }
 
 }

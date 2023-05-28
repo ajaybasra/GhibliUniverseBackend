@@ -12,8 +12,8 @@ public record Film()
     public ValidatedString Composer { get; set; }
     public ReleaseYear ReleaseYear { get; set; } 
     
-    public List<VoiceActor> VoiceActors { get; } = new(); 
-    public List<FilmRating> FilmRatings { get; set; } = new();
+    public List<VoiceActor> VoiceActors { get; set; } = new(); 
+    public List<Review> Reviews { get; set; } = new();
 
     public void AddVoiceActor(VoiceActor voiceActor)
     {
@@ -47,7 +47,7 @@ public record Film()
         str.Append(']');
         str.Append(",Film Ratings:");
         str.Append('[');
-        str.Append(string.Join(",", FilmRatings));
+        str.Append(string.Join(",", Reviews));
         str.Append(']');
         str.Append(']');
         return str.ToString();

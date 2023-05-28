@@ -1,18 +1,21 @@
 using GhibliUniverse.Console.Interfaces;
 using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Console.DataPersistence;
 
 public class FilmVoiceActorPersistence : IPersistence
 {
-    private readonly FilmUniverse _filmUniverse;
+    private readonly FilmService _filmService;
+    private readonly VoiceActorService _voiceActorService;
     private readonly FileOperations _fileOperations;
     private const string OldFilmVoiceActorFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/old-film-and-voice-actor-ids.csv";
     private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/film-and-voice-actor-ids.csv";
 
-    public FilmVoiceActorPersistence(FilmUniverse filmUniverse, FileOperations fileOperations)
+    public FilmVoiceActorPersistence(FilmService filmService, VoiceActorService voiceActorService, FileOperations fileOperations)
     {
-        _filmUniverse = filmUniverse;
+        _filmService = filmService;
+        _voiceActorService = voiceActorService;
         _fileOperations = fileOperations;
     }
     
@@ -27,7 +30,7 @@ public class FilmVoiceActorPersistence : IPersistence
 
     public void WritingStep()
     {
-        var allFilms = _filmUniverse.GetAllFilms();
+        var allFilms = _filmService.GetAllFilms();
         CreateFileHeader();
         if (allFilms.Count <= 0) return;
         foreach (var film in allFilms)
@@ -74,8 +77,8 @@ public class FilmVoiceActorPersistence : IPersistence
     }
     private void AddVoiceActorsFromCSVToMatchingFilm(Guid filmId, Guid voiceActorId)
     {
-        var film = _filmUniverse.GetFilmById(filmId);
-        var voiceActor = _filmUniverse.GetVoiceActorById(voiceActorId);
+        var film = _filmService.GetFilmById(filmId);
+        var voiceActor = _voiceActorService.GetVoiceActorById(voiceActorId);
         
         film.AddVoiceActor(voiceActor);
     }

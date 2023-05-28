@@ -1,19 +1,20 @@
 using GhibliUniverse.Console.Interfaces;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Console.DataPersistence;
 
 public class VoiceActorPersistence : IPersistence
 {
-    private readonly FilmUniverse _filmUniverse;
+    private readonly IVoiceActorService _voiceActorService;
     private readonly FileOperations _fileOperations;
     private const string OldVoiceActorsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/old-voice-actors.csv";
     private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/voice-actors.csv";
 
-    public VoiceActorPersistence(FilmUniverse filmUniverse, FileOperations fileOperations)
+    public VoiceActorPersistence(IVoiceActorService voiceActorService, FileOperations fileOperations)
     {
-        _filmUniverse = filmUniverse;
+        _voiceActorService = voiceActorService;
         _fileOperations = fileOperations;
     }
     public void ReadingStep()
@@ -27,7 +28,7 @@ public class VoiceActorPersistence : IPersistence
 
     public void WritingStep()
     {
-        var allVoiceActors = _filmUniverse.GetAllVoiceActors();
+        var allVoiceActors = _voiceActorService.GetAllVoiceActors();
         CreateFileHeader();
         if (allVoiceActors.Count <= 0) return;
         foreach (var voiceActor in allVoiceActors)
@@ -77,7 +78,7 @@ public class VoiceActorPersistence : IPersistence
             Name = ValidatedString.From(name)
         };
         
-        _filmUniverse.AddVoiceActor(voiceActor);
+        _voiceActorService.AddVoiceActor(voiceActor);
     }
 
 }

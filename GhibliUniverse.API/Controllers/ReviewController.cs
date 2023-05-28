@@ -1,3 +1,4 @@
+using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.ValueObjects;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,31 +9,31 @@ namespace GhibliUniverse.API.Controllers;
 public class FilmRatingController : Controller
 {
     [HttpGet]
-    public IActionResult GetFilmRatings()
+    public IActionResult GetAllReviews()
     {
         return Ok("ye");
     }
     
-    [HttpGet("{filmRatingId:guid}")]
-    public IActionResult GetFilmRating(Guid filmRatingId)
+    [HttpGet("{reviewId:guid}")]
+    public IActionResult GetReviewById(Guid reviewId)
     {
         throw new NotImplementedException();
     }
     
     [HttpPost("filmId:guid")]
-    public IActionResult CreateFilmRating([FromRoute]Guid filmId, [FromBody]Rating rating)
+    public IActionResult CreateReview(Guid filmId, [FromBody]Rating rating)
     {
         return Ok("yo");
     }
     
     [HttpPut("{filmRatingId:guid}")]
-    public IActionResult UpdateFilmRating(Guid filmRatingId)
+    public IActionResult UpdateReview(Guid reviewId)
     {
         throw new NotImplementedException();
     }
     
     [HttpDelete("{filmRatingId:guid}")]
-    public IActionResult DeleteFilmRating(Guid filmRatingId)
+    public IActionResult DeleteReview(Guid reviewId)
     {
         throw new NotImplementedException();
     }

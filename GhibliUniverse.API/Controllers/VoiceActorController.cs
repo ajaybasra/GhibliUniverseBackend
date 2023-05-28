@@ -8,13 +8,13 @@ namespace GhibliUniverse.API.Controllers;
 public class VoiceActorController : Controller
 {
     [HttpGet]
-    public IActionResult GetVoiceActors()
+    public IActionResult GetAllVoiceActors()
     {
         return Ok("ye");
     }
     
     [HttpGet("{voiceActorId:guid}")]
-    public IActionResult GetVoiceActor(Guid voiceActorId)
+    public IActionResult GetVoiceActorById(Guid voiceActorId)
     {
         throw new NotImplementedException();
     }

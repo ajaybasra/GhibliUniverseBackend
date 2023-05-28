@@ -3,7 +3,7 @@ using GhibliUniverse.Core.Domain.ValueObjects;
 
 namespace GhibliUniverse.Core.Domain.Models;
 
-public record FilmRating()
+public record Review()
 {
     public Guid Id { get; init; }
     public Rating Rating { get; set; }

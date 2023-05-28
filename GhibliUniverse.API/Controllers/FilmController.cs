@@ -9,13 +9,13 @@ public class FilmController : Controller
 {
 
     [HttpGet]
-    public IActionResult GetFilms()
+    public IActionResult GetAllFilms()
     {
         return Ok("ye");
     }
 
     [HttpGet("{filmId:guid}")]
-    public IActionResult GetFilm(Guid filmId)
+    public IActionResult GetFilmById(Guid filmId)
     {
         throw new NotImplementedException();
     }

@@ -1,19 +1,22 @@
 using GhibliUniverse.Console.Interfaces;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Console.DataPersistence;
 
-public class FilmRatingPersistence : IPersistence
+public class ReviewPersistence : IPersistence
 {
-    private readonly FilmUniverse _filmUniverse;
+    private readonly IFilmService _filmService;
+    private readonly IReviewService _reviewService;
     private readonly FileOperations _fileOperations;
-    private const string OldFilmRatingsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/old-film-ratings.csv";
-    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/film-ratings.csv";
+    private const string OldFilmRatingsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/old-reviews.csv";
+    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/reviews.csv";
 
-    public FilmRatingPersistence(FilmUniverse filmUniverse, FileOperations fileOperations)
+    public ReviewPersistence(IFilmService filmService, IReviewService reviewService, FileOperations fileOperations)
     {
-        _filmUniverse = filmUniverse;
+        _filmService = filmService;
+        _reviewService = reviewService;
         _fileOperations = fileOperations;
     }
     
@@ -28,18 +31,14 @@ public class FilmRatingPersistence : IPersistence
 
     public void WritingStep()
     {
-        var allFilmRatings = new List<FilmRating>();
-        var allFilms = _filmUniverse.GetAllFilms();
-        foreach (var film in allFilms)
-        {
-            allFilmRatings.AddRange(_filmUniverse.GetAllFilmRatings(film.Id));
-        }
+        var allReviews = new List<Review>();
+        allReviews.AddRange(_reviewService.GetAllReviews());
 
         CreateFileHeader();
-        if (allFilmRatings.Count <= 0) return;
-        foreach (var filmRating in allFilmRatings)
+        if (allReviews.Count <= 0) return;
+        foreach (var review in allReviews)
         {
-            AddFilmRatingRecordFromFilmUniverseToCSV(filmRating.Id, filmRating.Rating, filmRating.FilmId);
+            AddFilmRatingRecordFromFilmUniverseToCSV(review.Id, review.Rating, review.FilmId);
         }
     }
     
@@ -79,15 +78,15 @@ public class FilmRatingPersistence : IPersistence
     private void AddFilmRatingsFromCSVToMatchingFilms(Guid id, string rating, Guid filmId)
     {
         var ratingAsInt = int.Parse(rating);
-        var filmRating = new FilmRating()
+        var filmRating = new Review()
         {
             Id = id,
             Rating = Rating.From(ratingAsInt),
             FilmId = filmId
         };
 
-        var filmList = _filmUniverse.GetAllFilms();
-        filmList.First(film => film.Id == filmId).FilmRatings.Add(filmRating);
+        var filmList = _filmService.GetAllFilms();
+        filmList.First(film => film.Id == filmId).Reviews.Add(filmRating);
         
     }
 

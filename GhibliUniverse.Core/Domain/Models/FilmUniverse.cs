@@ -154,19 +154,19 @@ public class FilmUniverse
         return stringBuilder.ToString();
     }
     
-    public List<FilmRating> GetAllFilmRatings(Guid filmId)
+    public List<Review> GetAllFilmRatings(Guid filmId)
     {
-        return _filmList.First(f => f.Id == filmId).FilmRatings;
+        return _filmList.First(f => f.Id == filmId).Reviews;
     }
     
-    public FilmRating GetFilmRatingById(Guid filmId, Guid filmRatingId)
+    public Review GetFilmRatingById(Guid filmId, Guid filmRatingId)
     {
         var matchingFilm =  _filmList.FirstOrDefault(f => f.Id == filmId);
         if (matchingFilm == null)
         {
             throw new ModelNotFoundException(filmId);
         }
-        var filmRating = matchingFilm.FilmRatings.FirstOrDefault(r => r.Id == filmRatingId);
+        var filmRating = matchingFilm.Reviews.FirstOrDefault(r => r.Id == filmRatingId);
         if (filmRating == null)
         {
             throw new ModelNotFoundException(filmRatingId);
@@ -179,14 +179,14 @@ public class FilmUniverse
     {
         try
         {
-            var filmRating = new FilmRating
+            var filmRating = new Review
             {
                 Id = Guid.NewGuid(),
                 Rating = Rating.From(rating),
                 FilmId = filmId
             };
             var film = GetFilmById(filmId);
-            film.FilmRatings.Add(filmRating);
+            film.Reviews.Add(filmRating);
         }
         catch (ModelNotFoundException e)
         {
@@ -204,7 +204,7 @@ public class FilmUniverse
         {
             var matchingFilm = GetFilmById(filmId);
             var filmRating = GetFilmRatingById(filmId, filmRatingId);
-            matchingFilm.FilmRatings.Remove(filmRating);
+            matchingFilm.Reviews.Remove(filmRating);
         }
         catch (ModelNotFoundException e)
         {
