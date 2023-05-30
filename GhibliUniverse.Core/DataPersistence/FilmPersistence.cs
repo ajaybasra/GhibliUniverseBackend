@@ -39,17 +39,7 @@ public class FilmPersistence
                 ReleaseYear = ReleaseYear.From(int.Parse(fields[5]))
             });
         }
-        _fileOperations.CreateBackupCSVFile(FilePath, OldFilmsFilePath);
         return savedFilms;
-    }
-    public void WriteFilms(List<Film> films)
-    {
-        CreateFileHeader();
-        if (films.Count <= 0) return;
-        foreach (var film in films)
-        {
-            WriteFilm(film.Id, film.Title, film.Description, film.Director, film.Composer, film.ReleaseYear);
-        }
     }
     
     private void CreateFileHeader()
@@ -57,7 +47,17 @@ public class FilmPersistence
         using var file = new StreamWriter(FilePath);
         file.WriteLine("Id" + "," + "Title" + "," + "Description" + "," + "Director" + "," + "Composer" + "," + "Release Year");
     }
-    
+    public void WriteFilms(List<Film> films)
+    {
+        _fileOperations.CreateBackupCSVFile(FilePath, OldFilmsFilePath);
+        CreateFileHeader();
+        if (films.Count <= 0) return;
+        foreach (var film in films)
+        {
+            WriteFilm(film.Id, film.Title, film.Description, film.Director, film.Composer, film.ReleaseYear);
+        }
+    }
+
     private void WriteFilm(Guid id, ValidatedString title, ValidatedString description, ValidatedString director, ValidatedString composer, ReleaseYear releaseYear)
     {
         try

@@ -7,9 +7,9 @@ public interface IFilmService
     List<Film> GetAllFilms();
     Film GetFilmById(Guid filmId);
     List<VoiceActor> GetVoiceActorsByFilm(Guid filmId);
-    public void CreateFilm(string title, string description, string director, string composer, int releaseYear);
-    public void UpdateFilm(Guid filmId, Film film);
-    public void DeleteFilm(Guid filmId);
+    void CreateFilm(string title, string description, string director, string composer, int releaseYear);
+    void UpdateFilm(Guid filmId, Film film);
+    void DeleteFilm(Guid filmId);
     void AddFilm(Film film);
-    List<Film> AddReviewsToFilms();
+    void AddVoiceActor(Guid filmId, VoiceActor voiceActor);
 }

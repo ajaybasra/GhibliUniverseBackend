@@ -23,12 +23,12 @@ public class FilmService : IFilmService
     
     public List<Film> GetAllFilms()
     {
-        return AddReviewsToFilms();
+        return GetFilmsWithVoiceActorsAndReviewsAdded();
     }
 
     public Film GetFilmById(Guid filmId)
     {
-        var savedFilms = _filmPersistence.ReadFilms();
+        var savedFilms = GetFilmsWithVoiceActorsAndReviewsAdded();
         var film = savedFilms.FirstOrDefault(f => f.Id == filmId);
         if (film == null)
         {
@@ -40,7 +40,7 @@ public class FilmService : IFilmService
 
     public List<VoiceActor> GetVoiceActorsByFilm(Guid filmId)
     {
-        var savedFilms = _filmPersistence.ReadFilms();
+        var savedFilms = GetFilmsWithVoiceActorsAndReviewsAdded();
         var film = savedFilms.FirstOrDefault(f => f.Id == filmId);
         if (film == null)
         {
@@ -101,17 +101,17 @@ public class FilmService : IFilmService
 
     public void DeleteFilm(Guid filmId)
     {
-        var savedReviews = _reviewPersistence.ReadReviews();
         var savedFilms = _filmPersistence.ReadFilms();
-        var film = savedFilms.FirstOrDefault(f => f.Id == filmId);
-        savedReviews.RemoveAll(review => film.Reviews.Contains(review));
-        if (film == null)
+        var savedReviews = _reviewPersistence.ReadReviews();
+        var filmToBeDeleted = savedFilms.FirstOrDefault(f => f.Id == filmId);
+        savedReviews.RemoveAll(review => filmToBeDeleted.Reviews.Contains(review));
+        if (filmToBeDeleted == null)
         {
             throw new ModelNotFoundException(filmId);
         }
 
-        film.VoiceActors.ForEach(v => v.RemoveFilm(film));
-        savedFilms.Remove(film);
+        filmToBeDeleted.VoiceActors.ForEach(v => v.RemoveFilm(filmToBeDeleted));
+        savedFilms.Remove(filmToBeDeleted);
         _filmPersistence.WriteFilms(savedFilms);
         _reviewPersistence.WriteReviews(savedReviews);
     }
@@ -135,15 +135,15 @@ public class FilmService : IFilmService
         _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
     }
 
-    public List<Film> AddReviewsToFilms()
+    private List<Film> GetFilmsWithVoiceActorsAndReviewsAdded()
     {
         var savedFilms = _filmPersistence.ReadFilms();
         var savedReviews = _reviewPersistence.ReadReviews();
         var savedFilmVoiceActorIds = _filmVoiceActorPersistence.ReadFilmVoiceActorData();
         foreach ((Guid filmId, Guid voiceActorId) in savedFilmVoiceActorIds)
         {
-            var filmToAddVoiceActor = savedFilms.FirstOrDefault(f => f.Id == filmId);
-            if (filmToAddVoiceActor == null)
+            var filmToHaveVoiceActorAdded = savedFilms.FirstOrDefault(f => f.Id == filmId);
+            if (filmToHaveVoiceActorAdded == null)
             {
                 throw new ModelNotFoundException(filmId);
             }
@@ -153,7 +153,7 @@ public class FilmService : IFilmService
             {
                 throw new ModelNotFoundException(voiceActorId);
             }
-            filmToAddVoiceActor.VoiceActors.Add(voiceActorToAdd);
+            filmToHaveVoiceActorAdded.VoiceActors.Add(voiceActorToAdd);
         }
         foreach (var review in savedReviews)
         {
@@ -171,7 +171,7 @@ public class FilmService : IFilmService
     
     public void PopulateFilmsList(int numberOfFilms)
     {
-        var savedFilms = _filmPersistence.ReadFilms();
+        var films = GetFilmsWithVoiceActorsAndReviewsAdded();
         var filmTitles = new List<string> { "Spirited Away", "My Neighbor Totoro", "Ponyo" };
         var filmDescriptions = new List<string>
         {
@@ -183,7 +183,7 @@ public class FilmService : IFilmService
         
         for (var i = 0; i < numberOfFilms; i++)
         {
-            savedFilms.Add(new Film
+            films.Add(new Film
             {
                 Id = new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"),
                 Title = ValidatedString.From(filmTitles[i]),
@@ -193,15 +193,15 @@ public class FilmService : IFilmService
                 ReleaseYear = ReleaseYear.From(releaseYears[i]),
             });
         }
-        _filmPersistence.WriteFilms(savedFilms);
-        _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
+        _filmPersistence.WriteFilms(films);
+        _filmVoiceActorPersistence.WriteFilmVoiceActors(films);
     }
     
     public string BuildFilmList()
     {
-        var j = AddReviewsToFilms();
+        var films = GetFilmsWithVoiceActorsAndReviewsAdded();
         var stringBuilder = new StringBuilder();
-        foreach (var film in j)
+        foreach (var film in films)
         {
             stringBuilder.Append(film);
             stringBuilder.Append('\n');

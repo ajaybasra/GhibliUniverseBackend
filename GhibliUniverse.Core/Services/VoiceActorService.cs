@@ -55,12 +55,12 @@ public class VoiceActorService : IVoiceActorService
                 Name = ValidatedString.From(name)
             };
             savedVoiceActors.Add(voiceActor);
+            _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
         }
         catch (ArgumentException ae)
         {
             Console.WriteLine(ae);
         }
-        _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
     }
 
     public void UpdateVoiceActor(Guid voiceActorId, string name)

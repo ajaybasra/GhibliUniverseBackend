@@ -44,34 +44,15 @@ public class FilmVoiceActorPersistence
         return savedFilmVoiceActorData;
     }
 
-    public bool FilmOrVoiceActorHasBeenDeleted(List<Film> films)
+    private void CreateFileHeader()
     {
-        var savedFilms = _filmPersistence.ReadFilms();
-        var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
-
-        var voiceActors = films.SelectMany(f => f.VoiceActors).ToList();
-
-        return films.Count != savedFilms.Count || voiceActors.Count != savedVoiceActors.Count;
+        using var file = new StreamWriter(FilePath); 
+        file.WriteLine("FilmId" + "," + "VoiceActorId");
     }
     public void WriteFilmVoiceActors(List<Film> films)
     {
-        _fileOperations.CreateBackupCSVFile(FilePath, OldFilmVoiceActorFilePath); //backup before overwriting
+        _fileOperations.CreateBackupCSVFile(FilePath, OldFilmVoiceActorFilePath);  
         CreateFileHeader();
-        //
-        // if (FilmOrVoiceActorHasBeenDeleted(films))
-        // {
-        //     var savedFilms = _filmPersistence.ReadFilms();
-        //     var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
-        //     
-        //     var voiceActors = films.SelectMany(f => f.VoiceActors).ToList();
-        //     
-        //     var removedFilms = films.Except(savedFilms);
-        //     var removedVoiceActors = films.SelectMany(f => f.VoiceActors).ToList()
-        //         .Except(savedVoiceActors);
-        //     films.RemoveAll(f => removedFilms.Contains(f));
-        //     voiceActors.RemoveAll(v => removedVoiceActors.Contains(v));
-        //
-        // }
         if (films.Count <= 0) return;
         foreach (var film in films)
         {
@@ -81,13 +62,7 @@ public class FilmVoiceActorPersistence
             }
         }
     }
-
-    private void CreateFileHeader()
-    {
-        using var file = new StreamWriter(FilePath); 
-        file.WriteLine("FilmId" + "," + "VoiceActorId");
-    }
-        
+    
     private void WriteFilmVoiceActor(Guid filmId, Guid voiceActorId)
     {
         try
@@ -101,13 +76,4 @@ public class FilmVoiceActorPersistence
             Console.Write(ex.Message);  
         } 
     }
-    
-    // private void AddVoiceActorsFromCSVToMatchingFilm(Guid filmId, Guid voiceActorId)
-    // {
-    //     var film = _filmService.GetFilmById(filmId);
-    //     var voiceActor = _voiceActorService.GetVoiceActorById(voiceActorId);
-    //     
-    //     film.AddVoiceActor(voiceActor);
-    // }
-
 }

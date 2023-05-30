@@ -34,24 +34,24 @@ public class VoiceActorPersistence
                 Name = ValidatedString.From(fields[1])
             });
         }
-        _fileOperations.CreateBackupCSVFile(FilePath, OldVoiceActorsFilePath);
         return savedVoiceActors;
-    }
-    
-    public void WriteVoiceActors(List<VoiceActor> voiceActors)
-    {
-        CreateFileHeader();
-        if (voiceActors.Count <= 0) return;
-        foreach (var voiceActor in voiceActors)
-        {
-            WriteVoiceActor(voiceActor.Id, voiceActor.Name);
-        }
     }
     
     private void CreateFileHeader()
     {
         using var file = new StreamWriter(FilePath);
         file.WriteLine("Id" + "," + "Name");
+    }
+    
+    public void WriteVoiceActors(List<VoiceActor> voiceActors)
+    {
+        _fileOperations.CreateBackupCSVFile(FilePath, OldVoiceActorsFilePath);
+        CreateFileHeader();
+        if (voiceActors.Count <= 0) return;
+        foreach (var voiceActor in voiceActors)
+        {
+            WriteVoiceActor(voiceActor.Id, voiceActor.Name);
+        }
     }
     
     private void WriteVoiceActor(Guid id, ValidatedString name)

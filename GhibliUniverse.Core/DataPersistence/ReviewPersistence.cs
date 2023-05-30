@@ -41,8 +41,15 @@ public class ReviewPersistence
         return savedReviews;
     }
 
+    private void CreateFileHeader()
+    {
+        using var file = new StreamWriter(FilePath);
+        file.WriteLine("Id" + "," + "Rating" + "," + "Film Id");
+    }
+    
     public void WriteReviews(List<Review> reviews)
     {
+        _fileOperations.CreateBackupCSVFile(FilePath, OldFilmRatingsFilePath);
         CreateFileHeader();
         if (reviews.Count <= 0) return;
         foreach (var review in reviews)
@@ -50,13 +57,7 @@ public class ReviewPersistence
             WriteReview(review.Id, review.Rating, review.FilmId);
         }
     }
-    
-    private void CreateFileHeader()
-    {
-        using var file = new StreamWriter(FilePath);
-        file.WriteLine("Id" + "," + "Rating" + "," + "Film Id");
-    }
-    
+
     private void WriteReview(Guid id, Rating rating, Guid filmId)
     {
         try
