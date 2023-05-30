@@ -1,4 +1,5 @@
 using System.Text;
+using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
@@ -7,16 +8,28 @@ namespace GhibliUniverse.Core.Services;
 
 public class FilmService : IFilmService
 {
-    private readonly List<Film> _filmList = new();
+    private readonly FilmPersistence _filmPersistence;
+    private readonly ReviewPersistence _reviewPersistence;
+    private readonly VoiceActorPersistence _voiceActorPersistence;
+    private readonly FilmVoiceActorPersistence _filmVoiceActorPersistence;
+    
+    public FilmService(FilmPersistence filmPersistence, ReviewPersistence reviewPersistence, VoiceActorPersistence voiceActorPersistence, FilmVoiceActorPersistence filmVoiceActorPersistence)
+    {
+        _filmPersistence = filmPersistence;
+        _reviewPersistence = reviewPersistence;
+        _voiceActorPersistence = voiceActorPersistence;
+        _filmVoiceActorPersistence = filmVoiceActorPersistence;
+    }
     
     public List<Film> GetAllFilms()
     {
-        return _filmList;
+        return AddReviewsToFilms();
     }
 
     public Film GetFilmById(Guid filmId)
     {
-        var film = _filmList.FirstOrDefault(f => f.Id == filmId);
+        var savedFilms = _filmPersistence.ReadFilms();
+        var film = savedFilms.FirstOrDefault(f => f.Id == filmId);
         if (film == null)
         {
             throw new ModelNotFoundException(filmId);
@@ -27,7 +40,8 @@ public class FilmService : IFilmService
 
     public List<VoiceActor> GetVoiceActorsByFilm(Guid filmId)
     {
-        var film = _filmList.FirstOrDefault(f => f.Id == filmId);
+        var savedFilms = _filmPersistence.ReadFilms();
+        var film = savedFilms.FirstOrDefault(f => f.Id == filmId);
         if (film == null)
         {
             throw new ModelNotFoundException(filmId);
@@ -38,6 +52,7 @@ public class FilmService : IFilmService
 
     public void CreateFilm(string title, string description, string director, string composer, int releaseYear)
     {
+        var savedFilms = _filmPersistence.ReadFilms();
         try
         {
             var film = new Film
@@ -49,7 +64,8 @@ public class FilmService : IFilmService
                 Composer = ValidatedString.From(composer),
                 ReleaseYear = ReleaseYear.From(releaseYear)
             };
-            _filmList.Add(film);
+            savedFilms.Add(film);
+            _filmPersistence.WriteFilms(savedFilms);
         }
         catch (ReleaseYear.NotFourCharactersException e)
         {
@@ -65,36 +81,97 @@ public class FilmService : IFilmService
         }
     }
 
-    public void UpdateFilm(Guid filmId, Film updatedFilm)
+    public void UpdateFilm(Guid filmId, Film updatedFilm) // look at
     {
-        var filmToUpdate = GetFilmById(filmId);
+        var savedFilms = _filmPersistence.ReadFilms();
+        var filmToUpdate = savedFilms.FirstOrDefault(f => f.Id == filmId);
+        if (filmToUpdate == null)
+        {
+            throw new ModelNotFoundException(filmId);
+        }
 
         filmToUpdate.Title = updatedFilm.Title;
         filmToUpdate.Description = updatedFilm.Description;
         filmToUpdate.Director = updatedFilm.Director;
         filmToUpdate.Composer = updatedFilm.Composer;
         filmToUpdate.ReleaseYear = updatedFilm.ReleaseYear;
+        
+        _filmPersistence.WriteFilms(savedFilms);
     }
 
     public void DeleteFilm(Guid filmId)
     {
-        var film = _filmList.FirstOrDefault(f => f.Id == filmId);
+        var savedReviews = _reviewPersistence.ReadReviews();
+        var savedFilms = _filmPersistence.ReadFilms();
+        var film = savedFilms.FirstOrDefault(f => f.Id == filmId);
+        savedReviews.RemoveAll(review => film.Reviews.Contains(review));
         if (film == null)
         {
             throw new ModelNotFoundException(filmId);
         }
 
         film.VoiceActors.ForEach(v => v.RemoveFilm(film));
-        _filmList.Remove(film);
+        savedFilms.Remove(film);
+        _filmPersistence.WriteFilms(savedFilms);
+        _reviewPersistence.WriteReviews(savedReviews);
     }
     
-    public void AddFilm(Film film) //ask
+    public void AddFilm(Film film) 
     {
-        _filmList.Add(film);
+        var savedFilms = _filmPersistence.ReadFilms();
+        savedFilms.Add(film);
+        _filmPersistence.WriteFilms(savedFilms);
+    }
+
+    public void AddVoiceActor(Guid filmId, VoiceActor voiceActor)
+    {
+        var savedFilms = _filmPersistence.ReadFilms();
+        var filmToAddVoiceActor = savedFilms.FirstOrDefault(f => f.Id == filmId);
+        if (filmToAddVoiceActor == null)
+        {
+            throw new ModelNotFoundException(filmId);
+        }
+        filmToAddVoiceActor.AddVoiceActor(voiceActor);
+        _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
+    }
+
+    public List<Film> AddReviewsToFilms()
+    {
+        var savedFilms = _filmPersistence.ReadFilms();
+        var savedReviews = _reviewPersistence.ReadReviews();
+        var savedFilmVoiceActorIds = _filmVoiceActorPersistence.ReadFilmVoiceActorData();
+        foreach ((Guid filmId, Guid voiceActorId) in savedFilmVoiceActorIds)
+        {
+            var filmToAddVoiceActor = savedFilms.FirstOrDefault(f => f.Id == filmId);
+            if (filmToAddVoiceActor == null)
+            {
+                throw new ModelNotFoundException(filmId);
+            }
+
+            var voiceActorToAdd = _voiceActorPersistence.ReadVoiceActors().FirstOrDefault(v => v.Id == voiceActorId);
+            if (voiceActorToAdd == null)
+            {
+                throw new ModelNotFoundException(voiceActorId);
+            }
+            filmToAddVoiceActor.VoiceActors.Add(voiceActorToAdd);
+        }
+        foreach (var review in savedReviews)
+        {
+            var filmToAddReview = savedFilms.FirstOrDefault(f => f.Id == review.FilmId);
+            if (filmToAddReview == null)
+            {
+                throw new ModelNotFoundException(review.FilmId);
+            }
+            filmToAddReview.Reviews.Add(review);
+        }
+        _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
+        return savedFilms;
+
     }
     
     public void PopulateFilmsList(int numberOfFilms)
     {
+        var savedFilms = _filmPersistence.ReadFilms();
         var filmTitles = new List<string> { "Spirited Away", "My Neighbor Totoro", "Ponyo" };
         var filmDescriptions = new List<string>
         {
@@ -106,7 +183,7 @@ public class FilmService : IFilmService
         
         for (var i = 0; i < numberOfFilms; i++)
         {
-            _filmList.Add(new Film
+            savedFilms.Add(new Film
             {
                 Id = new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"),
                 Title = ValidatedString.From(filmTitles[i]),
@@ -115,30 +192,22 @@ public class FilmService : IFilmService
                 Composer = ValidatedString.From("Joe Hisaishi"),
                 ReleaseYear = ReleaseYear.From(releaseYears[i]),
             });
- 
-            // for (var j = 0; j < 2; j++)
-            // {
-            //     var va = new VoiceActor(
-            //     {
-            //         Name = ValidatedString.From("John Doe")
-            //     };
-            //     var latestAddedFilm = _filmList.Last();
-            //     latestAddedFilm.AddVoiceActor(va);
-            //         
-            //     CreateFilmRating( 10, new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"));
-            // }
         }
+        _filmPersistence.WriteFilms(savedFilms);
+        _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
     }
     
     public string BuildFilmList()
     {
+        var j = AddReviewsToFilms();
         var stringBuilder = new StringBuilder();
-        foreach (var film in _filmList)
+        foreach (var film in j)
         {
             stringBuilder.Append(film);
             stringBuilder.Append('\n');
         }
-
+        
         return stringBuilder.ToString();
     }
+    
 }

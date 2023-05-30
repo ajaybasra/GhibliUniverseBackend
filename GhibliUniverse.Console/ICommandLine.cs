@@ -1,4 +1,4 @@
-namespace GhibliUniverse.Console.Interfaces;
+namespace GhibliUniverse.Console;
 
 public interface ICommandLine
 {

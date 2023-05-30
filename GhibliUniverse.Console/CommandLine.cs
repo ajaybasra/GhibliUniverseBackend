@@ -1,5 +1,3 @@
-using GhibliUniverse.Console.Interfaces;
-
 namespace GhibliUniverse.Console;
 
 public class CommandLine : ICommandLine

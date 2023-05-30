@@ -1,6 +1,6 @@
-using GhibliUniverse.Console.Interfaces;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
+using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Console;
 
@@ -8,6 +8,9 @@ public class ArgumentProcessor
 {
     private readonly string[] _programArguments;
     private readonly FilmUniverse _filmUniverse;
+    private readonly FilmService _filmService;
+    private readonly VoiceActorService _voiceActorService;
+    private readonly ReviewService _reviewService;
 
     public ArgumentProcessor(ICommandLine commandLine, FilmUniverse filmUniverse)
     {
@@ -25,8 +28,7 @@ public class ArgumentProcessor
             case "get-film-by-id":
                 HandleGetFilmById(_programArguments[2]);
                 break;
-            case "get-films-filtered-by-property":
-                HandleGetFilmsFilteredByProperty(_programArguments[2]);
+            case "get-voice-actors-by-film":
                 break;
             case "create-film":
                 HandleCreateFilm();
@@ -40,6 +42,8 @@ public class ArgumentProcessor
             case "get-voice-actor-by-id":
                 HandleGetVoiceActorById(_programArguments[2]);
                 break;
+            case "get-films-by-voice-actor":
+                break;
             case "create-voice-actor":
                 HandleCreateVoiceActor();
                 break;
@@ -52,16 +56,16 @@ public class ArgumentProcessor
             case "remove-voice-actor-from-film":
                 HandleRemoveVoiceActorFromFilm(_programArguments[2], _programArguments[3]);
                 break;
-            case "get-all-film-ratings":
+            case "get-all-reviews":
                 HandleGetAllFilmRatings(_programArguments[2]);
                 break;
-            case "get-film-rating-by-id":
+            case "get-review-by-id":
                 HandleGetFilmRatingById(_programArguments[2], _programArguments[3]);
                 break;
-            case "create-film-rating":
+            case "create-review":
                 HandleCreateFilmRating(_programArguments[2], _programArguments[3]);
                 break;
-            case "delete-film-rating":
+            case "delete-review":
                 HandleDeleteFilmRating(_programArguments[2], _programArguments[3]);
                 break;
         }

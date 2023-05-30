@@ -11,4 +11,5 @@ public interface IFilmService
     public void UpdateFilm(Guid filmId, Film film);
     public void DeleteFilm(Guid filmId);
     void AddFilm(Film film);
+    List<Film> AddReviewsToFilms();
 }

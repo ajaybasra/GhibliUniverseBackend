@@ -1,4 +1,5 @@
 using System.Text;
+using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
@@ -7,26 +8,24 @@ namespace GhibliUniverse.Core.Services;
 
 public class ReviewService : IReviewService
 {
-    private readonly List<Film> _filmList;
+    private readonly ReviewPersistence _reviewPersistence;
     private readonly IFilmService _filmService;
 
-    public ReviewService(IFilmService filmService)
+    public ReviewService(IFilmService filmService, ReviewPersistence reviewPersistence)
     {
         _filmService = filmService;
-        _filmList = filmService.GetAllFilms();
+        _reviewPersistence = reviewPersistence;
     }
     public List<Review> GetAllReviews()
     {
-        var allReviews = _filmList.SelectMany(film => film.Reviews).ToList();
-        return allReviews;
+        return _reviewPersistence.ReadReviews();
     }
 
     public Review GetReviewById(Guid reviewId)
     {
-        var foundReview = _filmList
-            .SelectMany(film => film.Reviews)
-            .FirstOrDefault(review => review.Id == reviewId);
-        
+        var savedReviews = _reviewPersistence.ReadReviews();
+        var foundReview = savedReviews.FirstOrDefault(r => r.Id == reviewId);
+
         if (foundReview == null)
         {
             throw new ModelNotFoundException(reviewId);
@@ -37,6 +36,7 @@ public class ReviewService : IReviewService
 
     public void CreateReview(Guid filmId, int rating)
     {
+        var savedReviews = _reviewPersistence.ReadReviews();
         try
         {
             var review = new Review
@@ -45,8 +45,8 @@ public class ReviewService : IReviewService
                 Rating = Rating.From(rating),
                 FilmId = filmId
             };
-            var film = _filmService.GetFilmById(filmId);
-            film.Reviews.Add(review);
+            savedReviews.Add(review);
+            _reviewPersistence.WriteReviews(savedReviews);
         }
         catch (ModelNotFoundException e)
         {
@@ -60,18 +60,23 @@ public class ReviewService : IReviewService
 
     public void UpdateReview(Guid reviewId, int rating)
     {
+        var savedReviews = _reviewPersistence.ReadReviews();
         var reviewToUpdate = GetReviewById(reviewId);
         reviewToUpdate.Rating = Rating.From(rating);
+        savedReviews = savedReviews.Select(r => r.Id == reviewId ? reviewToUpdate : r).ToList();
+        _reviewPersistence.WriteReviews(savedReviews);
     }
-
     public void DeleteReview(Guid reviewId)
     {
+        var savedReviews = _reviewPersistence.ReadReviews();
         try
         {
             var reviewToDelete = GetReviewById(reviewId);
-            var filmId = reviewToDelete.FilmId;
-            var filmToRemoveReviewFrom = _filmService.GetFilmById(filmId);
-            filmToRemoveReviewFrom.Reviews.Remove(reviewToDelete);
+            // var filmId = reviewToDelete.FilmId;
+            // var filmToRemoveReviewFrom = _filmService.GetFilmById(filmId);
+            // filmToRemoveReviewFrom.Reviews.Remove(reviewToDelete);
+            savedReviews.Remove(reviewToDelete);
+            _reviewPersistence.WriteReviews(savedReviews);
         }
         catch (ModelNotFoundException e)
         {

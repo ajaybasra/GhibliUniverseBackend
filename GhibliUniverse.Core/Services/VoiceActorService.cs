@@ -1,4 +1,5 @@
 using System.Text;
+using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
@@ -7,16 +8,22 @@ namespace GhibliUniverse.Core.Services;
 
 public class VoiceActorService : IVoiceActorService
 {
-    private readonly List<VoiceActor> _voiceActorList = new();
+    private readonly VoiceActorPersistence _voiceActorPersistence;
+
+    public VoiceActorService(VoiceActorPersistence voiceActorPersistence)
+    {
+        _voiceActorPersistence = voiceActorPersistence;
+    }
     
     public List<VoiceActor> GetAllVoiceActors()
     {
-        return _voiceActorList;
+        return _voiceActorPersistence.ReadVoiceActors();
     }
 
     public VoiceActor GetVoiceActorById(Guid voiceActorId)
     {
-        var voiceActor = _voiceActorList.FirstOrDefault(v => v.Id == voiceActorId);
+        var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
+        var voiceActor = savedVoiceActors.FirstOrDefault(v => v.Id == voiceActorId);
         if (voiceActor == null)
         {
             throw new ModelNotFoundException(voiceActorId);
@@ -27,7 +34,8 @@ public class VoiceActorService : IVoiceActorService
 
     public List<Film> GetFilmsByVoiceActor(Guid voiceActorId)
     {
-        var voiceActor = _voiceActorList.FirstOrDefault(v => v.Id == voiceActorId);
+        var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
+        var voiceActor = savedVoiceActors.FirstOrDefault(v => v.Id == voiceActorId);
         if (voiceActor == null)
         {
             throw new ModelNotFoundException(voiceActorId);
@@ -38,6 +46,7 @@ public class VoiceActorService : IVoiceActorService
 
     public void CreateVoiceActor(string name)
     {
+        var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
         try
         {
             var voiceActor = new VoiceActor
@@ -45,57 +54,67 @@ public class VoiceActorService : IVoiceActorService
                 Id = Guid.NewGuid(),
                 Name = ValidatedString.From(name)
             };
-            _voiceActorList.Add(voiceActor);
+            savedVoiceActors.Add(voiceActor);
         }
         catch (ArgumentException ae)
         {
             Console.WriteLine(ae);
         }
+        _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
     }
 
     public void UpdateVoiceActor(Guid voiceActorId, string name)
     {
-        var voiceActorToUpdate = _voiceActorList.FirstOrDefault(f => f.Id == voiceActorId);
+        var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
+        var voiceActorToUpdate = savedVoiceActors.FirstOrDefault(f => f.Id == voiceActorId);
         if (voiceActorToUpdate == null)
         {
             throw new ModelNotFoundException(voiceActorId);
         }
 
         voiceActorToUpdate.Name = ValidatedString.From(name);
+        _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
     }
 
     public void DeleteVoiceActor(Guid voiceActorId)
     {
-        var voiceActor = _voiceActorList.FirstOrDefault(f => f.Id == voiceActorId);
+        var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
+        var voiceActor = savedVoiceActors.FirstOrDefault(f => f.Id == voiceActorId);
         if (voiceActor == null)
         {
             throw new ModelNotFoundException(voiceActorId);
         }
         voiceActor.Films.ForEach(f => f.RemoveVoiceActor(voiceActor));
-        _voiceActorList.Remove(voiceActor);
+        savedVoiceActors.Remove(voiceActor);
+        _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
     }
     
     public void AddVoiceActor(VoiceActor voiceActor)
     {
-        _voiceActorList.Add(voiceActor);
+        var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
+        savedVoiceActors.Add(voiceActor);
+        _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
     }
     
     public void PopulateVoiceActorsList(int numberOfVoiceActors)
     {
+        var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
         for (var i = 0; i < numberOfVoiceActors; i++)
         {
-            _voiceActorList.Add(new VoiceActor
+            savedVoiceActors.Add(new VoiceActor
             {
                 Id = new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"),
                 Name = ValidatedString.From("John Doe")
             });
         }
+        _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
     }
     
     public string BuildVoiceActorList()
     {
+        var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
         var stringBuilder = new StringBuilder();
-        foreach (var voiceActor in _voiceActorList)
+        foreach (var voiceActor in savedVoiceActors)
         {
             stringBuilder.Append(voiceActor);
             stringBuilder.Append('\n');
