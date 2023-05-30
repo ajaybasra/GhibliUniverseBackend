@@ -68,7 +68,7 @@ public class VoiceActorServiceTests
      }
      
      [Fact]
-     public void CreateVoiceActor_AddsNewRecordToVoiceActorList_WhenCalled()
+     public void CreateVoiceActor_PersistsNewlyCreatedVoiceActor_WhenCalled()
      {
          _voiceActorService.CreateVoiceActor("John D");
          var voiceActorId = _voiceActorService.GetAllVoiceActors()[2].Id;
