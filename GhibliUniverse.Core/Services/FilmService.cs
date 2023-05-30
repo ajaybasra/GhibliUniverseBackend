@@ -8,12 +8,12 @@ namespace GhibliUniverse.Core.Services;
 
 public class FilmService : IFilmService
 {
-    private readonly FilmPersistence _filmPersistence;
-    private readonly ReviewPersistence _reviewPersistence;
-    private readonly VoiceActorPersistence _voiceActorPersistence;
-    private readonly FilmVoiceActorPersistence _filmVoiceActorPersistence;
+    private readonly IFilmPersistence _filmPersistence;
+    private readonly IReviewPersistence _reviewPersistence;
+    private readonly IVoiceActorPersistence _voiceActorPersistence;
+    private readonly IFilmVoiceActorPersistence _filmVoiceActorPersistence;
     
-    public FilmService(FilmPersistence filmPersistence, ReviewPersistence reviewPersistence, VoiceActorPersistence voiceActorPersistence, FilmVoiceActorPersistence filmVoiceActorPersistence)
+    public FilmService(IFilmPersistence filmPersistence, IReviewPersistence reviewPersistence, IVoiceActorPersistence voiceActorPersistence, IFilmVoiceActorPersistence filmVoiceActorPersistence)
     {
         _filmPersistence = filmPersistence;
         _reviewPersistence = reviewPersistence;

@@ -3,7 +3,7 @@ using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Core.DataPersistence;
 
-public class FilmVoiceActorPersistence 
+public class FilmVoiceActorPersistence : IFilmVoiceActorPersistence
 {
     private readonly FileOperations _fileOperations;
     private readonly FilmPersistence _filmPersistence;

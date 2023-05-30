@@ -8,9 +8,9 @@ namespace GhibliUniverse.Core.Services;
 
 public class VoiceActorService : IVoiceActorService
 {
-    private readonly VoiceActorPersistence _voiceActorPersistence;
+    private readonly IVoiceActorPersistence _voiceActorPersistence;
 
-    public VoiceActorService(VoiceActorPersistence voiceActorPersistence)
+    public VoiceActorService(IVoiceActorPersistence voiceActorPersistence)
     {
         _voiceActorPersistence = voiceActorPersistence;
     }

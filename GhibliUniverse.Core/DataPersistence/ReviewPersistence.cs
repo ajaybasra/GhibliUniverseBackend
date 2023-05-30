@@ -4,7 +4,7 @@ using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Core.DataPersistence;
 
-public class ReviewPersistence 
+public class ReviewPersistence : IReviewPersistence
 {
     private readonly FileOperations _fileOperations;
     private const string OldFilmRatingsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-reviews.csv";

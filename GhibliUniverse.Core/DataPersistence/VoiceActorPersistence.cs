@@ -4,7 +4,7 @@ using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Core.DataPersistence;
 
-public class VoiceActorPersistence 
+public class VoiceActorPersistence : IVoiceActorPersistence
 {
     private readonly FileOperations _fileOperations;
     private const string OldVoiceActorsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-voice-actors.csv";

@@ -4,7 +4,7 @@ using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Core.DataPersistence;
 
-public class FilmPersistence  
+public class FilmPersistence : IFilmPersistence
 {
     private readonly FileOperations _fileOperations;
     private const string OldFilmsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-films.csv";
