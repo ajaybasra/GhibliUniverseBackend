@@ -116,22 +116,29 @@ public class FilmService : IFilmService
         _reviewPersistence.WriteReviews(savedReviews);
     }
     
-    public void AddFilm(Film film) 
-    {
-        var savedFilms = _filmPersistence.ReadFilms();
-        savedFilms.Add(film);
-        _filmPersistence.WriteFilms(savedFilms);
-    }
+  
 
     public void AddVoiceActor(Guid filmId, VoiceActor voiceActor)
     {
-        var savedFilms = _filmPersistence.ReadFilms();
+        var savedFilms = GetFilmsWithVoiceActorsAndReviewsAdded();
         var filmToAddVoiceActor = savedFilms.FirstOrDefault(f => f.Id == filmId);
         if (filmToAddVoiceActor == null)
         {
             throw new ModelNotFoundException(filmId);
         }
         filmToAddVoiceActor.AddVoiceActor(voiceActor);
+        _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
+    }
+
+    public void RemoveVoiceActor(Guid filmId, VoiceActor voiceActor)
+    {
+        var savedFilms = GetFilmsWithVoiceActorsAndReviewsAdded();
+        var filmToHaveVoiceActorRemoved = savedFilms.FirstOrDefault(f => f.Id == filmId);
+        if (filmToHaveVoiceActorRemoved == null)
+        {
+            throw new ModelNotFoundException(filmId);
+        }
+        filmToHaveVoiceActorRemoved.VoiceActors.Remove(voiceActor);
         _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
     }
 

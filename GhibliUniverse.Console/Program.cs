@@ -6,9 +6,7 @@ using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Services;
 
-var filmUniverse = new FilmUniverse();
 var commandLine = new CommandLine();
-var argumentProcessor = new ArgumentProcessor(commandLine, filmUniverse);
 var fileOperations = new FileOperations();
 var filmPersistence = new FilmPersistence(fileOperations);
 var reviewPersistence = new ReviewPersistence(fileOperations);
@@ -17,28 +15,14 @@ var filmVoiceActorPersistence = new FilmVoiceActorPersistence(fileOperations, fi
 var voiceActorService = new VoiceActorService(voiceActorPersistence);
 var filmService = new FilmService(filmPersistence, reviewPersistence, voiceActorPersistence, filmVoiceActorPersistence);
 var reviewService = new ReviewService(reviewPersistence);
-// filmPersistence.ReadingStep();
-// filmService.PopulateFilmsList(1);
-// voiceActorService.PopulateVoiceActorsList(1);
-// reviewService.CreateReview(Guid.Parse("00000000-0000-0000-0000-000000000000"), 10);
-// voiceActorService.DeleteVoiceActor(Guid.Parse("00000000-0000-0000-0000-000000000000"));
-// filmService.DeleteFilm(Guid.Parse("fd6a421e-aaa1-4dbb-8283-125d4fe3413e"));
-// filmService.DeleteFilm(Guid.Parse("11111111-1111-1111-1111-111111111111"));
-// voiceActorPersistence.ReadingStep();
-// voiceActorService.DeleteVoiceActor(Guid.Parse("e887ab07-2370-44aa-905e-74e4b685f4f6"));
-// voiceActorService.CreateVoiceActor("John Swag");
-// filmService.AddVoiceActor(Guid.Parse("00000000-0000-0000-0000-000000000000"), voiceActorService.GetAllVoiceActors()[0]);
-// voiceActorService.DeleteVoiceActor(Guid.rParse("00000000-0000-0000-0000-000000000000"));
-// var mov = filmService.GetAllFilms();
-// reviewService.CreateReview(Guid.Parse("00000000-0000-0000-0000-000000000000"), 7);
-// filmService.DeleteFilm(Guid.Parse("00000000-0000-0000-0000-000000000000"));
-// reviewService.DeleteReview(Guid.Parse("856ef3fb-7ff6-4174-9e33-9d5afe0c2efb"));
-// filmVoiceActorPersistence.ReadingStep();
-// // argumentProcessor.Process();
-// filmService.CreateFilm("Batman Begins", "A man dresses up as; a bat, and fights crime, his name is, vengeance.", "Christopher Nolan", "Hans Zimmer", 1999);
-// voiceActorPersistence.WriteVoiceActors();
-// // reviewPersistence.WriteVoiceActors();
-// filmVoiceActorPersistence.WriteVoiceActors();
+var argumentProcessor = new ArgumentProcessor(commandLine, filmService, reviewService, voiceActorService);
+
+argumentProcessor.Process();
+
+var va = voiceActorService.GetVoiceActorById(Guid.Parse("69b23314-3866-4b42-bc6f-392a4af190a1"));
+filmService.AddVoiceActor(Guid.Parse("00000000-0000-0000-0000-000000000000"),va);
+filmService.AddVoiceActor(Guid.Parse("d5e9fe11-e973-47e7-822c-ff24d53c4b89"),va);
+
 
 var g = filmService.BuildFilmList();
 Console.WriteLine(g);

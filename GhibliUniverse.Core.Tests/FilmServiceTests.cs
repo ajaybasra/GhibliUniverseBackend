@@ -168,17 +168,6 @@ public class FilmServiceTests
      }
 
      [Fact]
-     public void AddFilm_AddsFilmToFilmList_WhenCalled()
-     {
-         var film = new Film();
-         
-         _filmService.AddFilm(film);
-         var filmCount = _films.Count;
-         
-         Assert.Equal(3, filmCount);
-     }
-
-     [Fact]
      public void AddVoiceActor_AddsVoiceActorToAFilm_WhenCalled()
      {
          var filmToHaveVoiceActorAddedId = _films[0].Id;

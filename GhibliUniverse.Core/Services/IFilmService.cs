@@ -10,6 +10,6 @@ public interface IFilmService
     void CreateFilm(string title, string description, string director, string composer, int releaseYear);
     void UpdateFilm(Guid filmId, Film film);
     void DeleteFilm(Guid filmId);
-    void AddFilm(Film film);
     void AddVoiceActor(Guid filmId, VoiceActor voiceActor);
+    void RemoveVoiceActor(Guid filmId, VoiceActor voiceActor);
 }

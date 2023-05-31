@@ -17,7 +17,9 @@ public record Film()
 
     public void AddVoiceActor(VoiceActor voiceActor)
     {
-        if (!VoiceActors.Contains(voiceActor))
+        List<Guid> idList = VoiceActors.Select(v => v.Id).ToList();
+
+        if (!VoiceActors.Contains(voiceActor) && !idList.Contains(voiceActor.Id))
         {
             VoiceActors.Add(voiceActor);
             voiceActor.AddFilm(this);

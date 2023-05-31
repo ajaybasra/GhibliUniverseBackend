@@ -10,5 +10,4 @@ public interface IVoiceActorService
     public void CreateVoiceActor(string name);
     public void UpdateVoiceActor(Guid voiceActorId, string name);
     public void DeleteVoiceActor(Guid voiceActorId);
-    void AddVoiceActor(VoiceActor voiceActor);
 }

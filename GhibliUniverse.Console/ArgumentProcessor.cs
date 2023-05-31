@@ -1,5 +1,6 @@
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
+using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Console;
@@ -7,15 +8,16 @@ namespace GhibliUniverse.Console;
 public class ArgumentProcessor
 {
     private readonly string[] _programArguments;
-    private readonly FilmUniverse _filmUniverse;
-    private readonly FilmService _filmService;
-    private readonly VoiceActorService _voiceActorService;
-    private readonly ReviewService _reviewService;
+    private readonly IFilmService _filmService;
+    private readonly IVoiceActorService _voiceActorService;
+    private readonly IReviewService _reviewService;
 
-    public ArgumentProcessor(ICommandLine commandLine, FilmUniverse filmUniverse)
+    public ArgumentProcessor(ICommandLine commandLine, IFilmService filmService, IReviewService reviewService, IVoiceActorService voiceActorService)
     {
         _programArguments = commandLine.GetCommandLineArgs();
-        _filmUniverse = filmUniverse;
+        _filmService = filmService;
+        _reviewService = reviewService;
+        _voiceActorService = voiceActorService;
     }
 
     public void Process()
@@ -29,12 +31,19 @@ public class ArgumentProcessor
                 HandleGetFilmById(_programArguments[2]);
                 break;
             case "get-voice-actors-by-film":
+                HandleGetVoiceActorsByFilm(_programArguments[2]);
                 break;
             case "create-film":
                 HandleCreateFilm();
                 break;
             case "delete-film":
                 HandleDeleteFilm(_programArguments[2]);
+                break;
+            case "add-voice-actor-to-film":
+                HandleAddVoiceActorToFilm(_programArguments[2], _programArguments[3]);
+                break;
+            case "remove-voice-actor-from-film":
+                HandleRemoveVoiceActorFromFilm(_programArguments[2], _programArguments[3]);
                 break;
             case "get-all-voice-actors":
                 HandleGetAllVoiceActors();
@@ -43,6 +52,7 @@ public class ArgumentProcessor
                 HandleGetVoiceActorById(_programArguments[2]);
                 break;
             case "get-films-by-voice-actor":
+                HandleGetFilmsByVoiceActor(_programArguments[2]);
                 break;
             case "create-voice-actor":
                 HandleCreateVoiceActor();
@@ -50,37 +60,34 @@ public class ArgumentProcessor
             case "delete-voice-actor":
                 HandleDeleteVoiceActor(_programArguments[2]);
                 break;
-            case "add-voice-actor-to-film":
-                HandleAddVoiceActorToFilm(_programArguments[2], _programArguments[3]);
-                break;
-            case "remove-voice-actor-from-film":
-                HandleRemoveVoiceActorFromFilm(_programArguments[2], _programArguments[3]);
-                break;
             case "get-all-reviews":
-                HandleGetAllFilmRatings(_programArguments[2]);
+                HandleGetAllReviews();
                 break;
             case "get-review-by-id":
-                HandleGetFilmRatingById(_programArguments[2], _programArguments[3]);
+                HandleGetReviewById(_programArguments[2]);
                 break;
             case "create-review":
-                HandleCreateFilmRating(_programArguments[2], _programArguments[3]);
+                HandleCreateReview(_programArguments[2], _programArguments[3]);
                 break;
             case "delete-review":
-                HandleDeleteFilmRating(_programArguments[2], _programArguments[3]);
+                HandleDeleteReview(_programArguments[2]);
+                break;
+            default:
+                System.Console.WriteLine("Invalid command(s)!");
                 break;
         }
     }
 
     private void HandleGetAllFilms()
     {
-        ShowFilms(_filmUniverse.GetAllFilms());
+        PrintModelEntries(_filmService.GetAllFilms());
     }
 
     private void HandleGetFilmById(string filmId)
     {
         try
         {
-            System.Console.WriteLine(_filmUniverse.GetFilmById(new Guid(filmId)));
+            System.Console.WriteLine(_filmService.GetFilmById(Guid.Parse(filmId)));
         }
         catch (FormatException fe)
         {
@@ -92,31 +99,69 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleGetFilmsFilteredByProperty(string propertyName)
+    private void HandleGetVoiceActorsByFilm(string filmId)
     {
         try
         {
-            ShowFilms(_filmUniverse.GetFilmsFilteredByProperty(propertyName, GetFilterValuesSeperatedBySpaces()));
+            var voiceActors = _filmService.GetVoiceActorsByFilm(Guid.Parse(filmId));
+            PrintModelEntries(voiceActors);
         }
-        catch (ArgumentException ae)
+        catch (FormatException fe)
         {
-            System.Console.WriteLine(ae);
+            System.Console.WriteLine(fe);
         }
-
+        catch (ModelNotFoundException e)
+        {
+            System.Console.WriteLine(e);
+        }
     }
 
     private void HandleCreateFilm()
     {
         var releaseYear = int.Parse(GetListOfPropertiesNeededToCreateFilm()[4]);
 
-        _filmUniverse.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
+        _filmService.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
     }
 
     private void HandleDeleteFilm(string filmId)
     {
         try
         {
-            _filmUniverse.DeleteFilm(new Guid(filmId));
+            _filmService.DeleteFilm(Guid.Parse(filmId));
+        }
+        catch (FormatException fe)
+        {
+            System.Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            System.Console.WriteLine(e);
+        }
+    }
+    
+    private void HandleAddVoiceActorToFilm(string filmId, string voiceActorId)
+    {
+        try
+        {
+            var voiceActor = _voiceActorService.GetVoiceActorById(Guid.Parse(voiceActorId));
+            _filmService.AddVoiceActor(Guid.Parse(filmId), voiceActor);
+        }
+        catch (FormatException fe)
+        {
+            System.Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            System.Console.WriteLine(e);
+        }
+    }
+    
+    private void HandleRemoveVoiceActorFromFilm(string filmId, string voiceActorId)
+    {
+        try
+        {
+            var voiceActor = _voiceActorService.GetVoiceActorById(Guid.Parse(voiceActorId));
+            _filmService.RemoveVoiceActor(Guid.Parse(filmId), voiceActor);
         }
         catch (FormatException fe)
         {
@@ -130,14 +175,31 @@ public class ArgumentProcessor
 
     private void HandleGetAllVoiceActors()
     {
-        ShowVoiceActors(_filmUniverse.GetAllVoiceActors());
+        PrintModelEntries(_voiceActorService.GetAllVoiceActors());
     }
 
     private void HandleGetVoiceActorById(string voiceActorId)
     {
         try
         {
-            System.Console.WriteLine(_filmUniverse.GetVoiceActorById(new Guid(voiceActorId)));
+            System.Console.WriteLine(_voiceActorService.GetVoiceActorById(Guid.Parse(voiceActorId)));
+        }
+        catch (FormatException fe)
+        {
+            System.Console.WriteLine(fe);
+        }
+        catch (ModelNotFoundException e)
+        {
+            System.Console.WriteLine(e);
+        }
+    }
+
+    private void HandleGetFilmsByVoiceActor(string voiceActorId)
+    {
+        try
+        {
+            var films = _voiceActorService.GetFilmsByVoiceActor(Guid.Parse(voiceActorId));
+            PrintModelEntries(films);
         }
         catch (FormatException fe)
         {
@@ -151,14 +213,14 @@ public class ArgumentProcessor
 
     private void HandleCreateVoiceActor()
     {
-        _filmUniverse.CreateVoiceActor(_programArguments[2]);
+        _voiceActorService.CreateVoiceActor(_programArguments[2]);
     }
 
     private void HandleDeleteVoiceActor(string voiceActorId)
     {
         try
         {
-            _filmUniverse.DeleteVoiceActor(new Guid(voiceActorId));
+            _voiceActorService.DeleteVoiceActor(Guid.Parse(voiceActorId));
         }
         catch (FormatException fe)
         {
@@ -170,33 +232,23 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleAddVoiceActorToFilm(string filmId, string voiceActorId)
+    private void HandleGetAllReviews()
     {
         try
         {
-            var film = _filmUniverse.GetFilmById(new Guid(filmId));
-            var voiceActor = _filmUniverse.GetVoiceActorById(new Guid(voiceActorId));
-            film.AddVoiceActor(voiceActor);
+            PrintModelEntries(_reviewService.GetAllReviews());
         }
         catch (FormatException fe)
         {
             System.Console.WriteLine(fe);
         }
-        catch (ModelNotFoundException e)
-        {
-            System.Console.WriteLine(e);
-        }
-
     }
 
-    private void HandleRemoveVoiceActorFromFilm(string filmId, string voiceActorId)
+    private void HandleGetReviewById(string reviewId)
     {
         try
         {
-            var film = _filmUniverse.GetFilmById(new Guid(filmId));
-            var voiceActor = _filmUniverse.GetVoiceActorById(new Guid(voiceActorId));
-
-            film.RemoveVoiceActor(voiceActor);
+            System.Console.Write(_reviewService.GetReviewById(Guid.Parse(reviewId)));
         }
         catch (FormatException fe)
         {
@@ -208,40 +260,16 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleGetAllFilmRatings(string filmId)
-    {
-        try
-        {
-            ShowFilmRatings(_filmUniverse.GetAllFilmRatings(new Guid(filmId)));
-        }
-        catch (FormatException fe)
-        {
-            System.Console.WriteLine(fe);
-        }
-    }
-
-    private void HandleGetFilmRatingById(string filmId, string filmRatingId)
-    {
-        try
-        {
-            System.Console.Write(_filmUniverse.GetFilmRatingById(new Guid(filmId), new Guid(filmRatingId)));
-        }
-        catch (FormatException fe)
-        {
-            System.Console.WriteLine(fe);
-        }
-        catch (ModelNotFoundException e)
-        {
-            System.Console.WriteLine(e);
-        }
-    }
-
-    private void HandleCreateFilmRating(string rating, string filmId)
+    private void HandleCreateReview(string filmId, string rating)
     {
         try
         {
             var ratingAsInt = int.Parse(rating);
-            _filmUniverse.CreateFilmRating(ratingAsInt, new Guid(filmId));
+            _reviewService.CreateReview(Guid.Parse(filmId), ratingAsInt);
+        }
+        catch (Rating.RatingOutOfRangeException e)
+        {
+            System.Console.WriteLine(e);
         }
         catch (FormatException fe)
         {
@@ -249,11 +277,11 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleDeleteFilmRating(string filmId, string filmRatingId)
+    private void HandleDeleteReview(string reviewId)
     {
         try
         {
-            _filmUniverse.DeleteFilmRating(new Guid(filmId), new Guid(filmRatingId));
+            _reviewService.DeleteReview(Guid.Parse(reviewId));
         }
         catch (FormatException fe)
         {
@@ -264,14 +292,7 @@ public class ArgumentProcessor
             System.Console.WriteLine(e);
         }
     }
-    private string GetFilterValuesSeperatedBySpaces()
-    {
-        var rawFilterValues = new List<string>();
-        rawFilterValues.AddRange(_programArguments.Skip(3).Select(arg => arg));
-        var filterValuesSeperatedBySpaces = string.Join(" ", rawFilterValues.Where(s => !String.IsNullOrEmpty(s)));
-        return filterValuesSeperatedBySpaces;
-    }
-    
+
     private List<string> GetListOfPropertiesNeededToCreateFilm()
     {
         var rawFilmProperties = new List<string>();
@@ -281,19 +302,12 @@ public class ArgumentProcessor
         return listOfProperties.ToList();
 
     }
-    
-    private void ShowFilms(List<Film> films)
-    {
-        films.ForEach(System.Console.WriteLine);
-    }
 
-    private void ShowVoiceActors(List<VoiceActor> voiceActors)
+    private void PrintModelEntries<T>(List<T> list)
     {
-        voiceActors.ForEach(System.Console.WriteLine);
-    }
-
-    private void ShowFilmRatings(List<Review> filmRatings)
-    {
-        filmRatings.ForEach(System.Console.WriteLine);
+        foreach (var item in list)
+        {
+            System.Console.WriteLine(item);
+        }
     }
 }

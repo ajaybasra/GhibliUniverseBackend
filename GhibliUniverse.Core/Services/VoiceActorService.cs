@@ -88,14 +88,7 @@ public class VoiceActorService : IVoiceActorService
         savedVoiceActors.Remove(voiceActor);
         _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
     }
-    
-    public void AddVoiceActor(VoiceActor voiceActor)
-    {
-        var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
-        savedVoiceActors.Add(voiceActor);
-        _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
-    }
-    
+
     public void PopulateVoiceActorsList(int numberOfVoiceActors)
     {
         var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
