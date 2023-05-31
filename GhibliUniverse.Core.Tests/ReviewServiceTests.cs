@@ -1,5 +1,6 @@
 using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
 using Moq;
@@ -51,6 +52,12 @@ public class ReviewServiceTests
     }
     
     [Fact]
+    public void GetReviewById_ThrowsModelNotFoundException_WhenGivenIdOfReviewWhichDoesNotExist()
+    {
+        Assert.Throws<ModelNotFoundException>(() => _reviewService.GetReviewById(Guid.Parse("00000000-0000-0000-0000-000000000005")));
+    }
+    
+    [Fact]
     public void CreateFilm_PersistsNewlyCreatedReview_WhenCalled()
     {
         _reviewService.CreateReview(Guid.Empty, 10);
@@ -61,6 +68,14 @@ public class ReviewServiceTests
          
         Assert.Equal(3, reviewCount);
         Assert.Equal(reviewId, review.Id);
+    }
+    
+    [Fact]
+    public void CreateReview_DoesNotAddReview_WhenGivenInvalidRating()
+    {
+        _reviewService.CreateReview(Guid.Empty, -1);
+        var reviewCount = _reviews.Count;
+        Assert.Equal(2, reviewCount);
     }
     
     [Fact]

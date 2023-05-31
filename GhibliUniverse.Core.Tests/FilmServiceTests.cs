@@ -1,5 +1,6 @@
 using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
 using Moq;
@@ -89,6 +90,12 @@ public class FilmServiceTests
      }
      
      [Fact]
+     public void GetFilmById_ThrowsModelNotFoundException_WhenGivenIdOfFilmWhichDoesNotExist()
+     {
+         Assert.Throws<ModelNotFoundException>(() => _filmService.GetFilmById(Guid.Parse("00000000-0000-0000-0000-000000000005")));
+     }
+     
+     [Fact]
      public void GetVoiceActorsByFilm_ReturnsVoiceActorsWhichTheFilmBelongsTo_WhenCalled()
      {
          var filmId = _films[0].Id;
@@ -97,6 +104,12 @@ public class FilmServiceTests
          var voiceActorCount = _filmService.GetVoiceActorsByFilm(filmId).Count;
          
          Assert.Equal(1, voiceActorCount);
+     }
+     
+     [Fact]
+     public void GetVoiceActorsByFilm_ThrowsModelNotFoundException_WhenGivenIdOfFilmWhichDoesNotExist()
+     {
+         Assert.Throws<ModelNotFoundException>(() => _filmService.GetVoiceActorsByFilm(Guid.Parse("00000000-0000-0000-0000-000000000005")));
      }
      
      [Fact]
@@ -110,6 +123,14 @@ public class FilmServiceTests
          
          Assert.Equal(3, filmCount);
          Assert.Equal(filmId, film.Id);
+     }
+     
+     [Fact]
+     public void CreateFilm_DoesNotAddFilm_WhenGivenInvalidInput()
+     {
+         _filmService.CreateFilm("", "", "", "", 2001);
+         var filmCount = _films.Count;
+         Assert.Equal(2, filmCount);
      }
      
      [Fact]
@@ -167,5 +188,12 @@ public class FilmServiceTests
          var filmVoiceActorCount = _films[0].VoiceActors.Count;
          
          Assert.Equal(1, filmVoiceActorCount);
+     }
+     
+     [Fact]
+     public void DeleteFilm_ThrowsModelNotFoundException_WhenGivenNonExistentFilmId()
+     {
+         Assert.Throws<ModelNotFoundException>(() =>
+             _filmService.DeleteFilm(Guid.Parse("00000000-0000-0000-0000-000000000005")));
      }
 }

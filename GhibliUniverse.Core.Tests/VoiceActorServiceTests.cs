@@ -1,5 +1,6 @@
 using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
 using Moq;
@@ -57,6 +58,12 @@ public class VoiceActorServiceTests
      }
 
      [Fact]
+     public void GetVoiceActorById_ThrowsModelNotFoundException_WhenGivenIdOfVoiceActorWhichDoesNotExist()
+     {
+         Assert.Throws<ModelNotFoundException>(() => _voiceActorService.GetVoiceActorById(Guid.Parse("00000000-0000-0000-0000-000000000005")));
+     }
+
+     [Fact]
      public void GetFilmsByVoiceActor_ReturnsFilmsWhichTheVoiceActorBelongsTo_WhenCalled() //tests should be independent, try not rely on ext methods
      {
          var voiceActorId = _voiceActors[0].Id;
@@ -65,6 +72,12 @@ public class VoiceActorServiceTests
          var filmCount = _voiceActorService.GetFilmsByVoiceActor(voiceActorId).Count;
          
          Assert.Equal(1, filmCount);
+     }
+     
+     [Fact]
+     public void GetFilmsByVoiceActor_ThrowsModelNotFoundException_WhenGivenIdOfVoiceActorWhichDoesNotExist()
+     {
+         Assert.Throws<ModelNotFoundException>(() => _voiceActorService.GetFilmsByVoiceActor(Guid.Parse("00000000-0000-0000-0000-000000000005")));
      }
      
      [Fact]
@@ -78,6 +91,14 @@ public class VoiceActorServiceTests
          
          Assert.Equal(3, voiceActorCount);
          Assert.Equal(voiceActorId, voiceActor.Id);
+     }
+
+     [Fact]
+     public void CreateVoiceActor_DoesNotAddVoiceActor_WhenGivenInvalidInput()
+     {
+         _voiceActorService.CreateVoiceActor("");
+         var voiceActorCount = _voiceActors.Count;
+         Assert.Equal(2, voiceActorCount);
      }
 
      [Fact]
@@ -101,4 +122,11 @@ public class VoiceActorServiceTests
          
          Assert.Equal(1, voiceActorCount);
      }
+
+    [Fact]
+    public void DeleteVoiceActor_ThrowsModelNotFoundException_WhenGivenNonExistentVoiceActorId()
+    {
+        Assert.Throws<ModelNotFoundException>(() =>
+            _voiceActorService.DeleteVoiceActor(Guid.Parse("00000000-0000-0000-0000-000000000005")));
+    }
 }
