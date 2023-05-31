@@ -33,7 +33,7 @@ public class VoiceActorServiceTests
     }
 
     [Fact]
-    public void GetAllVoiceActors_ReturnsAllVoiceActors_WhenCalled()
+    public void GetAllVoiceActors_ReturnsAllVoiceActors_WhenCalled() // probs need to check that the two returned va's are not duplicates
     {
         var voiceActorsCount = _voiceActorService.GetAllVoiceActors().Count;
         
@@ -43,7 +43,7 @@ public class VoiceActorServiceTests
      [Fact]
      public void GetVoiceActorById_ReturnsVoiceActorWithMatchingId_WhenGivenVoiceActorId()
      {
-         var voiceActorId = _voiceActorService.GetAllVoiceActors()[0].Id;
+         var voiceActorId = _voiceActors[0].Id;
 
          var expectedVoiceActor = new VoiceActor()
          {
@@ -57,9 +57,9 @@ public class VoiceActorServiceTests
      }
 
      [Fact]
-     public void GetFilmsByVoiceActor_ReturnsFilmsWhichTheVoiceActorBelongsTo_WhenCalled()
+     public void GetFilmsByVoiceActor_ReturnsFilmsWhichTheVoiceActorBelongsTo_WhenCalled() //tests should be independent, try not rely on ext methods
      {
-         var voiceActorId = _voiceActorService.GetAllVoiceActors()[0].Id;
+         var voiceActorId = _voiceActors[0].Id;
          _voiceActors[0].Films.Add(new Film());
 
          var filmCount = _voiceActorService.GetFilmsByVoiceActor(voiceActorId).Count;
@@ -71,9 +71,9 @@ public class VoiceActorServiceTests
      public void CreateVoiceActor_PersistsNewlyCreatedVoiceActor_WhenCalled()
      {
          _voiceActorService.CreateVoiceActor("John D");
-         var voiceActorId = _voiceActorService.GetAllVoiceActors()[2].Id;
+         var voiceActorId = _voiceActors[2].Id;
          
-         var voiceActorCount = _voiceActorService.GetAllVoiceActors().Count;
+         var voiceActorCount = _voiceActors.Count;
          var voiceActor = _voiceActorService.GetVoiceActorById(voiceActorId);
          
          Assert.Equal(3, voiceActorCount);
@@ -83,7 +83,7 @@ public class VoiceActorServiceTests
      [Fact]
      public void UpdateVoiceActor_UpdatesVoiceActorName_WhenCalled()
      {
-         var voiceActorId = _voiceActorService.GetAllVoiceActors()[0].Id;
+         var voiceActorId = _voiceActors[0].Id;
          
          _voiceActorService.UpdateVoiceActor(voiceActorId, "Joe Doe");
          var voiceActorWithUpdatedName = _voiceActorService.GetVoiceActorById(voiceActorId);
@@ -94,10 +94,10 @@ public class VoiceActorServiceTests
      [Fact]
     public void DeleteVoiceActor_RemovesActorWithMatchingIdFromVoiceActorList_WhenGivenVoiceActorId()
      {
-         var voiceActorId = _voiceActorService.GetAllVoiceActors()[0].Id;
+         var voiceActorId = _voiceActors[0].Id;;
          
          _voiceActorService.DeleteVoiceActor(voiceActorId);
-         var voiceActorCount = _voiceActorService.GetAllVoiceActors().Count;
+         var voiceActorCount = _voiceActors.Count;
          
          Assert.Equal(1, voiceActorCount);
      }

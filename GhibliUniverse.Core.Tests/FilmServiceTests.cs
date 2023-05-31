@@ -91,7 +91,7 @@ public class FilmServiceTests
      [Fact]
      public void GetVoiceActorsByFilm_ReturnsVoiceActorsWhichTheFilmBelongsTo_WhenCalled()
      {
-         var filmId = _filmService.GetAllFilms()[0].Id;
+         var filmId = _films[0].Id;
          _films[0].VoiceActors.Add(new VoiceActor());
 
          var voiceActorCount = _filmService.GetVoiceActorsByFilm(filmId).Count;
@@ -103,9 +103,9 @@ public class FilmServiceTests
      public void CreateFilm_PersistsNewlyCreatedFilm_WhenCalled()
      {
          _filmService.CreateFilm("Title", "Description", "Director", "Composer", 2000);
-         var filmId = _filmService.GetAllFilms()[2].Id;
+         var filmId = _films[2].Id;
          
-         var filmCount = _filmService.GetAllFilms().Count;
+         var filmCount = _films.Count;
          var film = _filmService.GetFilmById(filmId);
          
          Assert.Equal(3, filmCount);
@@ -115,7 +115,7 @@ public class FilmServiceTests
      [Fact]
      public void UpdateFilm_UpdatesFilmFields_WhenPassedAFilmInstance()
      {
-         var filmId = _filmService.GetAllFilms()[0].Id;
+         var filmId = _films[0].Id;
          var newFilm = new Film
          {
              Title = ValidatedString.From("UpdatedTitle"),
@@ -126,7 +126,7 @@ public class FilmServiceTests
              
          };
          _filmService.UpdateFilm(filmId, newFilm);
-         var filmWithUpdatedFields = _filmService.GetFilmById(filmId);
+         var filmWithUpdatedFields = _films[0];
 
          Assert.Equal(ValidatedString.From("UpdatedTitle"), filmWithUpdatedFields.Title);
          Assert.Equal(ValidatedString.From("UpdatedDescription"), filmWithUpdatedFields.Description);
@@ -138,10 +138,10 @@ public class FilmServiceTests
      [Fact]
      public void DeleteFilm_RemovesFilmWithMatchingIdFromFilmList_WhenGivenFilmId()
      {
-         var filmId = _filmService.GetAllFilms()[0].Id;
+         var filmId = _films[0].Id;
          
          _filmService.DeleteFilm(filmId);
-         var voiceActorCount = _filmService.GetAllFilms().Count;
+         var voiceActorCount = _films.Count;
          
          Assert.Equal(1, voiceActorCount);
      }
@@ -152,7 +152,7 @@ public class FilmServiceTests
          var film = new Film();
          
          _filmService.AddFilm(film);
-         var filmCount = _filmService.GetAllFilms().Count;
+         var filmCount = _films.Count;
          
          Assert.Equal(3, filmCount);
      }
@@ -160,11 +160,11 @@ public class FilmServiceTests
      [Fact]
      public void AddVoiceActor_AddsVoiceActorToAFilm_WhenCalled()
      {
-         var filmToHaveVoiceActorAddedId = _filmService.GetAllFilms()[0].Id;
+         var filmToHaveVoiceActorAddedId = _films[0].Id;
          var voiceActor = new VoiceActor();
          
          _filmService.AddVoiceActor(filmToHaveVoiceActorAddedId, voiceActor);
-         var filmVoiceActorCount = _filmService.GetAllFilms()[0].VoiceActors.Count;
+         var filmVoiceActorCount = _films[0].VoiceActors.Count;
          
          Assert.Equal(1, filmVoiceActorCount);
      }

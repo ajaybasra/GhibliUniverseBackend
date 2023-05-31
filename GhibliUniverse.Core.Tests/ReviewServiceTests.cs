@@ -54,9 +54,9 @@ public class ReviewServiceTests
     public void CreateFilm_PersistsNewlyCreatedReview_WhenCalled()
     {
         _reviewService.CreateReview(Guid.Empty, 10);
-        var reviewId = _reviewService.GetAllReviews()[2].Id;
+        var reviewId = _reviews[2].Id;
          
-        var reviewCount = _reviewService.GetAllReviews().Count;
+        var reviewCount = _reviews.Count;
         var review = _reviewService.GetReviewById(reviewId);
          
         Assert.Equal(3, reviewCount);
@@ -66,10 +66,10 @@ public class ReviewServiceTests
     [Fact]
     public void UpdateReview_UpdatesReviewRating_WhenCalled()
     {
-        var reviewId = _reviewService.GetAllReviews()[0].Id;
+        var reviewId = _reviews[0].Id;
          
         _reviewService.UpdateReview(reviewId, 9);
-        var reviewWithUpdatedName = _reviewService.GetReviewById(reviewId);
+        var reviewWithUpdatedName = _reviews[0];
 
         Assert.Equal(Rating.From(9), reviewWithUpdatedName.Rating);
     }
@@ -77,10 +77,10 @@ public class ReviewServiceTests
     [Fact]
     public void DeleteReview_RemovesReviewWithMatchingId_WhenGivenReviewId()
     {
-        var reviewId = _reviewService.GetAllReviews()[0].Id;
+        var reviewId = _reviews[0].Id;
         
         _reviewService.DeleteReview(reviewId);
-        var reviewCount = _reviewService.GetAllReviews().Count();
+        var reviewCount = _reviews.Count;
         
         Assert.Equal(1, reviewCount);
     }
