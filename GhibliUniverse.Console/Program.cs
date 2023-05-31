@@ -16,7 +16,7 @@ var voiceActorPersistence = new VoiceActorPersistence(fileOperations);
 var filmVoiceActorPersistence = new FilmVoiceActorPersistence(fileOperations, filmPersistence, voiceActorPersistence);
 var voiceActorService = new VoiceActorService(voiceActorPersistence);
 var filmService = new FilmService(filmPersistence, reviewPersistence, voiceActorPersistence, filmVoiceActorPersistence);
-var reviewService = new ReviewService(filmService, reviewPersistence);
+var reviewService = new ReviewService(reviewPersistence);
 // filmPersistence.ReadingStep();
 // filmService.PopulateFilmsList(1);
 // voiceActorService.PopulateVoiceActorsList(1);

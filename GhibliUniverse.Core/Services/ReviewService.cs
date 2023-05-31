@@ -9,11 +9,9 @@ namespace GhibliUniverse.Core.Services;
 public class ReviewService : IReviewService
 {
     private readonly IReviewPersistence _reviewPersistence;
-    private readonly IFilmService _filmService;
 
-    public ReviewService(IFilmService filmService, IReviewPersistence reviewPersistence)
+    public ReviewService(IReviewPersistence reviewPersistence)
     {
-        _filmService = filmService;
         _reviewPersistence = reviewPersistence;
     }
     public List<Review> GetAllReviews()
