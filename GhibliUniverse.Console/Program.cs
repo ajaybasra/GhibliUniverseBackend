@@ -17,11 +17,11 @@ var filmService = new FilmService(filmPersistence, reviewPersistence, voiceActor
 var reviewService = new ReviewService(reviewPersistence);
 var argumentProcessor = new ArgumentProcessor(commandLine, filmService, reviewService, voiceActorService);
 
-argumentProcessor.Process();
+// argumentProcessor.Process();
 
-var va = voiceActorService.GetVoiceActorById(Guid.Parse("69b23314-3866-4b42-bc6f-392a4af190a1"));
-filmService.AddVoiceActor(Guid.Parse("00000000-0000-0000-0000-000000000000"),va);
-filmService.AddVoiceActor(Guid.Parse("d5e9fe11-e973-47e7-822c-ff24d53c4b89"),va);
+// var va = voiceActorService.GetVoiceActorById(Guid.Parse("69b23314-3866-4b42-bc6f-392a4af190a1"));
+// filmService.AddVoiceActor(Guid.Parse("00000000-0000-0000-0000-000000000000"),va);
+// filmService.AddVoiceActor(Guid.Parse("d5e9fe11-e973-47e7-822c-ff24d53c4b89"),va);
 
 
 var g = filmService.BuildFilmList();

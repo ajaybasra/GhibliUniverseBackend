@@ -6,11 +6,11 @@ namespace GhibliUniverse.Core.DataPersistence;
 
 public class FilmPersistence : IFilmPersistence
 {
-    private readonly FileOperations _fileOperations;
+    private readonly IFileOperations _fileOperations;
     private const string OldFilmsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-films.csv";
     private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/films.csv";
 
-    public FilmPersistence(FileOperations fileOperations)
+    public FilmPersistence(IFileOperations fileOperations)
     {
         _fileOperations = fileOperations;
     }

@@ -5,13 +5,13 @@ namespace GhibliUniverse.Core.DataPersistence;
 
 public class FilmVoiceActorPersistence : IFilmVoiceActorPersistence
 {
-    private readonly FileOperations _fileOperations;
-    private readonly FilmPersistence _filmPersistence;
-    private readonly VoiceActorPersistence _voiceActorPersistence;
+    private readonly IFileOperations _fileOperations;
+    private readonly IFilmPersistence _filmPersistence;
+    private readonly IVoiceActorPersistence _voiceActorPersistence;
     private const string OldFilmVoiceActorFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-film-and-voice-actor-ids.csv";
     private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/film-and-voice-actor-ids.csv";
 
-    public FilmVoiceActorPersistence(FileOperations fileOperations, FilmPersistence filmPersistence, VoiceActorPersistence voiceActorPersistence)
+    public FilmVoiceActorPersistence(IFileOperations fileOperations, IFilmPersistence filmPersistence, IVoiceActorPersistence voiceActorPersistence)
     {
         _fileOperations = fileOperations;
         _filmPersistence = filmPersistence;

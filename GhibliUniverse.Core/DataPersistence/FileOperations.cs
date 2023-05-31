@@ -1,6 +1,6 @@
 namespace GhibliUniverse.Core.DataPersistence;
 
-public class FileOperations
+public class FileOperations : IFileOperations
 {
     public void CreateBackupCSVFile(string latestFilePath, string oldFilePath)
     {

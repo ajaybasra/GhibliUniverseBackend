@@ -1,17 +1,28 @@
+using AutoMapper;
 using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GhibliUniverse.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]  
-public class FilmController : Controller  
+public class FilmController : Controller
 {
+    private readonly IFilmService _filmService;
+    private readonly IMapper _mapper;
+    
+    public FilmController(IFilmService filmService, IMapper mapper)
+    {
+        _filmService = filmService;
+        _mapper = mapper;
+    }
 
     [HttpGet]
     public IActionResult GetAllFilms()
     {
-        return Ok("ye");
+        var films = _filmService.GetAllFilms();
+        return Ok(films);
     }
 
     [HttpGet("{filmId:guid}")]

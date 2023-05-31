@@ -6,11 +6,11 @@ namespace GhibliUniverse.Core.DataPersistence;
 
 public class ReviewPersistence : IReviewPersistence
 {
-    private readonly FileOperations _fileOperations;
+    private readonly IFileOperations _fileOperations;
     private const string OldFilmRatingsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-reviews.csv";
     private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/reviews.csv";
 
-    public ReviewPersistence(FileOperations fileOperations)
+    public ReviewPersistence(IFileOperations fileOperations)
     {
         _fileOperations = fileOperations;
     }

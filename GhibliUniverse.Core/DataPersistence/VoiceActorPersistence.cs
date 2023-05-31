@@ -6,11 +6,11 @@ namespace GhibliUniverse.Core.DataPersistence;
 
 public class VoiceActorPersistence : IVoiceActorPersistence
 {
-    private readonly FileOperations _fileOperations;
+    private readonly IFileOperations _fileOperations;
     private const string OldVoiceActorsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-voice-actors.csv";
     private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/voice-actors.csv";
 
-    public VoiceActorPersistence(FileOperations fileOperations)
+    public VoiceActorPersistence(IFileOperations fileOperations)
     {
         _fileOperations = fileOperations;
     }
