@@ -7,6 +7,7 @@ using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Services;
 
 var commandLine = new CommandLine();
+var consoleWriter = new ConsoleWriter();
 var fileOperations = new FileOperations();
 var filmPersistence = new FilmPersistence(fileOperations);
 var reviewPersistence = new ReviewPersistence(fileOperations);
@@ -15,9 +16,9 @@ var filmVoiceActorPersistence = new FilmVoiceActorPersistence(fileOperations, fi
 var voiceActorService = new VoiceActorService(voiceActorPersistence);
 var filmService = new FilmService(filmPersistence, reviewPersistence, voiceActorPersistence, filmVoiceActorPersistence);
 var reviewService = new ReviewService(reviewPersistence);
-var argumentProcessor = new ArgumentProcessor(commandLine, filmService, reviewService, voiceActorService);
+var argumentProcessor = new ArgumentProcessor(commandLine, consoleWriter, filmService, reviewService, voiceActorService);
 
-// argumentProcessor.Process();
+argumentProcessor.Process();
 // var va = voiceActorService.GetVoiceActorById(Guid.Parse("69b23314-3866-4b42-bc6f-392a4af190a1"));
 // var vb = voiceActorService.GetVoiceActorById(Guid.Parse("e200aaf0-8655-4d22-96e4-21b16da714d4"));
 // filmService.AddVoiceActor(Guid.Parse("00000000-0000-0000-0000-000000000000"),vb);
