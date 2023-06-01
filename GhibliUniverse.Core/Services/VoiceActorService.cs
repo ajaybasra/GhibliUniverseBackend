@@ -84,7 +84,7 @@ public class VoiceActorService : IVoiceActorService
         {
             throw new ModelNotFoundException(voiceActorId);
         }
-        voiceActor.Films.ForEach(f => f.RemoveVoiceActor(voiceActor));
+        voiceActor.Films.ForEach(f => f.VoiceActors.Remove(voiceActor));
         savedVoiceActors.Remove(voiceActor);
         _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
     }

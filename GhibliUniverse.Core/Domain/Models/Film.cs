@@ -14,26 +14,7 @@ public record Film()
     
     public List<VoiceActor> VoiceActors { get; set; } = new(); 
     public List<Review> Reviews { get; set; } = new();
-
-    public void AddVoiceActor(VoiceActor voiceActor)
-    {
-        List<Guid> idList = VoiceActors.Select(v => v.Id).ToList();
-
-        if (!VoiceActors.Contains(voiceActor) && !idList.Contains(voiceActor.Id))
-        {
-            VoiceActors.Add(voiceActor);
-            voiceActor.AddFilm(this);
-        }
-    }
-
-    public void RemoveVoiceActor(VoiceActor voiceActor)
-    {
-        if (VoiceActors.Contains(voiceActor))
-        {
-            VoiceActors.Remove(voiceActor);
-            voiceActor.RemoveFilm(this);
-        }
-    }
+    
     public override string ToString()
     {
         var str = new StringBuilder();

@@ -83,7 +83,7 @@ public class FilmService : IFilmService
 
     public void UpdateFilm(Guid filmId, Film updatedFilm) // look at
     {
-        var savedFilms = _filmPersistence.ReadFilms();
+        var savedFilms = GetFilmsWithVoiceActorsAndReviewsAdded();
         var filmToUpdate = savedFilms.FirstOrDefault(f => f.Id == filmId);
         if (filmToUpdate == null)
         {
@@ -97,23 +97,33 @@ public class FilmService : IFilmService
         filmToUpdate.ReleaseYear = updatedFilm.ReleaseYear;
         
         _filmPersistence.WriteFilms(savedFilms);
+        _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
     }
 
     public void DeleteFilm(Guid filmId)
     {
-        var savedFilms = _filmPersistence.ReadFilms();
+        var savedFilms = GetFilmsWithVoiceActorsAndReviewsAdded();
         var savedReviews = _reviewPersistence.ReadReviews();
+        
         var filmToBeDeleted = savedFilms.FirstOrDefault(f => f.Id == filmId);
-        savedReviews.RemoveAll(review => filmToBeDeleted.Reviews.Contains(review));
         if (filmToBeDeleted == null)
         {
             throw new ModelNotFoundException(filmId);
         }
+        savedReviews.RemoveAll(review => filmToBeDeleted.Reviews.Contains(review));
 
-        filmToBeDeleted.VoiceActors.ForEach(v => v.RemoveFilm(filmToBeDeleted));
-        savedFilms.Remove(filmToBeDeleted);
+        foreach (var voiceActor in filmToBeDeleted.VoiceActors)
+        {
+            var filmIdList = voiceActor.Films.Select(f => f.Id).ToList();
+            if (filmIdList.Contains(filmToBeDeleted.Id))
+            {
+                voiceActor.Films.RemoveAll(f => f.Id == filmToBeDeleted.Id);
+            }
+        }
+        savedFilms.RemoveAll(f => f.Id == filmToBeDeleted.Id);
         _filmPersistence.WriteFilms(savedFilms);
         _reviewPersistence.WriteReviews(savedReviews);
+        _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
     }
     
   
@@ -126,7 +136,17 @@ public class FilmService : IFilmService
         {
             throw new ModelNotFoundException(filmId);
         }
-        filmToAddVoiceActor.AddVoiceActor(voiceActor);
+        var voiceActorsIdList = filmToAddVoiceActor.VoiceActors.Select(v => v.Id).ToList();
+
+        if (!voiceActorsIdList.Contains(voiceActor.Id))
+        {
+            filmToAddVoiceActor.VoiceActors.Add(voiceActor);
+            var filmIdList = voiceActor.Films.Select(f => f.Id).ToList();
+            if (!filmIdList.Contains(filmToAddVoiceActor.Id))
+            {
+                voiceActor.Films.Add(filmToAddVoiceActor);
+            }
+        }
         _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
     }
 
@@ -138,7 +158,16 @@ public class FilmService : IFilmService
         {
             throw new ModelNotFoundException(filmId);
         }
-        filmToHaveVoiceActorRemoved.VoiceActors.Remove(voiceActor);
+        var voiceActorIdList = filmToHaveVoiceActorRemoved.VoiceActors.Select(v => v.Id).ToList();
+        if (voiceActorIdList.Contains(voiceActor.Id))
+        {
+            filmToHaveVoiceActorRemoved.VoiceActors.RemoveAll(v => v.Id == voiceActor.Id);
+            var filmIdList = voiceActor.Films.Select(f => f.Id).ToList();
+            if (filmIdList.Contains(filmToHaveVoiceActorRemoved.Id))
+            {
+                voiceActor.Films.RemoveAll(f => f.Id == filmToHaveVoiceActorRemoved.Id);
+            }
+        }
         _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
     }
 

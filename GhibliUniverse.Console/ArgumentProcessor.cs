@@ -23,7 +23,7 @@ public class ArgumentProcessor
     public void Process()
     {
         switch (_programArguments[1])
-        {
+        {           
             case "get-all-films":
                 HandleGetAllFilms();
                 break;
