@@ -9,13 +9,14 @@ COPY *.sln ./
 COPY ./GhibliUniverse.Console/*.csproj ./GhibliUniverse.Console/
 COPY ./GhibliUniverse.API/*.csproj ./GhibliUniverse.API/
 COPY ./GhibliUniverse.Core/*.csproj ./GhibliUniverse.Core/
+COPY ./GhibliUniverse.Console.Tests/*.csproj ./GhibliUniverse.Console.Tests/
 COPY ./GhibliUniverse.Core.Tests/*.csproj ./GhibliUniverse.Core.Tests/
 RUN dotnet restore
 COPY ./ ./
 RUN dotnet build
 
 FROM build AS test
-WORKDIR /app/GhibliUniverse.Core.Tests
+WORKDIR /app/
 RUN dotnet test
 
 FROM build AS publish
