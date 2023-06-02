@@ -2,7 +2,7 @@ using GhibliUniverse.Core.Domain.ValueObjects;
 
 namespace GhibliUniverse.API.DTOs;
 
-public record FilmDTO()
+public record FilmResponseDTO()
 {
     public Guid Id { get; init; }
     public ValidatedString Title { get; set; }

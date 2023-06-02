@@ -41,10 +41,10 @@ public class ArgumentProcessor
             case "delete-film":
                 HandleDeleteFilm(_programArguments[2]);
                 break;
-            case "add-voice-actor-to-film":
+            case "link-voice-actor-to-film":
                 HandleAddVoiceActorToFilm(_programArguments[2], _programArguments[3]);
                 break;
-            case "remove-voice-actor-from-film":
+            case "unlink-voice-actor-from-film":
                 HandleRemoveVoiceActorFromFilm(_programArguments[2], _programArguments[3]);
                 break;
             case "get-all-voice-actors":
@@ -146,8 +146,7 @@ public class ArgumentProcessor
     {
         try
         {
-            var voiceActor = _voiceActorService.GetVoiceActorById(Guid.Parse(voiceActorId));
-            _filmService.AddVoiceActor(Guid.Parse(filmId), voiceActor);
+            _filmService.LinkVoiceActor(Guid.Parse(filmId), Guid.Parse(voiceActorId));
         }
         catch (FormatException fe)
         {
@@ -163,8 +162,7 @@ public class ArgumentProcessor
     {
         try
         {
-            var voiceActor = _voiceActorService.GetVoiceActorById(Guid.Parse(voiceActorId));
-            _filmService.RemoveVoiceActor(Guid.Parse(filmId), voiceActor);
+            _filmService.UnlinkVoiceActor(Guid.Parse(filmId), Guid.Parse(voiceActorId));
         }
         catch (FormatException fe)
         {

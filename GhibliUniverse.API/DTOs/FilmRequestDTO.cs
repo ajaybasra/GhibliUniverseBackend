@@ -1,6 +1,6 @@
 namespace GhibliUniverse.API.DTOs;
 
-public record FilmPostDTO()
+public record FilmRequestDTO() 
 {
     public string Title { get; set; }
     public string Description { get; set; }

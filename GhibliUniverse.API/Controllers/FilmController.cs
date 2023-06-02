@@ -5,7 +5,6 @@ using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.StaticFiles;
 
 namespace GhibliUniverse.API.Controllers;
 
@@ -25,7 +24,7 @@ public class FilmController : Controller
     [HttpGet]
     public IActionResult GetAllFilms()
     {
-        var films = _mapper.Map<List<FilmDTO>>(_filmService.GetAllFilms());
+        var films = _mapper.Map<List<FilmResponseDTO>>(_filmService.GetAllFilms());
         return Ok(films);
     }
 
@@ -34,7 +33,7 @@ public class FilmController : Controller
     {
         try
         {
-            var film = _mapper.Map<FilmDTO>(_filmService.GetFilmById(filmId));
+            var film = _mapper.Map<FilmResponseDTO>(_filmService.GetFilmById(filmId));
             return Ok(film);
         }
         catch (ModelNotFoundException)
@@ -48,7 +47,7 @@ public class FilmController : Controller
     {
         try
         {
-            var voiceActorsByFilm = _mapper.Map<List<VoiceActorDTO>>(_filmService.GetVoiceActorsByFilm(filmId));
+            var voiceActorsByFilm = _mapper.Map<List<VoiceActorResponseDTO>>(_filmService.GetVoiceActorsByFilm(filmId));
             return Ok(voiceActorsByFilm);
         }
         catch (ModelNotFoundException)
@@ -56,20 +55,18 @@ public class FilmController : Controller
             return NotFound("No film found with the following id: " + filmId);
         }
     }
-// https://localhost:7212/api/film
+    
     [HttpPost]
-    public IActionResult CreateFilm([FromBody] FilmPostDTO filmCreate)
+    public IActionResult CreateFilm([FromBody] FilmRequestDTO filmCreate)
     {
         if (filmCreate == null)
         {
             return BadRequest(ModelState);
         }
-
-        var film = _filmService.GetAllFilms().FirstOrDefault(f => f.Title == ValidatedString.From(filmCreate.Title));
-
-        if (film != null)
+        
+        if (_filmService.FilmTitleAlreadyExists(filmCreate.Title))
         {
-            ModelState.AddModelError("", "Category already exists");
+            ModelState.AddModelError("", "Film with the same name already exists");
             return StatusCode(422, ModelState);
         }
         
@@ -81,9 +78,36 @@ public class FilmController : Controller
         return Ok("Successfully created film");
     }
 
+    [HttpPost("{filmId:guid}/LinkVoiceActor")]
+    public IActionResult LinkVoiceActor(Guid filmId, [FromBody] Guid voiceActorId)
+    {
+        try
+        {
+            _filmService.LinkVoiceActor(filmId, voiceActorId);
+            return Ok("Successfully linked voice actor");
+        }
+        catch (ModelNotFoundException)
+        {
+            return NotFound("No model found with the given id");
+        }
+    }
+    
+    [HttpPost("{filmId:guid}/UnlinkVoiceActor")]
+    public IActionResult UnlinkVoiceActor(Guid filmId, [FromBody] Guid voiceActorId)
+    {
+        try
+        {
+            _filmService.UnlinkVoiceActor(filmId, voiceActorId);
+            return Ok("Successfully unlinked voice actor");
+        }
+        catch (ModelNotFoundException)
+        {
+            return NotFound("No model found with the given id");
+        }
+    }
 
     [HttpPut("{filmId:guid}")]
-    public IActionResult UpdateFilm(Guid filmId, [FromBody] FilmPostDTO filmUpdate)
+    public IActionResult UpdateFilm(Guid filmId, [FromBody] FilmRequestDTO filmUpdate)
     {
         if (filmUpdate == null)
         {
@@ -92,10 +116,9 @@ public class FilmController : Controller
 
         try
         {
-            var film = _filmService.GetFilmById(filmId);
             var filmUpdateToValueObjects = new Film()
             {
-                Title = ValidatedString.From(filmUpdate.Title),
+                Title = ValidatedString.From(filmUpdate.Title), // worth looking into configuring automapper to map 
                 Description = ValidatedString.From(filmUpdate.Description),
                 Director = ValidatedString.From(filmUpdate.Director),
                 Composer = ValidatedString.From(filmUpdate.Composer),

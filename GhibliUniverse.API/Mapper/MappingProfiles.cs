@@ -8,12 +8,12 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<Film, FilmDTO>();
-        CreateMap<FilmDTO, Film>();
-        CreateMap<FilmPostDTO, Film>();
-        CreateMap<Review, ReviewDTO>();
-        CreateMap<ReviewDTO, Review>();
-        CreateMap<VoiceActor, VoiceActorDTO>();
-        CreateMap<VoiceActorDTO, VoiceActor>();
+        CreateMap<Film, FilmResponseDTO>();
+        CreateMap<FilmResponseDTO, Film>();
+        CreateMap<FilmRequestDTO, Film>();
+        CreateMap<Review, ReviewResponseDTO>();
+        CreateMap<ReviewResponseDTO, Review>();
+        CreateMap<VoiceActor, VoiceActorResponseDTO>();
+        CreateMap<VoiceActorResponseDTO, VoiceActor>();
     }
 }

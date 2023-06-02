@@ -141,34 +141,34 @@ public class ArgumentProcessorTests
     [Fact]
     public void Process_InvokesAddVoiceActor_WhenAddVoiceActorToFilmCommandGiven()
     {
-        var args = new[] { "pathname", "add-voice-actor-to-film", "00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000" };
+        var args = new[] { "pathname", "link-voice-actor-to-film", "00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000" };
         _mockedCommandLine.Setup(x => x.GetCommandLineArgs()).Returns(args);
         _argumentProcessor = new ArgumentProcessor(_mockedCommandLine.Object, _fakeWriter, _mockedFilmService.Object,
             _mockedReviewService.Object, _mockedVoiceActorService.Object);
         
         _argumentProcessor.Process();
         
-        _mockedFilmService.Verify(x => x.AddVoiceActor(It.IsAny<Guid>(), It.IsAny<VoiceActor>()));
+        _mockedFilmService.Verify(x => x.LinkVoiceActor(It.IsAny<Guid>(), It.IsAny<Guid>()));
     }
     
     [Fact]
     public void Process_InvokesRemoveVoiceActor_WhenRemoveVoiceActorFromFilmCommandGiven()
     {
-        var args = new[] { "pathname", "remove-voice-actor-from-film", "00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000" };
+        var args = new[] { "pathname", "unlink-voice-actor-from-film", "00000000-0000-0000-0000-000000000000", "00000000-0000-0000-0000-000000000000" };
         _mockedCommandLine.Setup(x => x.GetCommandLineArgs()).Returns(args);
         _argumentProcessor = new ArgumentProcessor(_mockedCommandLine.Object, _fakeWriter, _mockedFilmService.Object,
             _mockedReviewService.Object, _mockedVoiceActorService.Object);
         
         _argumentProcessor.Process();
         
-        _mockedFilmService.Verify(x => x.RemoveVoiceActor(It.IsAny<Guid>(), It.IsAny<VoiceActor>()));
+        _mockedFilmService.Verify(x => x.UnlinkVoiceActor(It.IsAny<Guid>(), It.IsAny<Guid>()));
     }
     
     [Fact]
-    public void Process_PrintsErrorMessage_WhenRemoveVoiceActorCommandGivenWithWrongInput()
+    public void Process_PrintsErrorMessage_WhenUnlinkVoiceActorCommandGivenWithWrongInput()
     {
         var expectedOutput = "Guid should contain 32 digits with 4 dashes (xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx).";
-        var args = new[] { "pathname", "remove-voice-actor-from-film", "00000000-0000-0000-0000-000000000000", "10" };
+        var args = new[] { "pathname", "unlink-voice-actor-from-film", "00000000-0000-0000-0000-000000000000", "10" };
         _mockedCommandLine.Setup(x => x.GetCommandLineArgs()).Returns(args);
         _argumentProcessor = new ArgumentProcessor(_mockedCommandLine.Object, _fakeWriter, _mockedFilmService.Object,
             _mockedReviewService.Object, _mockedVoiceActorService.Object);

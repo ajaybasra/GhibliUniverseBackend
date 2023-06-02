@@ -168,12 +168,12 @@ public class FilmServiceTests
      }
 
      [Fact]
-     public void AddVoiceActor_AddsVoiceActorToAFilm_WhenCalled()
+     public void LinkVoiceActor_LinksVoiceActorToAFilm_WhenCalled()
      {
          var filmToHaveVoiceActorAddedId = _films[0].Id;
          var voiceActor = new VoiceActor();
          
-         _filmService.AddVoiceActor(filmToHaveVoiceActorAddedId, voiceActor);
+         _filmService.LinkVoiceActor(filmToHaveVoiceActorAddedId, voiceActor.Id);
          var filmVoiceActorCount = _films[0].VoiceActors.Count;
          
          Assert.Equal(1, filmVoiceActorCount);
