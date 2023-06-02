@@ -10,6 +10,7 @@ public class MappingProfiles : Profile
     {
         CreateMap<Film, FilmDTO>();
         CreateMap<FilmDTO, Film>();
+        CreateMap<FilmPostDTO, Film>();
         CreateMap<Review, ReviewDTO>();
         CreateMap<ReviewDTO, Review>();
         CreateMap<VoiceActor, VoiceActorDTO>();

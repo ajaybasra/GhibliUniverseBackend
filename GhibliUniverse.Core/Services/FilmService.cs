@@ -97,7 +97,6 @@ public class FilmService : IFilmService
         filmToUpdate.ReleaseYear = updatedFilm.ReleaseYear;
         
         _filmPersistence.WriteFilms(savedFilms);
-        _filmVoiceActorPersistence.WriteFilmVoiceActors(savedFilms);
     }
 
     public void DeleteFilm(Guid filmId)
