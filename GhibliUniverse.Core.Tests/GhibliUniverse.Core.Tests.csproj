@@ -24,6 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\GhibliUniverse.API\GhibliUniverse.API.csproj" />
       <ProjectReference Include="..\GhibliUniverse.Core\GhibliUniverse.Core.csproj" />
     </ItemGroup>
 

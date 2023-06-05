@@ -1,40 +1,104 @@
+using AutoMapper;
+using GhibliUniverse.API.DTOs;
 using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GhibliUniverse.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class FilmRatingController : Controller
+public class ReviewController : Controller
 {
+    private readonly IReviewService _reviewService;
+    private readonly IMapper _mapper;
+
+    public ReviewController(IReviewService reviewService, IMapper mapper)
+    {
+        _reviewService = reviewService;
+        _mapper = mapper;
+    }
     [HttpGet]
     public IActionResult GetAllReviews()
     {
-        return Ok("ye");
+        var reviews = _mapper.Map<List<ReviewResponseDTO>>(_reviewService.GetAllReviews());
+        return Ok(reviews);
     }
     
     [HttpGet("{reviewId:guid}")]
     public IActionResult GetReviewById(Guid reviewId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var review = _mapper.Map<ReviewResponseDTO>(_reviewService.GetReviewById(reviewId));
+            return Ok(review);
+        }
+        catch (ModelNotFoundException)
+        {
+            return NotFound("No review found with the following id: " + reviewId);
+        }
     }
     
     [HttpPost("filmId:guid")]
-    public IActionResult CreateReview(Guid filmId, [FromBody]Rating rating)
+    public IActionResult CreateReview(Guid filmId, [FromBody] ReviewRequestDTO reviewCreate)
     {
-        return Ok("yo");
+        if (reviewCreate == null)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        try
+        {
+            _reviewService.CreateReview(filmId, reviewCreate.rating);
+            return Ok("Successfully created review");
+
+        }
+        catch (Exception)
+        {
+            return  NotFound("No film found with the following id: " + filmId);
+        }
     }
     
-    [HttpPut("{filmRatingId:guid}")]
-    public IActionResult UpdateReview(Guid reviewId)
+    [HttpPut("{reviewId:guid}")]
+    public IActionResult UpdateReview(Guid reviewId, [FromBody] ReviewRequestDTO reviewUpdate)
     {
-        throw new NotImplementedException();
+        if (reviewUpdate == null)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            _reviewService.UpdateReview(reviewId, reviewUpdate.rating);
+        }
+        catch (ModelNotFoundException)
+        {
+            return NotFound("No review found with the following id: " + reviewId);
+        }
+        catch (Rating.RatingOutOfRangeException e)
+        {
+            return BadRequest(e.Message);
+        }
+        
+        return Ok("Successfully updated review");
     }
     
-    [HttpDelete("{filmRatingId:guid}")]
+    [HttpDelete("{reviewId:guid}")]
     public IActionResult DeleteReview(Guid reviewId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _reviewService.DeleteReview(reviewId);
+            return Ok("Successfully deleted review");
+        }
+        catch (ModelNotFoundException)
+        {
+            return NotFound("No review found with the following id: " + reviewId);
+        }
     }
 }

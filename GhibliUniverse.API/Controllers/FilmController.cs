@@ -116,22 +116,20 @@ public class FilmController : Controller
 
         try
         {
-            var filmUpdateToValueObjects = new Film()
-            {
-                Title = ValidatedString.From(filmUpdate.Title), // worth looking into configuring automapper to map 
-                Description = ValidatedString.From(filmUpdate.Description),
-                Director = ValidatedString.From(filmUpdate.Director),
-                Composer = ValidatedString.From(filmUpdate.Composer),
-                ReleaseYear = ReleaseYear.From(filmUpdate.ReleaseYear)
-            };
-            _filmService.UpdateFilm(filmId, filmUpdateToValueObjects);
+            var filmUpdateMap = _mapper.Map<Film>(filmUpdate);
+            _filmService.UpdateFilm(filmId, filmUpdateMap);
+            return Ok("Successfully updated film");
         }
         catch (ModelNotFoundException)
         {
             return NotFound("No film found with the following id: " + filmId);
         }
-        
-        return Ok("Successfully updated film");
+        catch (AutoMapperMappingException e)
+        {
+            return BadRequest(e.InnerException.Message);
+        }
+
+
     }
 
     [HttpDelete("{filmId:guid}")]

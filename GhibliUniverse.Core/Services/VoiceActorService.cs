@@ -88,6 +88,12 @@ public class VoiceActorService : IVoiceActorService
         savedVoiceActors.Remove(voiceActor);
         _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
     }
+    
+    public bool VoiceActorAlreadyExists(string name)
+    {
+        var voiceActorsWithMatchingName = GetAllVoiceActors().FirstOrDefault(f => f.Name == ValidatedString.From(name));
+        return voiceActorsWithMatchingName != null;
+    }
 
     public void PopulateVoiceActorsList(int numberOfVoiceActors)
     {
