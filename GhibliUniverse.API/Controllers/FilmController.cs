@@ -91,10 +91,7 @@ public class FilmController : Controller
         {
             return BadRequest(e.Message);
         }
-        catch (AutoMapperMappingException e)
-        {
-            return BadRequest(e.InnerException.Message);
-        }
+        
 
     }
 
@@ -106,9 +103,9 @@ public class FilmController : Controller
             _filmService.LinkVoiceActor(filmId, voiceActorId);
             return Ok("Successfully linked voice actor");
         }
-        catch (ModelNotFoundException)
+        catch (ModelNotFoundException e)
         {
-            return NotFound("No model found with the given id");
+            return NotFound(e.Message);
         }
     }
     
@@ -120,9 +117,9 @@ public class FilmController : Controller
             _filmService.UnlinkVoiceActor(filmId, voiceActorId);
             return Ok("Successfully unlinked voice actor");
         }
-        catch (ModelNotFoundException)
+        catch (ModelNotFoundException e)
         {
-            return NotFound("No model found with the given id");
+            return NotFound(e.Message);
         }
     }
 
@@ -144,18 +141,18 @@ public class FilmController : Controller
         {
             return NotFound("No film found with the following id: " + filmId);
         }
-        catch (ReleaseYear.NotFourCharactersException e)
-        {
-            return BadRequest(e.Message);
-        }
-        catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
-        {
-            return BadRequest(e.Message);
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
+        // catch (ReleaseYear.NotFourCharactersException e)
+        // {
+        //     return BadRequest(e.Message);
+        // }
+        // catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
+        // {
+        //     return BadRequest(e.Message);
+        // }
+        // catch (ArgumentException e)
+        // {
+        //     return BadRequest(e.Message);
+        // }
         catch (AutoMapperMappingException e)
         {
             return BadRequest(e.InnerException.Message);

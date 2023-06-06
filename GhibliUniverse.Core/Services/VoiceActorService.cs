@@ -55,20 +55,6 @@ public class VoiceActorService : IVoiceActorService
         savedVoiceActors.Add(voiceActor);
         _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
         return voiceActor;
-        // try
-        // {
-        //     var voiceActor = new VoiceActor
-        //     {
-        //         Id = Guid.NewGuid(),
-        //         Name = ValidatedString.From(name)
-        //     };
-        //     savedVoiceActors.Add(voiceActor);
-        //     _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
-        // }
-        // catch (ArgumentException ae)
-        // {
-        //     Console.WriteLine(ae);
-        // }
     }
 
     public VoiceActor UpdateVoiceActor(Guid voiceActorId, string name)

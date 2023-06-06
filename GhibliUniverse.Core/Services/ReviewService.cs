@@ -44,17 +44,6 @@ public class ReviewService : IReviewService
         savedReviews.Add(review);
         _reviewPersistence.WriteReviews(savedReviews);
         return review;
-        // try
-        // {
-        // }
-        // catch (ModelNotFoundException e)
-        // {
-        //     Console.WriteLine(e);
-        // }
-        // catch (Rating.RatingOutOfRangeException e)
-        // {
-        //     Console.WriteLine(e);
-        // }
     }
 
     public Review UpdateReview(Guid reviewId, int rating)
@@ -75,14 +64,6 @@ public class ReviewService : IReviewService
         // filmToRemoveReviewFrom.Reviews.Remove(reviewToDelete);
         savedReviews.Remove(reviewToDelete);
         _reviewPersistence.WriteReviews(savedReviews);
-        // try
-        // {
-        //
-        // }
-        // catch (ModelNotFoundException e)
-        // {
-        //     Console.WriteLine(e);
-        // }
     }
     
     public string BuildReviewList()
