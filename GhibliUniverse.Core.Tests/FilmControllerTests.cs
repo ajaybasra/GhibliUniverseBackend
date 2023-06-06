@@ -3,6 +3,7 @@ using GhibliUniverse.API.Controllers;
 using GhibliUniverse.API.DTOs;
 using GhibliUniverse.API.Mapper;
 using GhibliUniverse.Core.Domain.Models;
+using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -45,9 +46,6 @@ public class FilmControllerTests
         _mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile(_mappingProfiles));
         _mapper = new Mapper(_mapperConfiguration);
         _films = new List<Film>() { _film1, _film2 };
-        var mappingProfiles = new MappingProfiles();
-        var configuration = new MapperConfiguration(cfg => cfg.AddProfile(mappingProfiles));
-        var mapper = new Mapper(configuration);
     }
 
     [Fact]
@@ -101,9 +99,47 @@ public class FilmControllerTests
         };
 
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
-        var result = filmController.GetFilmById(Guid.Parse("00000000-0000-0000-0000-000000000001")) as OkObjectResult;
+        var result = filmController.GetFilmById(Guid.Parse("00000000-0000-0000-0000-000000000001")) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
         Assert.Equal(expected, result.Value);
+    }
+
+    [Fact]
+    public void GetFilmById_Returns404CodeWithGuid_WhenGivenNonExistentId()
+    {
+        _mockedFilmService.Setup(x => x.GetFilmById(It.IsAny<Guid>())).Throws(new ModelNotFoundException(Guid.Parse("04000000-0000-0000-0000-000000000001")));
+        var expected = "No film found with the following id: 04000000-0000-0000-0000-000000000001";
+        
+        
+        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+        var result = filmController.GetFilmById(Guid.Parse("04000000-0000-0000-0000-000000000001")) as ObjectResult;
+    
+        Assert.Equal(404, result.StatusCode);
+        Assert.Equal(expected, result.Value);
+    }
+
+    [Fact]
+    public void GetVoiceActorsByFilm_Returns200StatusCode_WhenGivenValidId() //tidy this up
+    {
+        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+        var result =
+            filmController.GetVoiceActorsByFilm(Guid.NewGuid()) as OkObjectResult;
+        
+        Assert.Equal(200, result.StatusCode);
+        Assert.NotNull(result.Value);
+    }
+
+    [Fact]
+    public void CreateFilm_Returns200StatusCode_WhenGivenValidInput()
+    {
+        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+
+        FilmRequestDTO filmRequestDto = new FilmRequestDTO()
+            { Title = "test", Description = "test", Director = "test", Composer = "test", ReleaseYear = 2000 };
+        var result = filmController.CreateFilm(filmRequestDto) as OkObjectResult;
+        
+        Assert.Equal(200, result.StatusCode);
+        
     }
 }

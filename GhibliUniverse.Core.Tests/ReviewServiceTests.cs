@@ -71,11 +71,9 @@ public class ReviewServiceTests
     }
     
     [Fact]
-    public void CreateReview_DoesNotAddReview_WhenGivenInvalidRating()
+    public void CreateReview_ThrowsRatingOutOfRangeException_WhenGivenInvalidRating()
     {
-        _reviewService.CreateReview(Guid.Empty, -1);
-        var reviewCount = _reviews.Count;
-        Assert.Equal(2, reviewCount);
+        Assert.Throws<Rating.RatingOutOfRangeException>(() => _reviewService.CreateReview(Guid.Empty, -1));
     }
     
     [Fact]

@@ -54,13 +54,16 @@ public class ReviewController : Controller
 
         try
         {
-            _reviewService.CreateReview(filmId, reviewCreate.rating);
-            return Ok("Successfully created review");
-
+            var createdReview = _mapper.Map<ReviewResponseDTO>(_reviewService.CreateReview(filmId, reviewCreate.rating));
+            return Ok(createdReview);
         }
-        catch (Exception)
+        catch (ModelNotFoundException)
         {
             return  NotFound("No film found with the following id: " + filmId);
+        }
+        catch (Rating.RatingOutOfRangeException e)
+        {
+            return BadRequest(e.Message);
         }
     }
     
@@ -74,7 +77,8 @@ public class ReviewController : Controller
 
         try
         {
-            _reviewService.UpdateReview(reviewId, reviewUpdate.rating);
+            var updatedReview = _mapper.Map<ReviewResponseDTO>(_reviewService.UpdateReview(reviewId, reviewUpdate.rating));
+            return Ok(updatedReview);
         }
         catch (ModelNotFoundException)
         {
@@ -85,7 +89,6 @@ public class ReviewController : Controller
             return BadRequest(e.Message);
         }
         
-        return Ok("Successfully updated review");
     }
     
     [HttpDelete("{reviewId:guid}")]

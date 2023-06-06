@@ -94,11 +94,9 @@ public class VoiceActorServiceTests
      }
 
      [Fact]
-     public void CreateVoiceActor_DoesNotAddVoiceActor_WhenGivenInvalidInput()
+     public void CreateVoiceActor_ThrowsArgumentException_WhenGivenInvalidInput()
      {
-         _voiceActorService.CreateVoiceActor("");
-         var voiceActorCount = _voiceActors.Count;
-         Assert.Equal(2, voiceActorCount);
+         Assert.Throws<ArgumentException>(() => _voiceActorService.CreateVoiceActor(""));
      }
 
      [Fact]

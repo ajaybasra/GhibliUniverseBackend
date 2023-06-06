@@ -126,11 +126,21 @@ public class FilmServiceTests
      }
      
      [Fact]
-     public void CreateFilm_DoesNotAddFilm_WhenGivenInvalidInput()
+     public void CreateFilm_ThrowsArgumentException_WhenGivenEmptyInputs()
      {
-         _filmService.CreateFilm("", "", "", "", 2001);
-         var filmCount = _films.Count;
-         Assert.Equal(2, filmCount);
+         Assert.Throws<ArgumentException>(() => _filmService.CreateFilm("", "", "", "", 2001));
+     }
+     
+     [Fact]
+     public void CreateFilm_ThrowsReleaseYearLessThanOldestReleaseYearException_WhenGivenReleaseYearLesserThan1984()
+     {
+         Assert.Throws<ReleaseYear.ReleaseYearLessThanOldestReleaseYearException>(() => _filmService.CreateFilm("test", "test", "test", "test", 1983));
+     }
+     
+     [Fact]
+     public void CreateFilm_ThrowsNotFourCharactersException_WhenGivenReleaseYearWhichIsNotOfLengthFour()
+     {
+         Assert.Throws<ReleaseYear.NotFourCharactersException>(() => _filmService.CreateFilm("test", "test", "test", "test", 200));
      }
      
      [Fact]

@@ -32,54 +32,57 @@ public class ReviewService : IReviewService
         return foundReview;
     }
 
-    public void CreateReview(Guid filmId, int rating)
+    public Review CreateReview(Guid filmId, int rating)
     {
         var savedReviews = _reviewPersistence.ReadReviews();
-        try
+        var review = new Review
         {
-            var review = new Review
-            {
-                Id = Guid.NewGuid(),
-                Rating = Rating.From(rating),
-                FilmId = filmId
-            };
-            savedReviews.Add(review);
-            _reviewPersistence.WriteReviews(savedReviews);
-        }
-        catch (ModelNotFoundException e)
-        {
-            Console.WriteLine(e);
-        }
-        catch (Rating.RatingOutOfRangeException e)
-        {
-            Console.WriteLine(e);
-        }
+            Id = Guid.NewGuid(),
+            Rating = Rating.From(rating),
+            FilmId = filmId
+        };
+        savedReviews.Add(review);
+        _reviewPersistence.WriteReviews(savedReviews);
+        return review;
+        // try
+        // {
+        // }
+        // catch (ModelNotFoundException e)
+        // {
+        //     Console.WriteLine(e);
+        // }
+        // catch (Rating.RatingOutOfRangeException e)
+        // {
+        //     Console.WriteLine(e);
+        // }
     }
 
-    public void UpdateReview(Guid reviewId, int rating)
+    public Review UpdateReview(Guid reviewId, int rating)
     {
         var savedReviews = _reviewPersistence.ReadReviews();
         var reviewToUpdate = GetReviewById(reviewId);
         reviewToUpdate.Rating = Rating.From(rating);
         savedReviews = savedReviews.Select(r => r.Id == reviewId ? reviewToUpdate : r).ToList();
         _reviewPersistence.WriteReviews(savedReviews);
+        return reviewToUpdate;
     }
     public void DeleteReview(Guid reviewId)
     {
         var savedReviews = _reviewPersistence.ReadReviews();
-        try
-        {
-            var reviewToDelete = GetReviewById(reviewId);
-            // var filmId = reviewToDelete.FilmId;
-            // var filmToRemoveReviewFrom = _filmService.GetFilmById(filmId);
-            // filmToRemoveReviewFrom.Reviews.Remove(reviewToDelete);
-            savedReviews.Remove(reviewToDelete);
-            _reviewPersistence.WriteReviews(savedReviews);
-        }
-        catch (ModelNotFoundException e)
-        {
-            Console.WriteLine(e);
-        }
+        var reviewToDelete = GetReviewById(reviewId);
+        // var filmId = reviewToDelete.FilmId;
+        // var filmToRemoveReviewFrom = _filmService.GetFilmById(filmId);
+        // filmToRemoveReviewFrom.Reviews.Remove(reviewToDelete);
+        savedReviews.Remove(reviewToDelete);
+        _reviewPersistence.WriteReviews(savedReviews);
+        // try
+        // {
+        //
+        // }
+        // catch (ModelNotFoundException e)
+        // {
+        //     Console.WriteLine(e);
+        // }
     }
     
     public string BuildReviewList()

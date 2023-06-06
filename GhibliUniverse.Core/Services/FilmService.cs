@@ -50,38 +50,40 @@ public class FilmService : IFilmService
         return film.VoiceActors;
     }
 
-    public void CreateFilm(string title, string description, string director, string composer, int releaseYear)
+    public Film CreateFilm(string title, string description, string director, string composer, int releaseYear)
     {
         var savedFilms = _filmPersistence.ReadFilms();
-        try
+        var film = new Film
         {
-            var film = new Film
-            {
-                Id = Guid.NewGuid(),
-                Title = ValidatedString.From(title),
-                Description = ValidatedString.From(description),
-                Director = ValidatedString.From(director),
-                Composer = ValidatedString.From(composer),
-                ReleaseYear = ReleaseYear.From(releaseYear)
-            };
-            savedFilms.Add(film);
-            _filmPersistence.WriteFilms(savedFilms);
-        }
-        catch (ReleaseYear.NotFourCharactersException e)
-        {
-            Console.WriteLine(e);
-        }
-        catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
-        {
-            Console.WriteLine(e);
-        }
-        catch (ArgumentException ae)
-        {
-            Console.WriteLine(ae);
-        }
+            Id = Guid.NewGuid(),
+            Title = ValidatedString.From(title),
+            Description = ValidatedString.From(description),
+            Director = ValidatedString.From(director),
+            Composer = ValidatedString.From(composer),
+            ReleaseYear = ReleaseYear.From(releaseYear)
+        };
+        savedFilms.Add(film);
+        _filmPersistence.WriteFilms(savedFilms);
+        return film;
+        // try
+        // {
+
+        // }
+        // catch (ReleaseYear.NotFourCharactersException e)
+        // {
+        //     Console.WriteLine(e);
+        // }
+        // catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
+        // {
+        //     Console.WriteLine(e);
+        // }
+        // catch (ArgumentException ae)
+        // {
+        //     Console.WriteLine(ae);
+        // }
     }
 
-    public void UpdateFilm(Guid filmId, Film updatedFilm) // look at
+    public Film UpdateFilm(Guid filmId, Film updatedFilm)  
     {
         var savedFilms = GetFilmsWithVoiceActorsAndReviewsAdded();
         var filmToUpdate = savedFilms.FirstOrDefault(f => f.Id == filmId);
@@ -97,6 +99,7 @@ public class FilmService : IFilmService
         filmToUpdate.ReleaseYear = updatedFilm.ReleaseYear;
         
         _filmPersistence.WriteFilms(savedFilms);
+        return filmToUpdate;
     }
 
     public void DeleteFilm(Guid filmId)

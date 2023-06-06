@@ -70,10 +70,17 @@ public class VoiceActorController : Controller
         
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
+
+        try
+        {
+            var createdVoiceActor = _mapper.Map<VoiceActorResponseDTO>(_voiceActorService.CreateVoiceActor(voiceActorCreate.Name));
+            return Ok(createdVoiceActor);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
         
-        _voiceActorService.CreateVoiceActor(voiceActorCreate.Name);
-        
-        return Ok("Successfully created voice actor");
     }
     
     [HttpPut("{voiceActorId:guid}")]
@@ -86,14 +93,19 @@ public class VoiceActorController : Controller
 
         try
         {
-            _voiceActorService.UpdateVoiceActor(voiceActorId, voiceActorUpdate.Name);
+            var updatedVoiceActor = _mapper.Map<VoiceActorResponseDTO>(_voiceActorService.UpdateVoiceActor(voiceActorId, voiceActorUpdate.Name));
+            return Ok(updatedVoiceActor);
         }
         catch (ModelNotFoundException)
         {
             return NotFound("No voice actor found with the following id: " + voiceActorId);
         }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
         
-        return Ok("Successfully updated voice actor");
+        
     }
     
     [HttpDelete("{voiceActorId:guid}")]

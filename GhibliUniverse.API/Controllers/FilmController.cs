@@ -72,10 +72,30 @@ public class FilmController : Controller
         
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
-        
-        _filmService.CreateFilm(filmCreate.Title, filmCreate.Description, filmCreate.Director, filmCreate.Composer, filmCreate.ReleaseYear);
-        
-        return Ok("Successfully created film");
+
+        try
+        {
+            var createdFilm = _mapper.Map<FilmResponseDTO>(_filmService.CreateFilm(filmCreate.Title,
+                filmCreate.Description, filmCreate.Director, filmCreate.Composer, filmCreate.ReleaseYear));
+            return Ok(createdFilm);
+        }
+        catch (ReleaseYear.NotFourCharactersException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (AutoMapperMappingException e)
+        {
+            return BadRequest(e.InnerException.Message);
+        }
+
     }
 
     [HttpPost("{filmId:guid}/LinkVoiceActor")]
@@ -107,7 +127,7 @@ public class FilmController : Controller
     }
 
     [HttpPut("{filmId:guid}")]
-    public IActionResult UpdateFilm(Guid filmId, [FromBody] FilmRequestDTO filmUpdate)
+    public IActionResult UpdateFilm(Guid filmId, [FromBody] FilmRequestDTO filmUpdate) 
     {
         if (filmUpdate == null)
         {
@@ -117,12 +137,24 @@ public class FilmController : Controller
         try
         {
             var filmUpdateMap = _mapper.Map<Film>(filmUpdate);
-            _filmService.UpdateFilm(filmId, filmUpdateMap);
-            return Ok("Successfully updated film");
+            var updatedFilm = _mapper.Map<FilmResponseDTO>(_filmService.UpdateFilm(filmId, filmUpdateMap));
+            return Ok(updatedFilm);
         }
         catch (ModelNotFoundException)
         {
             return NotFound("No film found with the following id: " + filmId);
+        }
+        catch (ReleaseYear.NotFourCharactersException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
+        {
+            return BadRequest(e.Message);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message);
         }
         catch (AutoMapperMappingException e)
         {

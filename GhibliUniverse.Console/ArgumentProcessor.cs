@@ -123,7 +123,22 @@ public class ArgumentProcessor
     {
         var releaseYear = int.Parse(GetListOfPropertiesNeededToCreateFilm()[4]);
 
-        _filmService.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
+        try
+        {
+            _filmService.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
+        }
+        catch (ReleaseYear.NotFourCharactersException e)
+        {
+            _writer.WriteLine(e);
+        }
+        catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
+        {
+            _writer.WriteLine(e);
+        }
+        catch (ArgumentException ae)
+        {
+            _writer.WriteLine(ae);
+        }
     }
 
     private void HandleDeleteFilm(string filmId)
@@ -214,7 +229,14 @@ public class ArgumentProcessor
 
     private void HandleCreateVoiceActor()
     {
-        _voiceActorService.CreateVoiceActor(_programArguments[2]);
+        try
+        {
+            _voiceActorService.CreateVoiceActor(_programArguments[2]);
+        }
+        catch (ArgumentException ae)
+        {
+            _writer.WriteLine(ae);
+        }
     }
 
     private void HandleDeleteVoiceActor(string voiceActorId)
@@ -235,14 +257,7 @@ public class ArgumentProcessor
 
     private void HandleGetAllReviews()
     {
-        try
-        {
-            PrintModelEntries(_reviewService.GetAllReviews());
-        }
-        catch (FormatException fe)
-        {
-            _writer.WriteLine(fe.Message);
-        }
+        PrintModelEntries(_reviewService.GetAllReviews());
     }
 
     private void HandleGetReviewById(string reviewId)
@@ -267,6 +282,10 @@ public class ArgumentProcessor
         {
             var ratingAsInt = int.Parse(rating);
             _reviewService.CreateReview(Guid.Parse(filmId), ratingAsInt);
+        }
+        catch (ModelNotFoundException e)
+        {
+            _writer.WriteLine(e.Message);
         }
         catch (Rating.RatingOutOfRangeException e)
         {

@@ -44,26 +44,34 @@ public class VoiceActorService : IVoiceActorService
         return voiceActor.Films;
     }
 
-    public void CreateVoiceActor(string name)
+    public VoiceActor CreateVoiceActor(string name)
     {
         var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
-        try
+        var voiceActor = new VoiceActor
         {
-            var voiceActor = new VoiceActor
-            {
-                Id = Guid.NewGuid(),
-                Name = ValidatedString.From(name)
-            };
-            savedVoiceActors.Add(voiceActor);
-            _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
-        }
-        catch (ArgumentException ae)
-        {
-            Console.WriteLine(ae);
-        }
+            Id = Guid.NewGuid(),
+            Name = ValidatedString.From(name)
+        };
+        savedVoiceActors.Add(voiceActor);
+        _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
+        return voiceActor;
+        // try
+        // {
+        //     var voiceActor = new VoiceActor
+        //     {
+        //         Id = Guid.NewGuid(),
+        //         Name = ValidatedString.From(name)
+        //     };
+        //     savedVoiceActors.Add(voiceActor);
+        //     _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
+        // }
+        // catch (ArgumentException ae)
+        // {
+        //     Console.WriteLine(ae);
+        // }
     }
 
-    public void UpdateVoiceActor(Guid voiceActorId, string name)
+    public VoiceActor UpdateVoiceActor(Guid voiceActorId, string name)
     {
         var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
         var voiceActorToUpdate = savedVoiceActors.FirstOrDefault(f => f.Id == voiceActorId);
@@ -74,6 +82,7 @@ public class VoiceActorService : IVoiceActorService
 
         voiceActorToUpdate.Name = ValidatedString.From(name);
         _voiceActorPersistence.WriteVoiceActors(savedVoiceActors);
+        return voiceActorToUpdate;
     }
 
     public void DeleteVoiceActor(Guid voiceActorId)
