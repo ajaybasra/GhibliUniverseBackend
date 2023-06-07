@@ -71,13 +71,13 @@ public class ReviewControllerTests
     private void GetReviewById_ReturnsReviewResponseDTOAnd200StatusCode_WhenGivenValidId()
     {
         _mockedReviewService.Setup(x => x.GetReviewById(It.IsAny<Guid>())).Returns(_review1);
+        var reviewController = ControllerFactory.GenerateReviewController(_mockedReviewService.Object, _mapper);
         var expected = new ReviewResponseDTO()
         {
             Id = Guid.Empty,
             Rating = Rating.From(10) 
         };
 
-        var reviewController = ControllerFactory.GenerateReviewController(_mockedReviewService.Object, _mapper);
         var result = reviewController.GetReviewById(Guid.Empty) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -89,9 +89,8 @@ public class ReviewControllerTests
     {
         _mockedReviewService.Setup(x => x.GetReviewById(It.IsAny<Guid>())).Throws(new ModelNotFoundException(Guid.Parse("04000000-0000-0000-0000-000000000001")));
         var expected = "No review found with the following id: 04000000-0000-0000-0000-000000000001";
-        
-        
         var reviewController = ControllerFactory.GenerateReviewController(_mockedReviewService.Object, _mapper);
+
         var result = reviewController.GetReviewById(Guid.Parse("04000000-0000-0000-0000-000000000001")) as ObjectResult;
     
         Assert.Equal(404, result.StatusCode);
@@ -107,11 +106,10 @@ public class ReviewControllerTests
             Id = Guid.Empty,
             Rating = Rating.From(10)
         };
-        
         var reviewController = ControllerFactory.GenerateReviewController(_mockedReviewService.Object, _mapper);
-
         ReviewRequestDTO reviewRequestDto = new ReviewRequestDTO()
             { rating = 10 };
+        
         var result = reviewController.CreateReview(Guid.Empty, reviewRequestDto) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -124,12 +122,12 @@ public class ReviewControllerTests
     {
         _mockedReviewService.Setup(x => x.CreateReview(It.IsAny<Guid>(), It.IsAny<int>())).Throws(new ModelNotFoundException(It.IsAny<Guid>()));
         var expected = "No film found with the following id: 00000000-0000-0000-0000-000000000000";
-        
         var reviewController = ControllerFactory.GenerateReviewController(_mockedReviewService.Object, _mapper);
         var reviewRequestDTO = new ReviewRequestDTO()
         {
             rating = 10,
         };
+        
         var result = reviewController.CreateReview(Guid.Empty, reviewRequestDTO) as ObjectResult;
         
         Assert.Equal(404, result.StatusCode);
@@ -140,17 +138,16 @@ public class ReviewControllerTests
     public void UpdateReview_ReturnsReviewResponseDTOAnd200StatusCode_WhenGivenValidInput()
     {
         _mockedReviewService.Setup(x => x.UpdateReview(It.IsAny<Guid>(), It.IsAny<int>())).Returns(_review1);
-        
         var reviewController = ControllerFactory.GenerateReviewController(_mockedReviewService.Object, _mapper);
         var expected = new ReviewResponseDTO()
         {
             Rating = Rating.From(10)
         };
-
         ReviewRequestDTO reviewRequestDto = new ReviewRequestDTO()
         {
             rating = 10
         };
+        
         var result = reviewController.UpdateReview(Guid.Empty, reviewRequestDto) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -163,13 +160,12 @@ public class ReviewControllerTests
     {
         _mockedReviewService.Setup(x => x.UpdateReview(It.IsAny<Guid>(), It.IsAny<int>())).Throws(new Rating.RatingOutOfRangeException(It.IsAny<int>()));
         var expected = "Rating must be between 1 and 10 inclusive. Current rating: 0.";
-
         var reviewController = ControllerFactory.GenerateReviewController(_mockedReviewService.Object, _mapper);
-
         ReviewRequestDTO reviewRequestDto = new ReviewRequestDTO()
         {
             rating = 0
         };
+        
         var result = reviewController.UpdateReview(Guid.Empty, reviewRequestDto) as ObjectResult;
         
         Assert.Equal(400, result.StatusCode);
@@ -181,6 +177,7 @@ public class ReviewControllerTests
     public void DeleteReview_Returns200StatusCode_WhenGivenValidId()
     {
         var reviewController = ControllerFactory.GenerateReviewController(_mockedReviewService.Object, _mapper);
+        
         var result = reviewController.DeleteReview(Guid.Empty) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -192,8 +189,8 @@ public class ReviewControllerTests
         _mockedReviewService.Setup(x => x.DeleteReview(It.IsAny<Guid>()))
             .Throws(new ModelNotFoundException(It.IsAny<Guid>()));
         var expected = "No review found with the following id: 00000000-0000-0000-0000-000000000000";
-        
         var reviewController = ControllerFactory.GenerateReviewController(_mockedReviewService.Object, _mapper);
+        
         var result = reviewController.DeleteReview(Guid.Empty) as ObjectResult;
         
         Assert.Equal(404, result.StatusCode);

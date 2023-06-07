@@ -1,5 +1,4 @@
 using AutoMapper;
-using GhibliUniverse.API.Controllers;
 using GhibliUniverse.API.DTOs;
 using GhibliUniverse.API.Mapper;
 using GhibliUniverse.Core.Domain.Models;
@@ -28,14 +27,14 @@ public class VoiceActorControllerTests
         ReleaseYear = ReleaseYear.From(2000)
     };
     
-    private readonly VoiceActor _voiceActor1 = new VoiceActor()
+    private readonly VoiceActor _voiceActor1 = new()
     {
         Id = Guid.Empty,
         Name = ValidatedString.From("John Doe"),
         Films = new List<Film> {Film}
     };
 
-    private readonly VoiceActor _voiceActor2 = new VoiceActor()
+    private readonly VoiceActor _voiceActor2 = new()
     {
         Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
         Name = ValidatedString.From("John Cena")
@@ -80,13 +79,13 @@ public class VoiceActorControllerTests
     private void GetVoiceActorById_ReturnsVoiceActorResponseDTOAnd200StatusCode_WhenGivenValidId()
     {
         _mockedVoiceActorService.Setup(x => x.GetVoiceActorById(It.IsAny<Guid>())).Returns(_voiceActor1);
+        var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
         var expected = new VoiceActorResponseDTO()
         {
             Id = Guid.Empty,
             Name = ValidatedString.From("John Doe") 
         };
 
-        var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
         var result = voiceActorController.GetVoiceActorById(Guid.Empty) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -97,10 +96,10 @@ public class VoiceActorControllerTests
     public void GetVoiceActorById_Returns404StatusCodeWithGuid_WhenGivenNonExistentId()
     {
         _mockedVoiceActorService.Setup(x => x.GetVoiceActorById(It.IsAny<Guid>())).Throws(new ModelNotFoundException(Guid.Parse("04000000-0000-0000-0000-000000000001")));
+        var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
         var expected = "No voice actor found with the following id: 04000000-0000-0000-0000-000000000001";
         
         
-        var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
         var result = voiceActorController.GetVoiceActorById(Guid.Parse("04000000-0000-0000-0000-000000000001")) as ObjectResult;
     
         Assert.Equal(404, result.StatusCode);
@@ -111,6 +110,7 @@ public class VoiceActorControllerTests
     public void GetFilmsByVoiceActor_ReturnsListOfFilmResponseDTOAnd200StatusCode_WhenGivenValidId()  
     {
         _mockedVoiceActorService.Setup(x => x.GetFilmsByVoiceActor(It.IsAny<Guid>())).Returns(_voiceActor1.Films);
+        var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
         var film = new FilmResponseDTO()
         {
             Id = Guid.Empty,
@@ -122,7 +122,6 @@ public class VoiceActorControllerTests
         };
         var expected = new List<FilmResponseDTO> { film };
         
-        var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
         var result =
             voiceActorController.GetFilmsByVoiceActor(Guid.Empty) as ObjectResult;
         
@@ -131,15 +130,13 @@ public class VoiceActorControllerTests
     }
     
     [Fact]
-    public void GetFilmsByVoiceActor_Returns404StatusCodeWithGuide_WhenGivenNonExistentId()  
+    public void GetFilmsByVoiceActor_Returns404StatusCodeWithGuid_WhenGivenNonExistentId()  
     {
         _mockedVoiceActorService.Setup(x => x.GetFilmsByVoiceActor(It.IsAny<Guid>())).Throws(new ModelNotFoundException(Guid.Empty));
-        var expected = "No voice actor found with the following id: 00000000-0000-0000-0000-000000000000";
-
-        
         var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
-        var result =
-            voiceActorController.GetFilmsByVoiceActor(Guid.Empty) as ObjectResult;
+        var expected = "No voice actor found with the following id: 00000000-0000-0000-0000-000000000000";
+        
+        var result = voiceActorController.GetFilmsByVoiceActor(Guid.Empty) as ObjectResult;
         
         Assert.Equal(404, result.StatusCode);
         Assert.Equal(expected, result.Value);
@@ -149,18 +146,17 @@ public class VoiceActorControllerTests
     public void CreateVoiceActor_ReturnsVoiceActorResponseDTOAndStatusCode_WhenGivenValidInput()
     {
         _mockedVoiceActorService.Setup(x => x.CreateVoiceActor(It.IsAny<string>())).Returns(_voiceActor1);
+        var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
         var expected = new VoiceActorResponseDTO()
         {
             Id = Guid.Empty,
             Name = ValidatedString.From("John Doe")
         };
-
-        var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
-
         var voiceActorRequestDTO = new VoiceActorRequestDTO()
         {
             Name = "John Doe"
         };
+        
         var result = voiceActorController.CreateVoiceActor(voiceActorRequestDTO) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -171,12 +167,12 @@ public class VoiceActorControllerTests
     public void CreateVoiceActor_Returns400StatusCode_WhenGivenInvalidInput()
     {
         _mockedVoiceActorService.Setup(x => x.CreateVoiceActor(It.IsAny<string>())).Throws(new ArgumentException());
-        
         var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
         var voiceActorRequestDTO = new VoiceActorRequestDTO()
         {
             Name = "",
         };
+        
         var result = voiceActorController.CreateVoiceActor(voiceActorRequestDTO) as ObjectResult;
         
         Assert.Equal(400, result.StatusCode);
@@ -192,11 +188,11 @@ public class VoiceActorControllerTests
             Id = Guid.Empty,
             Name = ValidatedString.From("John Doe")
         };
-
         var voiceActorRequestDto = new VoiceActorRequestDTO()
         {
             Name = "John Doe"
         };
+        
         var result = voiceActorController.UpdateVoiceActor(Guid.Empty, voiceActorRequestDto) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -209,11 +205,11 @@ public class VoiceActorControllerTests
     {
         _mockedVoiceActorService.Setup(x => x.UpdateVoiceActor(It.IsAny<Guid>(), It.IsAny<string>())).Throws(new ArgumentException());
         var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
-
         var voiceActorRequestDto = new VoiceActorRequestDTO()
         {
             Name = ""
         };
+        
         var result = voiceActorController.UpdateVoiceActor(Guid.Empty, voiceActorRequestDto) as ObjectResult;
         
         Assert.Equal(400, result.StatusCode);
@@ -224,6 +220,7 @@ public class VoiceActorControllerTests
     public void DeleteVoiceActor_Returns200StatusCode_WhenGivenValidId()
     {
         var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
+        
         var result = voiceActorController.DeleteVoiceActor(Guid.Empty) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -234,8 +231,9 @@ public class VoiceActorControllerTests
     {
         _mockedVoiceActorService.Setup(x => x.DeleteVoiceActor(It.IsAny<Guid>()))
             .Throws(new ModelNotFoundException(It.IsAny<Guid>()));
-        var expected = "No voice actor found with the following id: 00000000-0000-0000-0000-000000000000";
         var voiceActorController = ControllerFactory.GenerateVoiceActorController(_mockedVoiceActorService.Object, _mapper);
+        var expected = "No voice actor found with the following id: 00000000-0000-0000-0000-000000000000";
+
         var result = voiceActorController.DeleteVoiceActor(Guid.Empty) as ObjectResult;
         
         Assert.Equal(404, result.StatusCode);

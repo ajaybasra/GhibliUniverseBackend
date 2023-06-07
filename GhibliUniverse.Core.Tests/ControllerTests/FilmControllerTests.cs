@@ -92,6 +92,7 @@ public class FilmControllerTests
     private void GetFilmById_ReturnsFilmResponseDTOAnd200StatusCode_WhenGivenValidId()
     {
         _mockedFilmService.Setup(x => x.GetFilmById(It.IsAny<Guid>())).Returns(_film1);
+        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
         var expected = new FilmResponseDTO()
         {
             Id = Guid.Empty,
@@ -103,7 +104,6 @@ public class FilmControllerTests
             ReleaseYear = ReleaseYear.From(2001)
         };
 
-        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
         var result = filmController.GetFilmById(Guid.Empty) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -114,10 +114,9 @@ public class FilmControllerTests
     public void GetFilmById_Returns404StatusCodeWithGuid_WhenGivenNonExistentId()
     {
         _mockedFilmService.Setup(x => x.GetFilmById(It.IsAny<Guid>())).Throws(new ModelNotFoundException(Guid.Parse("04000000-0000-0000-0000-000000000001")));
-        var expected = "No film found with the following id: 04000000-0000-0000-0000-000000000001";
-        
-        
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+        var expected = "No film found with the following id: 04000000-0000-0000-0000-000000000001";
+
         var result = filmController.GetFilmById(Guid.Parse("04000000-0000-0000-0000-000000000001")) as ObjectResult;
     
         Assert.Equal(404, result.StatusCode);
@@ -128,6 +127,7 @@ public class FilmControllerTests
     public void GetVoiceActorsByFilm_ReturnsListOfVoiceActorResponseDTOAnd200StatusCode_WhenGivenValidId()  
     {
         _mockedFilmService.Setup(x => x.GetVoiceActorsByFilm(It.IsAny<Guid>())).Returns(_film1.VoiceActors);
+        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
         var voiceActor = new VoiceActorResponseDTO()
         {
             Id = Guid.Empty,
@@ -135,7 +135,6 @@ public class FilmControllerTests
         };
         var expectedVoiceActorResponseDTOList = new List<VoiceActorResponseDTO> { voiceActor };
         
-        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
         var result =
             filmController.GetVoiceActorsByFilm(Guid.Empty) as ObjectResult;
         
@@ -147,10 +146,9 @@ public class FilmControllerTests
     public void GetVoiceActorsByFilm_Returns404StatusCodeWithGuide_WhenGivenNonExistentId()  
     {
         _mockedFilmService.Setup(x => x.GetVoiceActorsByFilm(It.IsAny<Guid>())).Throws(new ModelNotFoundException(Guid.Empty));
+        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
         var expected = "No film found with the following id: 00000000-0000-0000-0000-000000000000";
 
-        
-        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
         var result =
             filmController.GetVoiceActorsByFilm(Guid.Empty) as ObjectResult;
         
@@ -164,6 +162,7 @@ public class FilmControllerTests
     {
         _mockedFilmService.Setup(x => x.CreateFilm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<string>(), It.IsAny<int>())).Returns(_film1);
+        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
         var expected = new FilmResponseDTO()
         {
             Id = Guid.Empty,
@@ -174,11 +173,9 @@ public class FilmControllerTests
             Composer = ValidatedString.From("Joe Hisaishi"),
             ReleaseYear = ReleaseYear.From(2001)
         };
-        
-        var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
-
         FilmRequestDTO filmRequestDTO = new FilmRequestDTO()
             { Title = "test", Description = "test", Director = "test", Composer = "test", ReleaseYear = 2000 };
+        
         var result = filmController.CreateFilm(filmRequestDTO) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -191,9 +188,8 @@ public class FilmControllerTests
     {
         _mockedFilmService.Setup(x => x.CreateFilm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
             It.IsAny<string>(), It.IsAny<int>())).Throws(new ArgumentException());
-        var expected = "Value does not fall within the expected range.";
-        
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+        var expected = "Value does not fall within the expected range.";
         var filmRequestDTO = new FilmRequestDTO()
         {
             Title = "",
@@ -202,6 +198,7 @@ public class FilmControllerTests
             Composer = "",
             ReleaseYear = 2000
         };
+        
         var result = filmController.CreateFilm(filmRequestDTO) as ObjectResult;
         
         Assert.Equal(400, result.StatusCode);
@@ -211,9 +208,9 @@ public class FilmControllerTests
     [Fact]
     public void LinkVoiceActor_Returns200StatusCode_WhenGivenValidId()
     {
-        var expected = "Successfully linked voice actor";                                                                           
-        
+        var expected = "Successfully linked voice actor";
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+        
         var result = filmController.LinkVoiceActor(Guid.Empty,
             Guid.Empty) as ObjectResult;
         
@@ -227,8 +224,8 @@ public class FilmControllerTests
         var expected = "The model you are trying to perform an operation on does not exist. Model Id: 00000000-0000-0000-0000-000000000000";
         _mockedFilmService.Setup(x => x.LinkVoiceActor(It.IsAny<Guid>(), It.IsAny<Guid>()))
             .Throws(new ModelNotFoundException(It.IsAny<Guid>()));
-        
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+        
         var result = filmController.LinkVoiceActor(Guid.Empty,
             Guid.Empty) as ObjectResult;
         
@@ -240,8 +237,8 @@ public class FilmControllerTests
     public void UnlinkVoiceActor_Returns200StatusCode_WhenGivenValidId()
     {
         var expected = "Successfully unlinked voice actor";
-        
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+        
         var result = filmController.UnlinkVoiceActor(Guid.Empty,
             Guid.Empty) as ObjectResult;
         
@@ -255,8 +252,8 @@ public class FilmControllerTests
         var expected = "The model you are trying to perform an operation on does not exist. Model Id: 00000000-0000-0000-0000-000000000000";
         _mockedFilmService.Setup(x => x.UnlinkVoiceActor(It.IsAny<Guid>(), It.IsAny<Guid>()))
             .Throws(new ModelNotFoundException(It.IsAny<Guid>()));
-        
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+        
         var result = filmController.UnlinkVoiceActor(Guid.Empty,
             Guid.Empty) as ObjectResult;
         
@@ -279,9 +276,9 @@ public class FilmControllerTests
             Composer = ValidatedString.From("Joe Hisaishi"),
             ReleaseYear = ReleaseYear.From(2001)
         };
-
         FilmRequestDTO filmRequestDto = new FilmRequestDTO()
             { Title = "test", Description = "test", Director = "test", Composer = "test", ReleaseYear = 2000 };
+        
         var result = filmController.UpdateFilm(Guid.Empty, filmRequestDto) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -294,7 +291,6 @@ public class FilmControllerTests
     {
         _mockedFilmService.Setup(x => x.UpdateFilm(It.IsAny<Guid>(),It.IsAny<Film>())).Throws(new ArgumentException());
         var expected = "Value cannot be null or empty";
-        
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
         var filmRequestDTO = new FilmRequestDTO()
         {
@@ -304,6 +300,7 @@ public class FilmControllerTests
             Composer = "",
             ReleaseYear = 2000
         };
+        
         var result = filmController.UpdateFilm(Guid.Empty, filmRequestDTO) as ObjectResult;
         
         Assert.Equal(400, result.StatusCode);
@@ -314,6 +311,7 @@ public class FilmControllerTests
     public void DeleteFilm_Returns200StatusCode_WhenGivenValidId()
     {
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+        
         var result = filmController.DeleteFilm(Guid.Empty) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
@@ -325,8 +323,8 @@ public class FilmControllerTests
         _mockedFilmService.Setup(x => x.DeleteFilm(It.IsAny<Guid>()))
             .Throws(new ModelNotFoundException(It.IsAny<Guid>()));
         var expected = "No film found with the following id: 00000000-0000-0000-0000-000000000000";
-        
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
+        
         var result = filmController.DeleteFilm(Guid.Empty) as ObjectResult;
         
         Assert.Equal(404, result.StatusCode);
