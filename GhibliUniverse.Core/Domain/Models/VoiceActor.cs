@@ -8,7 +8,7 @@ public record VoiceActor()
     public Guid Id { get; init; }
     public ValidatedString Name { get; set; }
 
-    public List<Film> Films { get; }  = new();
+    public List<Film> Films { get; set; }  = new();
 
     public override string ToString()
     {

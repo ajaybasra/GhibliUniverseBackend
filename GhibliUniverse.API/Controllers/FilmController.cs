@@ -141,18 +141,6 @@ public class FilmController : Controller
         {
             return NotFound("No film found with the following id: " + filmId);
         }
-        // catch (ReleaseYear.NotFourCharactersException e)
-        // {
-        //     return BadRequest(e.Message);
-        // }
-        // catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
-        // {
-        //     return BadRequest(e.Message);
-        // }
-        // catch (ArgumentException e)
-        // {
-        //     return BadRequest(e.Message);
-        // }
         catch (AutoMapperMappingException e)
         {
             return BadRequest(e.InnerException.Message);

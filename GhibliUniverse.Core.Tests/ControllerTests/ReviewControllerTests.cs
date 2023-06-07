@@ -39,7 +39,7 @@ public class ReviewControllerTests
         _mappingProfiles = new MappingProfiles();
         _mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile(_mappingProfiles));
         _mapper = new Mapper(_mapperConfiguration);
-        _reviews = new List<Review>() { _review1, _review2 };
+        _reviews = new List<Review> { _review1, _review2 };
     }
     
     [Fact]
@@ -85,7 +85,7 @@ public class ReviewControllerTests
     }
     
     [Fact]
-    public void GetFilmById_Returns404StatusCodeWithGuid_WhenGivenNonExistentId()
+    public void GetReviewById_Returns404StatusCodeWithGuid_WhenGivenNonExistentId()
     {
         _mockedReviewService.Setup(x => x.GetReviewById(It.IsAny<Guid>())).Throws(new ModelNotFoundException(Guid.Parse("04000000-0000-0000-0000-000000000001")));
         var expected = "No review found with the following id: 04000000-0000-0000-0000-000000000001";

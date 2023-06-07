@@ -52,7 +52,7 @@ public class FilmControllerTests
         _mappingProfiles = new MappingProfiles();
         _mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile(_mappingProfiles));
         _mapper = new Mapper(_mapperConfiguration);
-        _films = new List<Film>() { _film1, _film2 };
+        _films = new List<Film> { _film1, _film2 };
     }
 
     [Fact]
@@ -177,9 +177,9 @@ public class FilmControllerTests
         
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
 
-        FilmRequestDTO filmRequestDto = new FilmRequestDTO()
+        FilmRequestDTO filmRequestDTO = new FilmRequestDTO()
             { Title = "test", Description = "test", Director = "test", Composer = "test", ReleaseYear = 2000 };
-        var result = filmController.CreateFilm(filmRequestDto) as ObjectResult;
+        var result = filmController.CreateFilm(filmRequestDTO) as ObjectResult;
         
         Assert.Equal(200, result.StatusCode);
         Assert.Equal(expected, result.Value);

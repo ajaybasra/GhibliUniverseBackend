@@ -21,4 +21,12 @@ public static class ControllerFactory
 
         return reviewController;
     }
+
+    public static VoiceActorController GenerateVoiceActorController(IVoiceActorService voiceActorService,
+        IMapper mapper)
+    {
+        var voiceActorController = new VoiceActorController(voiceActorService, mapper);
+
+        return voiceActorController;
+    }
 }
