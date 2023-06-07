@@ -5,7 +5,7 @@ using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
 using Moq;
 
-namespace GhibliUniverse.Core.Tests;
+namespace GhibliUniverse.Core.Tests.ServiceTests;
 
 public class FilmServiceTests
 {

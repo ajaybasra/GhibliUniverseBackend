@@ -1,5 +1,4 @@
 using AutoMapper;
-using GhibliUniverse.API.Controllers;
 using GhibliUniverse.API.DTOs;
 using GhibliUniverse.API.Mapper;
 using GhibliUniverse.Core.Domain.Models;
@@ -9,11 +8,11 @@ using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
-namespace GhibliUniverse.Core.Tests;
+namespace GhibliUniverse.Core.Tests.ControllerTests;
 
 public class FilmControllerTests
 {
-    private readonly Mock<IFilmService> _mockedFilmService = new Mock<IFilmService>();
+    private readonly Mock<IFilmService> _mockedFilmService = new();
     private readonly MappingProfiles _mappingProfiles;
     private readonly MapperConfiguration _mapperConfiguration;
     private readonly Mapper _mapper;
@@ -25,11 +24,12 @@ public class FilmControllerTests
     };
     private readonly Film _film1 = new()
     {
-        Id = Guid.Parse("00000000-0000-0000-0000-000000000000"), Title = ValidatedString.From("Spirited Away"),
+        Id = Guid.Empty, Title = ValidatedString.From("Spirited Away"),
         Description =
             ValidatedString.From(
                 "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts."),
-        Director = ValidatedString.From("Hayao Miyazaki"), Composer = ValidatedString.From("Joe Hisaishi"),
+        Director = ValidatedString.From("Hayao Miyazaki"), 
+        Composer = ValidatedString.From("Joe Hisaishi"),
         ReleaseYear = ReleaseYear.From(2001),
         VoiceActors = new List<VoiceActor> {VoiceActor}
     };
@@ -40,7 +40,8 @@ public class FilmControllerTests
         Description =
             ValidatedString.From(
                 "Mei and Satsuki shift to a new house to be closer to their mother who is in the hospital. They soon become friends with Totoro, a giant rabbit-like creature who is a spirit."),
-        Director = ValidatedString.From("Hayao Miyazaki"), Composer = ValidatedString.From("Joe Hisaishi"),
+        Director = ValidatedString.From("Hayao Miyazaki"), 
+        Composer = ValidatedString.From("Joe Hisaishi"),
         ReleaseYear = ReleaseYear.From(1988)
     };
     
@@ -161,27 +162,17 @@ public class FilmControllerTests
     [Fact]
     public void CreateFilm_ReturnsFilmResponseDTOAnd200StatusCode_WhenGivenValidInput()
     {
-        var returnedFilm = new Film()
-        {
-            Id = Guid.Empty,
-            Title = ValidatedString.From("Test"),
-            Description = ValidatedString.From(
-                "Test"),
-            Director = ValidatedString.From("test"),
-            Composer = ValidatedString.From("test"),
-            ReleaseYear = ReleaseYear.From(2000)
-        };
         _mockedFilmService.Setup(x => x.CreateFilm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
-            It.IsAny<string>(), It.IsAny<int>())).Returns(returnedFilm);
+            It.IsAny<string>(), It.IsAny<int>())).Returns(_film1);
         var expected = new FilmResponseDTO()
         {
             Id = Guid.Empty,
-            Title = ValidatedString.From("Test"),
+            Title = ValidatedString.From("Spirited Away"),
             Description = ValidatedString.From(
-                "Test"),
-            Director = ValidatedString.From("test"),
-            Composer = ValidatedString.From("test"),
-            ReleaseYear = ReleaseYear.From(2000)
+                "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts."),
+            Director = ValidatedString.From("Hayao Miyazaki"),
+            Composer = ValidatedString.From("Joe Hisaishi"),
+            ReleaseYear = ReleaseYear.From(2001)
         };
         
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
@@ -276,27 +267,17 @@ public class FilmControllerTests
     [Fact]
     public void UpdateFilm_ReturnsFilmResponseDTOAnd200StatusCode_WhenGivenValidInput()
     {
-        var returnedFilm = new Film()
-        {
-            Id = Guid.Parse("10000000-0000-0000-0000-000000000001"),
-            Title = ValidatedString.From("Test"),
-            Description = ValidatedString.From(
-                "Test"),
-            Director = ValidatedString.From("test"),
-            Composer = ValidatedString.From("test"),
-            ReleaseYear = ReleaseYear.From(2000)
-        };
-        _mockedFilmService.Setup(x => x.UpdateFilm(It.IsAny<Guid>(), It.IsAny<Film>())).Returns(returnedFilm);
+        _mockedFilmService.Setup(x => x.UpdateFilm(It.IsAny<Guid>(), It.IsAny<Film>())).Returns(_film1);
         var filmController = ControllerFactory.GenerateFilmController(_mockedFilmService.Object, _mapper);
         var expected = new FilmResponseDTO()
         {
-            Id = Guid.Parse("10000000-0000-0000-0000-000000000001"),
-            Title = ValidatedString.From("Test"),
+            Id = Guid.Empty,
+            Title = ValidatedString.From("Spirited Away"),
             Description = ValidatedString.From(
-                "Test"),
-            Director = ValidatedString.From("test"),
-            Composer = ValidatedString.From("test"),
-            ReleaseYear = ReleaseYear.From(2000)
+                "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts."),
+            Director = ValidatedString.From("Hayao Miyazaki"),
+            Composer = ValidatedString.From("Joe Hisaishi"),
+            ReleaseYear = ReleaseYear.From(2001)
         };
 
         FilmRequestDTO filmRequestDto = new FilmRequestDTO()
