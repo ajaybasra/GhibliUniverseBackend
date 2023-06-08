@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.Console", "GhibliUniverse.Console\GhibliUniverse.Console.csproj", "{B71D6B66-23EA-421B-9ACF-6EF30E8CC1B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.API", "GhibliUniverse.API\GhibliUniverse.API.csproj", "{8A00C449-92D2-4989-BEB2-254780540999}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.Core", "GhibliUniverse.Core\GhibliUniverse.Core.csproj", "{40A3E2D2-9429-48CE-AA2A-87A2539679DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.Core.Tests", "GhibliUniverse.Core.Tests\GhibliUniverse.Core.Tests.csproj", "{5F277C9B-5415-4246-8B09-A9009DCB818B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GhibliUniverse.Console.Tests", "GhibliUniverse.Console.Tests\GhibliUniverse.Console.Tests.csproj", "{F242A121-971E-4A82-9A3F-C13CB9ED7BEB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B71D6B66-23EA-421B-9ACF-6EF30E8CC1B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B71D6B66-23EA-421B-9ACF-6EF30E8CC1B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B71D6B66-23EA-421B-9ACF-6EF30E8CC1B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B71D6B66-23EA-421B-9ACF-6EF30E8CC1B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A00C449-92D2-4989-BEB2-254780540999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A00C449-92D2-4989-BEB2-254780540999}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A00C449-92D2-4989-BEB2-254780540999}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A00C449-92D2-4989-BEB2-254780540999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40A3E2D2-9429-48CE-AA2A-87A2539679DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A3E2D2-9429-48CE-AA2A-87A2539679DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A3E2D2-9429-48CE-AA2A-87A2539679DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A3E2D2-9429-48CE-AA2A-87A2539679DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F277C9B-5415-4246-8B09-A9009DCB818B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F277C9B-5415-4246-8B09-A9009DCB818B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F277C9B-5415-4246-8B09-A9009DCB818B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F277C9B-5415-4246-8B09-A9009DCB818B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F242A121-971E-4A82-9A3F-C13CB9ED7BEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F242A121-971E-4A82-9A3F-C13CB9ED7BEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F242A121-971E-4A82-9A3F-C13CB9ED7BEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F242A121-971E-4A82-9A3F-C13CB9ED7BEB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

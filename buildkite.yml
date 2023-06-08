@@ -1,0 +1,19 @@
+---
+steps:
+  - label: 'do not panic :cherry_blossom::whale:'
+    command: 'echo hello, engineer'
+    agents:
+      queue: fma-dev
+
+  - label: 'Building Image and Running tests'
+    command: 'docker build -t test --target test .'
+    agents:
+      queue: fma-dev
+
+  - wait
+
+  - label: 'Building Image and Pushing to Cloudsmith'
+    branches: 'main'
+    command: ./scripts/build-and-push.sh
+    agents:
+      queue: fma-dev 
