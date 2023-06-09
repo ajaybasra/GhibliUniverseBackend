@@ -13,7 +13,7 @@ steps:
   - wait
 
   - label: 'Building Image and Pushing to Cloudsmith'
-    branches: 'main'
+    # branches: 'main'
     command: ./scripts/build-and-push.sh
     agents:
       queue: fma-dev 

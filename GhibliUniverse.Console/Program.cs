@@ -37,7 +37,7 @@ var argumentProcessor = new ArgumentProcessor(commandLine, consoleWriter, filmSe
 // filmService.LinkVoiceActor();
 var g = filmService.BuildFilmList();
 Console.WriteLine(g);
-var y = voiceActorService.BuildVoiceActorList();
-Console.WriteLine(y);
-var x = reviewService.BuildReviewList();
-Console.WriteLine(x);
+// var y = voiceActorService.BuildVoiceActorList();
+// Console.WriteLine(y);
+// var x = reviewService.BuildReviewList();
+// Console.WriteLine(x);

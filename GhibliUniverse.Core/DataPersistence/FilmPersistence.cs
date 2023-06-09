@@ -7,8 +7,24 @@ namespace GhibliUniverse.Core.DataPersistence;
 public class FilmPersistence : IFilmPersistence
 {
     private readonly IFileOperations _fileOperations;
-    private const string OldFilmsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-films.csv";
-    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/films.csv";
+    // private string OldFilmsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-films.csv";
+    // private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/films.csv";
+    private string OldFilmsFilePath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+        "Repos",
+        "Katas",
+        "GhibliUniverse",
+        "CSVData",
+        "old-films.csv"
+    );
+    private string FilePath = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+        "Repos",
+        "Katas",
+        "GhibliUniverse",
+        "CSVData",
+        "films.csv"
+    );
 
     public FilmPersistence(IFileOperations fileOperations)
     {
