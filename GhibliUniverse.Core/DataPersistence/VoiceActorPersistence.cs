@@ -7,24 +7,9 @@ namespace GhibliUniverse.Core.DataPersistence;
 public class VoiceActorPersistence : IVoiceActorPersistence
 {
     private readonly IFileOperations _fileOperations;
-    // private const string OldVoiceActorsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-voice-actors.csv";
-    // private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/voice-actors.csv";
-    private string OldVoiceActorsFilePath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-        "Repos",
-        "Katas",
-        "GhibliUniverse",
-        "CSVData",
-        "old-voice-actors.csv"
-    );
-    private string FilePath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-        "Repos",
-        "Katas",
-        "GhibliUniverse",
-        "CSVData",
-        "voice-actors.csv"
-    );
+    static string currentPath = Directory.GetCurrentDirectory();
+    private string OldVoiceActorsFilePath = Path.Combine(currentPath, "CSVData/old-voice-actors.csv");
+    private string FilePath = Path.Combine(currentPath, "CSVData/voice-actors.csv");
 
     public VoiceActorPersistence(IFileOperations fileOperations)
     {

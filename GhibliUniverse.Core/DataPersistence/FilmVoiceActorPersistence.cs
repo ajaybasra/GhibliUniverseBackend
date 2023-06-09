@@ -6,26 +6,14 @@ namespace GhibliUniverse.Core.DataPersistence;
 public class FilmVoiceActorPersistence : IFilmVoiceActorPersistence
 {
     private readonly IFileOperations _fileOperations;
+    static readonly string currentPath = Path.GetFullPath("CSVData/film-and-voice-actor-ids.csv");
     private readonly IFilmPersistence _filmPersistence;
     private readonly IVoiceActorPersistence _voiceActorPersistence;
-    // private const string OldFilmVoiceActorFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-film-and-voice-actor-ids.csv";
-    // private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/film-and-voice-actor-ids.csv";
-    private string OldFilmVoiceActorFilePath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-        "Repos",
-        "Katas",
-        "GhibliUniverse",
-        "CSVData",
-        "old-film-and-voice-actor-ids.csv"
-    );
-    private string FilePath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
-        "Repos",
-        "Katas",
-        "GhibliUniverse",
-        "CSVData",
-        "film-and-voice-actor-ids.csv"
-    );
+
+    private string OldFilmVoiceActorFilePath =
+        "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/GhibliUniverse.Core/DataPersistence/old-film-and-voice-actor-idz.csv";
+
+    private string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/GhibliUniverse.Core/DataPersistence/film-and-voice-actor-idz.csv";
 
     public FilmVoiceActorPersistence(IFileOperations fileOperations, IFilmPersistence filmPersistence, IVoiceActorPersistence voiceActorPersistence)
     {
