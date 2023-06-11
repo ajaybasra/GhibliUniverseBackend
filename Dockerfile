@@ -1,5 +1,4 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-EXPOSE 3000
 # Sets directory from which commands are run. WORKDIR is like a cd inside the container.
 WORKDIR /app/GhibliUniverse
 # .sln and .csproj are copied to the directories where they belong, * wildcard is used so that name doesn't have to be specified.
@@ -26,5 +25,6 @@ RUN dotnet publish -c Release -o publish
 # Creates runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
-COPY --from=publish app/GhibliUniverse/publish ./
+COPY --from=publish /app/GhibliUniverse/publish ./
+EXPOSE 3000
 ENTRYPOINT ["dotnet", "GhibliUniverse.dll"]
