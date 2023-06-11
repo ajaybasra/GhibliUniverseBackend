@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -euo pipefail
 
 standard_image_path="docker.myob.com/future-makers-academy"

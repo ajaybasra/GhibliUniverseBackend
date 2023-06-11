@@ -6,15 +6,13 @@ namespace GhibliUniverse.Core.DataPersistence;
 public class FilmVoiceActorPersistence : IFilmVoiceActorPersistence
 {
     private readonly IFileOperations _fileOperations;
-    static readonly string currentPath = Path.GetFullPath("CSVData/film-and-voice-actor-ids.csv");
     private readonly IFilmPersistence _filmPersistence;
     private readonly IVoiceActorPersistence _voiceActorPersistence;
-
-    private string OldFilmVoiceActorFilePath =
-        "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/GhibliUniverse.Core/DataPersistence/old-film-and-voice-actor-idz.csv";
-
-    private string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/GhibliUniverse.Core/DataPersistence/film-and-voice-actor-idz.csv";
-
+    private static readonly string BaseDirectory = AppContext.BaseDirectory;
+    private static readonly string RootDirectory = Directory.GetParent(BaseDirectory).Parent.Parent.Parent.Parent.FullName;
+    private readonly string _oldFilmVoiceActorFilePath = Path.Combine(RootDirectory, "GhibliUniverse.Core/DataPersistence/CSVData/old-film-and-voice-actor-ids.csv");
+    private readonly string _filePath = Path.Combine(RootDirectory, "GhibliUniverse.Core/DataPersistence/CSVData/film-and-voice-actor-ids.csv");
+    
     public FilmVoiceActorPersistence(IFileOperations fileOperations, IFilmPersistence filmPersistence, IVoiceActorPersistence voiceActorPersistence)
     {
         _fileOperations = fileOperations;
@@ -27,12 +25,12 @@ public class FilmVoiceActorPersistence : IFilmVoiceActorPersistence
         var savedFilms = _filmPersistence.ReadFilms();
         var savedVoiceActors = _voiceActorPersistence.ReadVoiceActors();
 
-        if (!_fileOperations.FileExists(FilePath))
+        if (!_fileOperations.FileExists(_filePath))
         {
             return new List<(Guid, Guid)>();
         }
         var savedFilmVoiceActorData = new List<(Guid, Guid)>();
-        using var reader = new StreamReader(FilePath);
+        using var reader = new StreamReader(_filePath);
         var headerLine = reader.ReadLine();
         string currentLine;
         while ((currentLine = reader.ReadLine()) != null)
@@ -50,12 +48,12 @@ public class FilmVoiceActorPersistence : IFilmVoiceActorPersistence
 
     private void CreateFileHeader()
     {
-        using var file = new StreamWriter(FilePath); 
+        using var file = new StreamWriter(_filePath); 
         file.WriteLine("FilmId" + "," + "VoiceActorId");
     }
     public void WriteFilmVoiceActors(List<Film> films)
     {
-        _fileOperations.CreateBackupCSVFile(FilePath, OldFilmVoiceActorFilePath);  
+        _fileOperations.CreateBackupCSVFile(_filePath, _oldFilmVoiceActorFilePath);  
         CreateFileHeader();
         if (films.Count <= 0) return;
         foreach (var film in films)
@@ -71,7 +69,7 @@ public class FilmVoiceActorPersistence : IFilmVoiceActorPersistence
     {
         try
         {
-            using var file = new StreamWriter(FilePath, true);
+            using var file = new StreamWriter(_filePath, true);
             file.WriteLine(filmId + "," + voiceActorId);
             file.Close();
         }  

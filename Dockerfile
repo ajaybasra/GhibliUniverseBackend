@@ -28,5 +28,3 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
 COPY --from=publish app/GhibliUniverse/publish ./
 ENTRYPOINT ["dotnet", "GhibliUniverse.dll"]
-# CMD ["ls"]
-# ENTRYPOINT ["/bin/sh"]

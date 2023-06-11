@@ -7,9 +7,10 @@ namespace GhibliUniverse.Core.DataPersistence;
 public class ReviewPersistence : IReviewPersistence
 {
     private readonly IFileOperations _fileOperations;
-    static string currentPath = Directory.GetCurrentDirectory();
-    private string OldFilmRatingsFilePath = Path.Combine(currentPath, "CSVData/old-reviews.csv");
-    private string FilePath = Path.Combine(currentPath, "CSVData/reviews.csv");
+    private static readonly string BaseDirectory = AppContext.BaseDirectory;
+    private static readonly string RootDirectory = Directory.GetParent(BaseDirectory).Parent.Parent.Parent.Parent.FullName;
+    private readonly string _oldFilmRatingsFilePath = Path.Combine(RootDirectory, "GhibliUniverse.Core/DataPersistence/CSVData/old-reviews.csv");
+    private readonly string _filePath = Path.Combine(RootDirectory, "GhibliUniverse.Core/DataPersistence/CSVData/reviews.csv");
 
     public ReviewPersistence(IFileOperations fileOperations)
     {
@@ -18,12 +19,12 @@ public class ReviewPersistence : IReviewPersistence
     
     public List<Review> ReadReviews()
     {
-        if (!_fileOperations.FileExists(FilePath))
+        if (!_fileOperations.FileExists(_filePath))
         {
             return new List<Review>();
         }
         var savedReviews = new List<Review>();
-        using var reader = new StreamReader(FilePath);
+        using var reader = new StreamReader(_filePath);
         var headerLine = reader.ReadLine();
         string currentLine;
         while ((currentLine = reader.ReadLine()) != null)
@@ -38,19 +39,19 @@ public class ReviewPersistence : IReviewPersistence
             };
             savedReviews.Add(review);
         }
-        _fileOperations.CreateBackupCSVFile(FilePath, OldFilmRatingsFilePath);
+        _fileOperations.CreateBackupCSVFile(_filePath, _oldFilmRatingsFilePath);
         return savedReviews;
     }
 
     private void CreateFileHeader()
     {
-        using var file = new StreamWriter(FilePath);
+        using var file = new StreamWriter(_filePath);
         file.WriteLine("Id" + "," + "Rating" + "," + "Film Id");
     }
     
     public void WriteReviews(List<Review> reviews)
     {
-        _fileOperations.CreateBackupCSVFile(FilePath, OldFilmRatingsFilePath);
+        _fileOperations.CreateBackupCSVFile(_filePath, _oldFilmRatingsFilePath);
         CreateFileHeader();
         if (reviews.Count <= 0) return;
         foreach (var review in reviews)
@@ -63,7 +64,7 @@ public class ReviewPersistence : IReviewPersistence
     {
         try
         {
-            using var file = new StreamWriter(FilePath, true);
+            using var file = new StreamWriter(_filePath, true);
             file.WriteLine(id + ","  + rating + "," + filmId);
             file.Close();
         }  
