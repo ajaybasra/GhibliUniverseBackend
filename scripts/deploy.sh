@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ktmpl ./templates/template.yaml -f ./templates/default.yaml --parameter imageTag ${BUILDKITE_BUILD_NUMBER} | kubectl apply -f -
+image_tag=$(git rev-parse --short HEAD)
+
+ktmpl ./templates/template.yaml -f ./templates/default.yaml --parameter imageTag ${image_tag} | kubectl apply -f -
