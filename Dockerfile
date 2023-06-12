@@ -14,7 +14,7 @@ COPY ./ ./
 RUN dotnet build
 
 FROM base AS test
-ENTRYPOINT dotnet test
+RUN dotnet test
 
 FROM base AS publish
 RUN dotnet publish -c Release -o /app/publish
@@ -25,4 +25,3 @@ WORKDIR /app
 COPY --from=publish /app/publish .
 EXPOSE 3000
 ENTRYPOINT ["dotnet", "GhibliUniverse.API.dll"]
-# ENTRYPOINT [ "/bin/sh" ]
