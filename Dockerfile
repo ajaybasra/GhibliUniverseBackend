@@ -1,31 +1,28 @@
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-# Sets directory from which commands are run. WORKDIR is like a cd inside the container.
-WORKDIR /app/GhibliUniverse
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS base
+WORKDIR /app
 # .sln and .csproj are copied to the directories where they belong, * wildcard is used so that name doesn't have to be specified.
 COPY *.sln ./ 
-
-# Restores the dependencies/tools of the project as distinct layers.
 COPY ./GhibliUniverse.Console/*.csproj ./GhibliUniverse.Console/
 COPY ./GhibliUniverse.API/*.csproj ./GhibliUniverse.API/
 COPY ./GhibliUniverse.Core/*.csproj ./GhibliUniverse.Core/
 COPY ./GhibliUniverse.Console.Tests/*.csproj ./GhibliUniverse.Console.Tests/
 COPY ./GhibliUniverse.Core.Tests/*.csproj ./GhibliUniverse.Core.Tests/
+
 RUN dotnet restore
 COPY ./ ./
+
 RUN dotnet build
 
-FROM build AS test
-WORKDIR /app/GhibliUniverse
-RUN dotnet test
+FROM base AS test
+ENTRYPOINT dotnet test
 
-FROM build AS publish
-WORKDIR /app/GhibliUniverse
-RUN dotnet publish -c Release -o out
+FROM base AS publish
+RUN dotnet publish -c Release -o /app/publish
 
-# Creates runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app
-COPY --from=publish /app/GhibliUniverse/out ./
+
+COPY --from=publish /app/publish .
 EXPOSE 3000
-CMD ["dotnet GhibliUniverse.API.dll"]
+ENTRYPOINT ["dotnet", "GhibliUniverse.API.dll"]
 # ENTRYPOINT [ "/bin/sh" ]
