@@ -7,7 +7,7 @@ public class FilmPersistence : IFilmPersistence
 {
     private readonly IFileOperations _fileOperations;
     private static readonly string BaseDirectory = AppContext.BaseDirectory;
-    private static readonly string RootDirectory = Directory.GetParent(BaseDirectory).Parent.Parent.Parent.Parent.FullName;
+    // private static readonly string RootDirectory = Directory.GetParent(BaseDirectory).Parent.Parent.Parent.Parent.FullName;
     // private readonly string _oldFilmsFilePath = Path.Combine(RootDirectory, "GhibliUniverse.Core/DataPersistence/CSVData/old-films.csv");
     // private readonly string _filePath = Path.Combine(RootDirectory, "GhibliUniverse.Core/DataPersistence/CSVData/films.csv");
     private readonly string _oldFilmsFilePath =
