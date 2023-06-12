@@ -1,0 +1,31 @@
+# https://hub.docker.com/_/microsoft-dotnet
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /source
+
+# copy csproj and restore as distinct layers
+COPY *.sln .
+COPY ./GhibliUniverse.Console/*.csproj ./GhibliUniverse.Console/
+COPY ./GhibliUniverse.API/*.csproj ./GhibliUniverse.API/
+COPY ./GhibliUniverse.Core/*.csproj ./GhibliUniverse.Core/
+COPY ./GhibliUniverse.Console.Tests/*.csproj ./GhibliUniverse.Console.Tests/
+COPY ./GhibliUniverse.Core.Tests/*.csproj ./GhibliUniverse.Core.Tests/
+RUN dotnet restore
+
+# copy everything else and build app
+COPY ./ ./
+RUN dotnet build
+
+FROM build AS test
+WORKDIR /source
+RUN dotnet test
+
+WORKDIR /source
+# RUN dotnet publish -c release /app --no-restore-->
+ RUN dotnet publish -c Release -o /app
+
+# final stage/image
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+WORKDIR /app
+COPY --from=build /app ./
+EXPOSE 3000
+ENTRYPOINT ["dotnet", "GhibliUniverse.API.dll"]

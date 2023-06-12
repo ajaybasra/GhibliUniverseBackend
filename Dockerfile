@@ -20,11 +20,12 @@ RUN dotnet test
 
 FROM build AS publish
 WORKDIR /app/GhibliUniverse
-RUN dotnet publish -c Release -o publish
+RUN dotnet publish -c Release -o out
 
 # Creates runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
-COPY --from=publish /app/GhibliUniverse/publish ./
+COPY --from=publish /app/GhibliUniverse/out ./
 EXPOSE 3000
-ENTRYPOINT ["dotnet", "GhibliUniverse.dll"]
+CMD ["dotnet GhibliUniverse.API.dll"]
+# ENTRYPOINT [ "/bin/sh" ]
