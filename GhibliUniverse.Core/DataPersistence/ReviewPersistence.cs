@@ -7,14 +7,9 @@ namespace GhibliUniverse.Core.DataPersistence;
 public class ReviewPersistence : IReviewPersistence
 {
     private readonly IFileOperations _fileOperations;
-    private static readonly string BaseDirectory = AppContext.BaseDirectory;
-    // // private static readonly string RootDirectory = Directory.GetParent(BaseDirectory).Parent.Parent.Parent.Parent.FullName;
-    // private readonly string _oldFilmRatingsFilePath = Path.Combine(RootDirectory, "GhibliUniverse.Core/DataPersistence/CSVData/old-reviews.csv");
-    // private readonly string _filePath = Path.Combine(RootDirectory, "GhibliUniverse.Core/DataPersistence/CSVData/reviews.csv");
-    private readonly string _oldFilmRatingsFilePath =
-        "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/GhibliUniverse.Core/DataPersistence/CSVData/old-reviews.csv";
-    private readonly string _filePath =
-        "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/GhibliUniverse.Core/DataPersistence/CSVData/reviews.csv";
+    private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+    private readonly string _oldFilmRatingsFilePath =  "/DataPersistence/CSVData/old-reviews.csv";
+    private readonly string _filePath =  "/DataPersistence/CSVData/reviews.csv";
     
     public ReviewPersistence(IFileOperations fileOperations)
     {

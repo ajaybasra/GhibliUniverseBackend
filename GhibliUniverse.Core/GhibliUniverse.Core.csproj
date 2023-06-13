@@ -16,4 +16,31 @@
       <PackageReference Include="ValueOf" Version="2.0.31" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="DataPersistence\CSVData\film-and-voice-actor-ids.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="DataPersistence\CSVData\films.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="DataPersistence\CSVData\old-film-and-voice-actor-ids.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="DataPersistence\CSVData\old-films.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="DataPersistence\CSVData\old-reviews.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="DataPersistence\CSVData\old-voice-actors.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="DataPersistence\CSVData\reviews.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="DataPersistence\CSVData\voice-actors.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

@@ -8,15 +8,9 @@ public class FilmVoiceActorPersistence : IFilmVoiceActorPersistence
     private readonly IFileOperations _fileOperations;
     private readonly IFilmPersistence _filmPersistence;
     private readonly IVoiceActorPersistence _voiceActorPersistence;
-    private static readonly string BaseDirectory = AppContext.BaseDirectory;
-    // private static readonly string RootDirectory = Directory.GetParent(BaseDirectory).Parent.Parent.Parent.Parent.FullName;
-    // private readonly string _oldFilmVoiceActorFilePath = Path.Combine(RootDirectory, "GhibliUniverse.Core/DataPersistence/CSVData/old-film-and-voice-actor-ids.csv");
-    // private readonly string _filePath = Path.Combine(RootDirectory, "GhibliUniverse.Core/DataPersistence/CSVData/film-and-voice-actor-ids.csv");
-    private readonly string _oldFilmVoiceActorFilePath =
-        "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/GhibliUniverse.Core/DataPersistence/CSVData/old-film-and-voice-actor-ids.csv";
-    private readonly string _filePath =
-        "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/GhibliUniverse.Core/DataPersistence/CSVData/film-and-voice-actor-ids.csv";
-    
+    private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+    private readonly string _oldFilmVoiceActorFilePath =  "/DataPersistence/CSVData/old-film-and-voice-actor-ids.csv";
+    private readonly string _filePath = "/DataPersistence/CSVData/film-and-voice-actor-ids.csv";
     public FilmVoiceActorPersistence(IFileOperations fileOperations, IFilmPersistence filmPersistence, IVoiceActorPersistence voiceActorPersistence)
     {
         _fileOperations = fileOperations;
