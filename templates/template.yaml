@@ -11,7 +11,7 @@ objects:
   - kind: Deployment
     apiVersion: apps/v1
     metadata:
-      name: $(name)ß
+      name: $(name)
       namespace: $(namespace)
       labels:
         app: $(name)
@@ -28,7 +28,7 @@ objects:
             app: $(name)
             repo: $(repo)
         spec:
-          :
+          containers:
             - name: nginx
               image: $(image):$(imageTag)
               ports:
