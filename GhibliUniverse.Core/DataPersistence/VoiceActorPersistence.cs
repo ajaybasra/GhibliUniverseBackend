@@ -8,8 +8,8 @@ public class VoiceActorPersistence : IVoiceActorPersistence
 {
     private readonly IFileOperations _fileOperations;
     private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-    private readonly string _oldVoiceActorsFilePath =  "/DataPersistence/CSVData/old-voice-actors.csv";
-    private readonly string _filePath = "/DataPersistence/CSVData/voice-actors.csv";
+    private readonly string _oldVoiceActorsFilePath = WorkingDirectory + "/DataPersistence/CSVData/old-voice-actors.csv";
+    private readonly string _filePath = WorkingDirectory + "/DataPersistence/CSVData/voice-actors.csv";
     public VoiceActorPersistence(IFileOperations fileOperations)
     {
         _fileOperations = fileOperations;

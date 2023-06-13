@@ -7,8 +7,8 @@ public class FilmPersistence : IFilmPersistence
 {
     private readonly IFileOperations _fileOperations;
     private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-    private readonly string _oldFilmsFilePath = "/DataPersistence/CSVData/old-films.csv";
-    private readonly string _filePath =  "/DataPersistence/CSVData/films.csv";
+    private readonly string _oldFilmsFilePath = WorkingDirectory + "/DataPersistence/CSVData/old-films.csv";
+    private readonly string _filePath = WorkingDirectory + "/DataPersistence/CSVData/films.csv";
     
     public FilmPersistence(IFileOperations fileOperations)
     {

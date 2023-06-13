@@ -8,8 +8,8 @@ public class ReviewPersistence : IReviewPersistence
 {
     private readonly IFileOperations _fileOperations;
     private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-    private readonly string _oldFilmRatingsFilePath =  "/DataPersistence/CSVData/old-reviews.csv";
-    private readonly string _filePath =  "/DataPersistence/CSVData/reviews.csv";
+    private readonly string _oldFilmRatingsFilePath = WorkingDirectory + "/DataPersistence/CSVData/old-reviews.csv";
+    private readonly string _filePath = WorkingDirectory + "/DataPersistence/CSVData/reviews.csv";
     
     public ReviewPersistence(IFileOperations fileOperations)
     {

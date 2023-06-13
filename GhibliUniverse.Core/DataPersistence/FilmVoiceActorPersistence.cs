@@ -9,8 +9,8 @@ public class FilmVoiceActorPersistence : IFilmVoiceActorPersistence
     private readonly IFilmPersistence _filmPersistence;
     private readonly IVoiceActorPersistence _voiceActorPersistence;
     private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
-    private readonly string _oldFilmVoiceActorFilePath =  "/DataPersistence/CSVData/old-film-and-voice-actor-ids.csv";
-    private readonly string _filePath = "/DataPersistence/CSVData/film-and-voice-actor-ids.csv";
+    private readonly string _oldFilmVoiceActorFilePath = WorkingDirectory + "/DataPersistence/CSVData/old-film-and-voice-actor-ids.csv";
+    private readonly string _filePath = WorkingDirectory + "/DataPersistence/CSVData/film-and-voice-actor-ids.csv";
     public FilmVoiceActorPersistence(IFileOperations fileOperations, IFilmPersistence filmPersistence, IVoiceActorPersistence voiceActorPersistence)
     {
         _fileOperations = fileOperations;
