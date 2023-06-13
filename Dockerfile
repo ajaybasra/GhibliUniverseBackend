@@ -24,5 +24,5 @@ WORKDIR /app
 
 COPY --from=publish /app/publish .
 EXPOSE 3000
-# ENTRYPOINT ["dotnet", "GhibliUniverse.API.dll"]
+ENTRYPOINT ["dotnet", "GhibliUniverse.API.dll"]
 # ENTRYPOINT ["/bin/sh"]
