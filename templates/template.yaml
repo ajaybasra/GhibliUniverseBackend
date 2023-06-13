@@ -18,7 +18,8 @@ objects:
         repo: $(repo)
 
     spec:
-      replicas: 3
+      # replicas: 3
+      # this value goes away - we don't need to explicitly set the number of replicas anymore!
       selector:
           matchLabels:
             app: $(name)
