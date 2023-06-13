@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
+using System.Reflection;
 using System.Threading.Channels;
 using GhibliUniverse.Console;
 using GhibliUniverse.Core.DataPersistence;
@@ -41,3 +42,6 @@ var y = voiceActorService.BuildVoiceActorList();
 Console.WriteLine(y);
 var x = reviewService.BuildReviewList();
 Console.WriteLine(x);
+
+var v = Directory.GetCurrentDirectory();
+Console.WriteLine(v);
