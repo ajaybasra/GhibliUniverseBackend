@@ -43,5 +43,5 @@ Console.WriteLine(y);
 var x = reviewService.BuildReviewList();
 Console.WriteLine(x);
 
-var v = Directory.GetCurrentDirectory();
+var v = AppDomain.CurrentDomain.BaseDirectory;
 Console.WriteLine(v);
