@@ -18,10 +18,10 @@ steps:
     agents:
       queue: fma-dev 
 
-  - wait
+  # - wait
 
-  - label: ":k8s: Deploy to Europa Pre-Prod"
-    command: ./scripts/deploy.sh
-    # branches: main
-    agents:
-      queue: "europa-preprod-fma" 
+  # - label: ":k8s: Deploy to Europa Pre-Prod"
+  #   command: ./scripts/deploy.sh
+  #   # branches: main
+  #   agents:
+  #     queue: "europa-preprod-fma" 
