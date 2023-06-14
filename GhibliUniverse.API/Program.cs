@@ -1,9 +1,16 @@
+using GhibliUniverse.Core.Context;
 using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+// builder.Services.AddDbContext<GhibliUniverseContext>(options =>
+// {
+//     options.UseNpgsql(Configuration.GetDbConnectionString());
+//
+// });
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IFilmService, FilmService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();

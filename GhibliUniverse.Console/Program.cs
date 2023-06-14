@@ -42,6 +42,3 @@ var y = voiceActorService.BuildVoiceActorList();
 Console.WriteLine(y);
 var x = reviewService.BuildReviewList();
 Console.WriteLine(x);
-
-var v = AppDomain.CurrentDomain.BaseDirectory;
-Console.WriteLine(v);
