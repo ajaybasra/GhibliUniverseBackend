@@ -7,21 +7,21 @@ namespace GhibliUniverse.Core.DataPersistence;
 public class VoiceActorPersistence : IVoiceActorPersistence
 {
     private readonly IFileOperations _fileOperations;
-    private const string OldVoiceActorsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-voice-actors.csv";
-    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/voice-actors.csv";
-
+    private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+    private readonly string _oldVoiceActorsFilePath = WorkingDirectory + "/DataPersistence/CSVData/old-voice-actors.csv";
+    private readonly string _filePath = WorkingDirectory + "/DataPersistence/CSVData/voice-actors.csv";
     public VoiceActorPersistence(IFileOperations fileOperations)
     {
         _fileOperations = fileOperations;
     }
     public List<VoiceActor> ReadVoiceActors()
     {
-        if (!_fileOperations.FileExists(FilePath))
+        if (!_fileOperations.FileExists(_filePath))
         {
             return new List<VoiceActor>();
         }
         var savedVoiceActors = new List<VoiceActor>();
-        using var reader = new StreamReader(FilePath);
+        using var reader = new StreamReader(_filePath);
         var headerLine = reader.ReadLine();
         string currentLine;
         while ((currentLine = reader.ReadLine()) != null)
@@ -39,13 +39,13 @@ public class VoiceActorPersistence : IVoiceActorPersistence
     
     private void CreateFileHeader()
     {
-        using var file = new StreamWriter(FilePath);
+        using var file = new StreamWriter(_filePath);
         file.WriteLine("Id" + "," + "Name");
     }
     
     public void WriteVoiceActors(List<VoiceActor> voiceActors)
     {
-        _fileOperations.CreateBackupCSVFile(FilePath, OldVoiceActorsFilePath);
+        _fileOperations.CreateBackupCSVFile(_filePath, _oldVoiceActorsFilePath);
         CreateFileHeader();
         if (voiceActors.Count <= 0) return;
         foreach (var voiceActor in voiceActors)
@@ -58,7 +58,7 @@ public class VoiceActorPersistence : IVoiceActorPersistence
     {
         try
         {
-            using var file = new StreamWriter(FilePath, true);
+            using var file = new StreamWriter(_filePath, true);
             file.WriteLine(id + ","  + name);
             file.Close();
         }  

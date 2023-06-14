@@ -1,15 +1,15 @@
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.ValueObjects;
-using GhibliUniverse.Core.Services;
 
 namespace GhibliUniverse.Core.DataPersistence;
 
 public class FilmPersistence : IFilmPersistence
 {
     private readonly IFileOperations _fileOperations;
-    private const string OldFilmsFilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/old-films.csv";
-    private const string FilePath = "/Users/Ajay.Basra/Repos/Katas/GhibliUniverse/CSVData/films.csv";
-
+    private static readonly string WorkingDirectory = AppDomain.CurrentDomain.BaseDirectory;
+    private readonly string _oldFilmsFilePath = WorkingDirectory + "/DataPersistence/CSVData/old-films.csv";
+    private readonly string _filePath = WorkingDirectory + "/DataPersistence/CSVData/films.csv"; // should work on any machine
+    
     public FilmPersistence(IFileOperations fileOperations)
     {
         _fileOperations = fileOperations;
@@ -17,12 +17,12 @@ public class FilmPersistence : IFilmPersistence
     
     public List<Film> ReadFilms()
     {
-        if (!_fileOperations.FileExists(FilePath))
+        if (!_fileOperations.FileExists(_filePath))
         {
             return new List<Film>();
         }
         var savedFilms = new List<Film>();
-        using var reader = new StreamReader(FilePath);
+        using var reader = new StreamReader(_filePath);
         var headerLine = reader.ReadLine();
         string currentLine;
         while ((currentLine = reader.ReadLine()) != null)
@@ -44,12 +44,12 @@ public class FilmPersistence : IFilmPersistence
     
     private void CreateFileHeader()
     {
-        using var file = new StreamWriter(FilePath);
+        using var file = new StreamWriter(_filePath);
         file.WriteLine("Id" + "," + "Title" + "," + "Description" + "," + "Director" + "," + "Composer" + "," + "Release Year");
     }
     public void WriteFilms(List<Film> films)
     {
-        _fileOperations.CreateBackupCSVFile(FilePath, OldFilmsFilePath);
+        _fileOperations.CreateBackupCSVFile(_filePath, _oldFilmsFilePath);
         CreateFileHeader();
         if (films.Count <= 0) return;
         foreach (var film in films)
@@ -62,7 +62,7 @@ public class FilmPersistence : IFilmPersistence
     {
         try
         {
-            using var file = new StreamWriter(FilePath, true);
+            using var file = new StreamWriter(_filePath, true);
             file.WriteLine(id + ","  + title + "," + description.ToString().Replace(',', '*') + "," + director + "," + composer + "," + releaseYear);
             file.Close();
         }  
