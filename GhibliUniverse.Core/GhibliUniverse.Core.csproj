@@ -8,6 +8,7 @@
 
     <ItemGroup>
       <Folder Include="Domain" />
+      <Folder Include="Repositories" />
     </ItemGroup>
 
     <ItemGroup>
@@ -45,6 +46,9 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
       <None Update="DataPersistence\CSVData\voice-actors.csv">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Utils\env.local">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

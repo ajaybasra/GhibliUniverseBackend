@@ -4,6 +4,13 @@ public static class Configuration
 {
     public static string GetDbConnectionString()
     {
+        var root = Directory.GetCurrentDirectory();
+        var localEnvironmentFilePath = Path.Combine(root, "/Utils/env.local");
+        if (File.Exists(localEnvironmentFilePath))
+        {
+            DotEnv.Load(localEnvironmentFilePath);
+        }
+        
         var dbName = Environment.GetEnvironmentVariable("DB_NAME");
         var dbHost = Environment.GetEnvironmentVariable("DB_HOST");
         var port = Environment.GetEnvironmentVariable("DB_PORT");
