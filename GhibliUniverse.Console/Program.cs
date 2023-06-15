@@ -1,12 +1,19 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System.Reflection;
-using System.Threading.Channels;
 using GhibliUniverse.Console;
+using GhibliUniverse.Core.Context;
 using GhibliUniverse.Core.DataPersistence;
-using GhibliUniverse.Core.Domain.Models;
-using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
+using GhibliUniverse.Core.Utils;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+
+var services = new ServiceCollection();
+services.AddDbContext<GhibliUniverseContext>(options =>
+{
+    options.UseNpgsql(Configuration.GetDbConnectionString());
+});
+var serviceProvider = services.BuildServiceProvider();
 
 var commandLine = new CommandLine();
 var consoleWriter = new ConsoleWriter();
@@ -42,3 +49,5 @@ var y = voiceActorService.BuildVoiceActorList();
 Console.WriteLine(y);
 var x = reviewService.BuildReviewList();
 Console.WriteLine(x);
+var root = Directory.GetCurrentDirectory();
+consoleWriter.WriteLine(Configuration.GetDbConnectionString());

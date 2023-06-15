@@ -1,16 +1,24 @@
 using GhibliUniverse.Core.Context;
 using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Services;
+using GhibliUniverse.Core.Utils;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-// builder.Services.AddDbContext<GhibliUniverseContext>(options =>
+// var root = Directory.GetCurrentDirectory();
+// var localEnvironmentFilePath = Path.Combine(root, ".env.local");
+// if (File.Exists(localEnvironmentFilePath))
 // {
-//     options.UseNpgsql(Configuration.GetDbConnectionString());
-//
-// });
+//     DotEnv.Load(localEnvironmentFilePath);
+// }
+
+builder.Services.AddControllers();
+builder.Services.AddDbContext<GhibliUniverseContext>(options =>
+{
+    options.UseNpgsql(Configuration.GetDbConnectionString());
+
+});
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IFilmService, FilmService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();

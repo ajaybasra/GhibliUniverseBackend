@@ -5,7 +5,7 @@ namespace GhibliUniverse.Core.Domain.Models;
 
 public record Film()
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; set; }
     public ValidatedString Title { get; set; }
     public ValidatedString Description { get; set; }
     public ValidatedString Director { get; set; }
