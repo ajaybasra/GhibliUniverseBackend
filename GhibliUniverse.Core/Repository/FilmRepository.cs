@@ -72,7 +72,7 @@ public class FilmRepository : IFilmRepository
         filmToUpdate.Composer = updatedFilm.Composer;
         filmToUpdate.ReleaseYear = updatedFilm.ReleaseYear;
 
-        _ghibliUniverseContext.Films.Update(updatedFilm);
+        _ghibliUniverseContext.Films.Update(filmToUpdate);
         _ghibliUniverseContext.SaveChanges();
         return filmToUpdate;
     }

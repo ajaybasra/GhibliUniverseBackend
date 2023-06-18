@@ -59,9 +59,6 @@ public class ReviewService : IReviewService
     {
         var savedReviews = _reviewPersistence.ReadReviews();
         var reviewToDelete = GetReviewById(reviewId);
-        // var filmId = reviewToDelete.FilmId;
-        // var filmToRemoveReviewFrom = _filmService.GetFilmById(filmId);
-        // filmToRemoveReviewFrom.Reviews.Remove(reviewToDelete);
         savedReviews.Remove(reviewToDelete);
         _reviewPersistence.WriteReviews(savedReviews);
     }
