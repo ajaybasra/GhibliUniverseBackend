@@ -1,5 +1,6 @@
 using GhibliUniverse.Core.Context;
 using GhibliUniverse.Core.DataPersistence;
+using GhibliUniverse.Core.Repository;
 using GhibliUniverse.Core.Services;
 using GhibliUniverse.Core.Utils;
 using Microsoft.EntityFrameworkCore;

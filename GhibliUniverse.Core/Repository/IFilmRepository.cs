@@ -1,8 +1,8 @@
 using GhibliUniverse.Core.Domain.Models;
 
-namespace GhibliUniverse.Core.Services;
+namespace GhibliUniverse.Core.Repository;
 
-public interface IFilmService
+public interface IFilmRepository
 {
     List<Film> GetAllFilms();
     Film GetFilmById(Guid filmId);
@@ -12,5 +12,4 @@ public interface IFilmService
     void DeleteFilm(Guid filmId);
     void LinkVoiceActor(Guid filmId, Guid voiceActorId);
     void UnlinkVoiceActor(Guid filmId, Guid voiceActorId);
-    bool FilmTitleAlreadyExists(string title);
 }

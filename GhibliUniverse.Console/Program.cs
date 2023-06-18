@@ -1,8 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
 using GhibliUniverse.Console;
+using GhibliUniverse.Core;
 using GhibliUniverse.Core.Context;
 using GhibliUniverse.Core.DataPersistence;
+using GhibliUniverse.Core.Repository;
 using GhibliUniverse.Core.Services;
 using GhibliUniverse.Core.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,7 @@ var voiceActorService = new VoiceActorService(voiceActorPersistence);
 var filmService = new FilmService(filmPersistence, reviewPersistence, voiceActorPersistence, filmVoiceActorPersistence);
 var reviewService = new ReviewService(reviewPersistence);
 var argumentProcessor = new ArgumentProcessor(commandLine, consoleWriter, filmService, reviewService, voiceActorService);
+
 // var f = new Film
 // {
 //     Title = ValidatedString.From("aetman"),

@@ -62,25 +62,11 @@ public class FilmService : IFilmService
             Composer = ValidatedString.From(composer),
             ReleaseYear = ReleaseYear.From(releaseYear)
         };
+        
         savedFilms.Add(film);
         _filmPersistence.WriteFilms(savedFilms);
+        
         return film;
-        // try
-        // {
-
-        // }
-        // catch (ReleaseYear.NotFourCharactersException e)
-        // {
-        //     Console.WriteLine(e);
-        // }
-        // catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
-        // {
-        //     Console.WriteLine(e);
-        // }
-        // catch (ArgumentException ae)
-        // {
-        //     Console.WriteLine(ae);
-        // }
     }
 
     public Film UpdateFilm(Guid filmId, Film updatedFilm)  

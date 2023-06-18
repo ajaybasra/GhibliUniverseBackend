@@ -3,6 +3,7 @@ using GhibliUniverse.API.DTOs;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using GhibliUniverse.Core.Repository;
 using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -64,11 +65,11 @@ public class FilmController : Controller
             return BadRequest(ModelState);
         }
         
-        if (_filmService.FilmTitleAlreadyExists(filmCreate.Title))
-        {
-            ModelState.AddModelError("", "Film with the same name already exists");
-            return StatusCode(422, ModelState);
-        }
+        // if (_filmService.FilmTitleAlreadyExists(filmCreate.Title))
+        // {
+        //     ModelState.AddModelError("", "Film with the same name already exists");
+        //     return StatusCode(422, ModelState);
+        // }
         
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
