@@ -55,6 +55,7 @@ public class FilmRepository : IFilmRepository
         
         _ghibliUniverseContext.Films.Add(film);
         _ghibliUniverseContext.SaveChanges();
+        
         return film;
     }
 
@@ -74,6 +75,7 @@ public class FilmRepository : IFilmRepository
 
         _ghibliUniverseContext.Films.Update(filmToUpdate);
         _ghibliUniverseContext.SaveChanges();
+        
         return filmToUpdate;
     }
 

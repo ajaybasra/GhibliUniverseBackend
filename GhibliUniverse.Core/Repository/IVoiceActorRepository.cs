@@ -10,5 +10,4 @@ public interface IVoiceActorRepository
     public VoiceActor CreateVoiceActor(string name);
     public VoiceActor UpdateVoiceActor(Guid voiceActorId, string name);
     public void DeleteVoiceActor(Guid voiceActorId);
-    public bool VoiceActorAlreadyExists(string name);
 }

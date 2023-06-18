@@ -62,11 +62,11 @@ public class VoiceActorController : Controller
             return BadRequest(ModelState);
         }
         
-        if (_voiceActorService.VoiceActorAlreadyExists(voiceActorCreate.Name))
-        {
-            ModelState.AddModelError("", "Voice actor with the same name already exists");
-            return StatusCode(422, ModelState);
-        }
+        // if (_voiceActorService.VoiceActorAlreadyExists(voiceActorCreate.Name))
+        // {
+        //     ModelState.AddModelError("", "Voice actor with the same name already exists");
+        //     return StatusCode(422, ModelState);
+        // }
         
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
