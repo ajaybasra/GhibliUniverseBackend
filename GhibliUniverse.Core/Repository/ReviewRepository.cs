@@ -32,6 +32,12 @@ public class ReviewRepository : IReviewRepository
 
     public Review CreateReview(Guid filmId, int rating)
     {
+        var film = _ghibliUniverseContext.Films.FirstOrDefault(f => f.Id == filmId);
+        if (film == null)
+        {
+            throw new ModelNotFoundException(filmId);
+        }
+        
         var review = new Review
         {
             Id = Guid.NewGuid(),

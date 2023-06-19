@@ -21,6 +21,8 @@ services.AddScoped<IReviewRepository, ReviewRepository>();
 services.AddScoped<IFilmService, FilmService>();
 services.AddScoped<IVoiceActorService, VoiceActorService>();
 services.AddScoped<IReviewService, ReviewService>();
+services.AddScoped<ICommandLine, CommandLine>();
+services.AddScoped<IWriter, ConsoleWriter>();
 
 var serviceProvider = services.BuildServiceProvider();
 using var scope = serviceProvider.CreateScope();
@@ -28,13 +30,13 @@ using var scope = serviceProvider.CreateScope();
 var filmService = scope.ServiceProvider.GetRequiredService<IFilmService>();
 var voiceActorService = scope.ServiceProvider.GetRequiredService<IVoiceActorService>();
 var reviewService = scope.ServiceProvider.GetRequiredService<IReviewService>();
+var commandLine = scope.ServiceProvider.GetRequiredService<ICommandLine>();
+var consoleWriter = scope.ServiceProvider.GetRequiredService<IWriter>();
 
-var commandLine = new CommandLine();
-var consoleWriter = new ConsoleWriter();
 var argumentProcessor = new ArgumentProcessor(commandLine, consoleWriter, filmService, reviewService, voiceActorService);
 argumentProcessor.Process();
 // reviewService.DeleteReview(Guid.Parse("1fbc6079-9f7d-417f-92a4-843d007edcb4"));
-// review.CreateReview(Guid.Parse("ad25f890-3050-46f4-951f-786c563c8ff9"), 10);
+// reviewService.CreateReview(Guid.Parse("1af40df1-a634-445b-be1f-0b5e671d1c16"), 10);
 // voice.CreateVoiceActor("John Cena");
 // film.LinkVoiceActor(Guid.Parse("0af40df1-a634-445b-be1f-0b5e671d1c16"), Guid.Parse("6408242e-8358-40c2-b3ad-5cb66dc68f89"));
 // film.DeleteFilm(Guid.Parse("ad25f890-3050-46f4-951f-786c563c8ff9"));
