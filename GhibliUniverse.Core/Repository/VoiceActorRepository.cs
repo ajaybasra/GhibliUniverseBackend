@@ -2,6 +2,7 @@ using GhibliUniverse.Core.Context;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace GhibliUniverse.Core.Repository;
 
@@ -32,7 +33,10 @@ public class VoiceActorRepository : IVoiceActorRepository
 
     public List<Film> GetFilmsByVoiceActor(Guid voiceActorId)
     {
-        var voiceActor = _ghibliUniverseContext.VoiceActors.FirstOrDefault(v => v.Id == voiceActorId);
+        var voiceActor = _ghibliUniverseContext.VoiceActors
+            .Include(v => v.Films)
+            .ThenInclude(f => f.Reviews)
+            .FirstOrDefault(v => v.Id == voiceActorId);
         if (voiceActor == null)
         {
             throw new ModelNotFoundException(voiceActorId);

@@ -24,11 +24,10 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IFilmService, FilmService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IVoiceActorService, VoiceActorService>();
-builder.Services.AddScoped<IFileOperations, FileOperations>();
-builder.Services.AddScoped<IFilmPersistence, FilmPersistence>();
-builder.Services.AddScoped<IReviewPersistence, ReviewPersistence>();
-builder.Services.AddScoped<IVoiceActorPersistence, VoiceActorPersistence>();
-builder.Services.AddScoped<IFilmVoiceActorPersistence, FilmVoiceActorPersistence>();
+builder.Services.AddScoped<IFilmRepository, FilmRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IVoiceActorRepository, VoiceActorRepository>();
+// builder.Services.AddScoped<IFilmRepository, FilmRepository>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

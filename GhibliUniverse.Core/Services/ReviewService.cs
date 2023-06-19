@@ -3,64 +3,40 @@ using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using GhibliUniverse.Core.Repository;
 
 namespace GhibliUniverse.Core.Services;
 
 public class ReviewService : IReviewService
 {
-    private readonly IReviewPersistence _reviewPersistence;
+    private readonly IReviewRepository _reviewRepository;
 
-    public ReviewService(IReviewPersistence reviewPersistence)
+    public ReviewService(IReviewRepository reviewRepository)
     {
-        _reviewPersistence = reviewPersistence;
+        _reviewRepository = reviewRepository;
     }
     public List<Review> GetAllReviews()
     {
-        return _reviewPersistence.ReadReviews();
+        return _reviewRepository.GetAllReviews();
     }
 
     public Review GetReviewById(Guid reviewId)
     {
-        var savedReviews = _reviewPersistence.ReadReviews();
-        var foundReview = savedReviews.FirstOrDefault(r => r.Id == reviewId);
-
-        if (foundReview == null)
-        {
-            throw new ModelNotFoundException(reviewId);
-        }
-
-        return foundReview;
+        return _reviewRepository.GetReviewById(reviewId);
     }
 
     public Review CreateReview(Guid filmId, int rating)
     {
-        var savedReviews = _reviewPersistence.ReadReviews();
-        var review = new Review
-        {
-            Id = Guid.NewGuid(),
-            Rating = Rating.From(rating),
-            FilmId = filmId
-        };
-        savedReviews.Add(review);
-        _reviewPersistence.WriteReviews(savedReviews);
-        return review;
+        return _reviewRepository.CreateReview(filmId, rating);
     }
 
     public Review UpdateReview(Guid reviewId, int rating)
     {
-        var savedReviews = _reviewPersistence.ReadReviews();
-        var reviewToUpdate = GetReviewById(reviewId);
-        reviewToUpdate.Rating = Rating.From(rating);
-        savedReviews = savedReviews.Select(r => r.Id == reviewId ? reviewToUpdate : r).ToList();
-        _reviewPersistence.WriteReviews(savedReviews);
-        return reviewToUpdate;
+        return _reviewRepository.UpdateReview(reviewId, rating);
     }
     public void DeleteReview(Guid reviewId)
     {
-        var savedReviews = _reviewPersistence.ReadReviews();
-        var reviewToDelete = GetReviewById(reviewId);
-        savedReviews.Remove(reviewToDelete);
-        _reviewPersistence.WriteReviews(savedReviews);
+        _reviewRepository.DeleteReview(reviewId);
     }
     
     public string BuildReviewList()

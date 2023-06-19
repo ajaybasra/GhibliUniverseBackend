@@ -2,6 +2,7 @@ using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using GhibliUniverse.Core.Repository;
 using GhibliUniverse.Core.Services;
 using Moq;
 
@@ -9,11 +10,9 @@ namespace GhibliUniverse.Core.Tests.ServiceTests;
 
 public class FilmServiceTests
 {
+    private readonly FilmRepository _filmRepository;
     private readonly FilmService _filmService;
-    private readonly Mock<IFilmPersistence> _mockedFilmPersistence;
-    private readonly Mock<IReviewPersistence> _mockedReviewPersistence;
-    private readonly Mock<IVoiceActorPersistence> _mockedVoiceActorPersistence;
-    private readonly Mock<IFilmVoiceActorPersistence> _mockedFilmVoiceActorPersistence;
+    private readonly Mock<IFilmRepository> _mockedFilmRepository;
     private readonly List<Film> _films = new();
     private readonly List<VoiceActor> _voiceActors = new();
 
@@ -21,16 +20,10 @@ public class FilmServiceTests
     {
         PopulateFilmsList(2);
         PopulateVoiceActorsList(2);
-        _mockedFilmPersistence = new Mock<IFilmPersistence>();
-        _mockedFilmPersistence.Setup(x => x.ReadFilms()).Returns(_films);
-        _mockedReviewPersistence = new Mock<IReviewPersistence>();
-        _mockedReviewPersistence.Setup(x => x.ReadReviews()).Returns(new List<Review>());
-        _mockedVoiceActorPersistence = new Mock<IVoiceActorPersistence>();
-        _mockedVoiceActorPersistence.Setup(x => x.ReadVoiceActors()).Returns(_voiceActors);
-        _mockedFilmVoiceActorPersistence = new Mock<IFilmVoiceActorPersistence>();
-        _mockedFilmVoiceActorPersistence.Setup(x => x.ReadFilmVoiceActorData()).Returns(new List<(Guid, Guid)>());
-        _filmService = new FilmService(_mockedFilmPersistence.Object, _mockedReviewPersistence.Object,
-            _mockedVoiceActorPersistence.Object, _mockedFilmVoiceActorPersistence.Object);
+        // _filmRepository = new FilmRepository();
+        _mockedFilmRepository = new Mock<IFilmRepository>();
+        _mockedFilmRepository.Setup(x => x.GetAllFilms()).Returns(_films);
+        _filmService = new FilmService(_mockedFilmRepository.Object);
     }
     
     public void PopulateFilmsList(int numberOfFilms)
