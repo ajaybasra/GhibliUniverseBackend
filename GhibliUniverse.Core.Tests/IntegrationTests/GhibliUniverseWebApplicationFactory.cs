@@ -11,8 +11,6 @@ namespace GhibliUniverse.Core.Tests.IntegrationTests;
 
 public class GhibliUniverseWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
 {
-    private GhibliUniverseContext _ghibliUniverseContext;
-    
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.ConfigureServices(services =>
@@ -22,7 +20,7 @@ public class GhibliUniverseWebApplicationFactory<TProgram> : WebApplicationFacto
                      typeof(DbContextOptions<GhibliUniverseContext>));
 
             if (descriptor != null) services.Remove(descriptor);
-            
+
             services.AddDbContext<GhibliUniverseContext>(options =>
             {
                 options.UseInMemoryDatabase("InMemoryDbForTesting");
@@ -34,34 +32,31 @@ public class GhibliUniverseWebApplicationFactory<TProgram> : WebApplicationFacto
             {
                 var scopedServices = scope.ServiceProvider;
                 var _ghibliUniverseContext = scopedServices.GetRequiredService<GhibliUniverseContext>();
-                var logger = scopedServices
-                    .GetRequiredService<ILogger<GhibliUniverseWebApplicationFactory<TProgram>>>();
-
-                _ghibliUniverseContext.Database.EnsureCreated();
-
-                try
-                {
-                    InitializeDbForTests(this._ghibliUniverseContext);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "An error occurred seeding the " +
-                                        "database with test messages. Error: {Message}", ex.Message);
-                }
+                
+                InitializeDbForTests(_ghibliUniverseContext).Wait();
             }
         });
     }
 
-    private static void InitializeDbForTests(GhibliUniverseContext db)
+    private async Task InitializeDbForTests(GhibliUniverseContext ghibliUniverseContext)
     {
+        await ghibliUniverseContext.Database.EnsureDeletedAsync();
+        await ghibliUniverseContext.Database.EnsureCreatedAsync();
         var voiceActor = new VoiceActor()
         {
-            Id = Guid.Empty,
+            Id = Guid.Parse("10000000-0000-0000-0000-000000000000"),
             Name = ValidatedString.From("John Doe")
+
         };
-        var film = new Film()
+        var voiceActorTwo = new VoiceActor()
         {
-            Id = Guid.Empty,
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000002"), // cheeky
+            Name = ValidatedString.From("Test Actor")
+        };
+        var voiceActors = new List<VoiceActor> { voiceActor, voiceActorTwo };
+        var filmOne = new Film()
+        {
+            Id = Guid.Parse("10000000-0000-0000-0000-000000000000"),
             Title = ValidatedString.From("Spirited Away"),
             Description =
                 ValidatedString.From(
@@ -70,15 +65,29 @@ public class GhibliUniverseWebApplicationFactory<TProgram> : WebApplicationFacto
             Composer = ValidatedString.From("Joe Hisaishi"),
             ReleaseYear = ReleaseYear.From(2001)
         };
+        var filmTwo = new Film()
+        {
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            Title = ValidatedString.From("Not Spirited Away"),
+            Description =
+                ValidatedString.From(
+                    "This is a description.."),
+            Director = ValidatedString.From("Lebron"),
+            Composer = ValidatedString.From("MJ"),
+            ReleaseYear = ReleaseYear.From(1995),
+            VoiceActors = new List<VoiceActor> {voiceActor}
+        };
+        var films = new List<Film> { filmOne, filmTwo };
         var review = new Review()
         {
             FilmId = Guid.Empty,
             Id = Guid.Empty,
             Rating = Rating.From(10)
         };
-        db.VoiceActors.Add(voiceActor);
-        db.Films.Add(film);
-        db.Reviews.Add(review);
-        db.SaveChanges();
+
+        ghibliUniverseContext.VoiceActors.AddRange(voiceActors);
+        ghibliUniverseContext.Films.AddRange(films);
+        ghibliUniverseContext.Reviews.Add(review);
+        await ghibliUniverseContext.SaveChangesAsync();
     }
 }

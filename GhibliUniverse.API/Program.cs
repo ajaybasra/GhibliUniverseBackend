@@ -7,13 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// var root = Directory.GetCurrentDirectory();
-// var localEnvironmentFilePath = Path.Combine(root, ".env.local");
-// if (File.Exists(localEnvironmentFilePath))
-// {
-//     DotEnv.Load(localEnvironmentFilePath);
-// }
-
 builder.Services.AddControllers();
 builder.Services.AddDbContext<GhibliUniverseContext>(options =>
 {

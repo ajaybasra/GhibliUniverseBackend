@@ -99,13 +99,17 @@ public class FilmRepository : IFilmRepository
 
     public void LinkVoiceActor(Guid filmId, Guid voiceActorId)
     {
-        var filmToAddVoiceActor = _ghibliUniverseContext.Films.FirstOrDefault(f => f.Id == filmId);
+        var filmToAddVoiceActor = _ghibliUniverseContext.Films
+            .Include(f => f.VoiceActors)
+            .FirstOrDefault(f => f.Id == filmId);
         if (filmToAddVoiceActor == null)
         {
             throw new ModelNotFoundException(filmId);
         }
 
-        var voiceActorToLink = _ghibliUniverseContext.VoiceActors.FirstOrDefault(v => v.Id == voiceActorId);
+        var voiceActorToLink = _ghibliUniverseContext.VoiceActors
+            .Include(v => v.Films)
+            .FirstOrDefault(v => v.Id == voiceActorId);
         if (voiceActorToLink == null)
         {
             throw new ModelNotFoundException(voiceActorId);
@@ -127,19 +131,24 @@ public class FilmRepository : IFilmRepository
 
     public void UnlinkVoiceActor(Guid filmId, Guid voiceActorId)
     {
-        var filmToHaveVoiceActorRemoved = _ghibliUniverseContext.Films.FirstOrDefault(f => f.Id == filmId);
+        var filmToHaveVoiceActorRemoved = _ghibliUniverseContext.Films
+            .Include(f => f.VoiceActors)
+            .FirstOrDefault(f => f.Id == filmId);
         if (filmToHaveVoiceActorRemoved == null)
         {
             throw new ModelNotFoundException(filmId);
         }
         
-        var voiceActorToUnlink = _ghibliUniverseContext.VoiceActors.FirstOrDefault(v => v.Id == voiceActorId);
+        var voiceActorToUnlink = _ghibliUniverseContext.VoiceActors
+            .Include(v => v.Films)    
+            .FirstOrDefault(v => v.Id == voiceActorId);
         if (voiceActorToUnlink == null)
         {
             throw new ModelNotFoundException(voiceActorId);
         }
         
         var voiceActorIdList = filmToHaveVoiceActorRemoved.VoiceActors.Select(v => v.Id).ToList();
+        
         if (voiceActorIdList.Contains(voiceActorId))
         {
             filmToHaveVoiceActorRemoved.VoiceActors.RemoveAll(v => v.Id == voiceActorId);
@@ -152,5 +161,4 @@ public class FilmRepository : IFilmRepository
             _ghibliUniverseContext.SaveChanges();
         }
     }
-
 }
