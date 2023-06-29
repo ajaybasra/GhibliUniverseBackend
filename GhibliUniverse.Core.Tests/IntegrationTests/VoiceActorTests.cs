@@ -133,7 +133,7 @@ public class VoiceActorTests
     }
 
     [Fact]
-    public void CreateFilmEndpoint_Returns400StatusCode_WhenGivenInvalidInput()
+    public void CreatVoiceActorEndpoint_Returns400StatusCode_WhenGivenInvalidInput()
     {
         var voiceActorRequestDTO = new VoiceActorRequestDTO()
         {

@@ -41,7 +41,7 @@ public class ReviewController : Controller
         }
     }
     
-    [HttpPost("filmId:guid")]
+    [HttpPost("{filmId:guid}")] 
     public IActionResult CreateReview(Guid filmId, [FromBody] ReviewRequestDTO reviewCreate)
     {
         if (reviewCreate == null)

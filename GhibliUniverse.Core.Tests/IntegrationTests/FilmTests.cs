@@ -107,7 +107,7 @@ public class FilmTests
     }
 
     [Fact]
-    public void CreateFilmEndpoint_ReturnsFilmResponseDTOAnd200StatusCode_WhenGivenValidInput() //hard
+    public void CreateFilmEndpoint_ReturnsFilmResponseDTOAnd200StatusCode_WhenGivenValidInput() 
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();

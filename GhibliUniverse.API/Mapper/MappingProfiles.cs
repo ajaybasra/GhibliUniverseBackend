@@ -24,6 +24,8 @@ public class MappingProfiles : Profile
             .ForMember(dest => dest.Composer, opt => opt.MapFrom(src => ValidatedString.From(src.Composer)))
             .ForMember(dest => dest.ReleaseYear, opt => opt.MapFrom(src => ReleaseYear.From(src.ReleaseYear)));
         CreateMap<Review, ReviewResponseDTO>();
+        CreateMap<Review, ReviewRequestDTO>()
+            .ForMember(dest => dest.rating, opt => opt.MapFrom(src => src.Rating.Value));
         CreateMap<ReviewResponseDTO, Review>();
         CreateMap<ReviewRequestDTO, Review>();
         CreateMap<VoiceActor, VoiceActorResponseDTO>();

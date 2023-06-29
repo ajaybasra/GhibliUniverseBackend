@@ -54,7 +54,7 @@ public class GhibliUniverseWebApplicationFactory<TProgram> : WebApplicationFacto
             Name = ValidatedString.From("Test Actor")
         };
         var voiceActors = new List<VoiceActor> { voiceActor, voiceActorTwo };
-        var filmOne = new Film()
+        var film = new Film()
         {
             Id = Guid.Parse("10000000-0000-0000-0000-000000000000"),
             Title = ValidatedString.From("Spirited Away"),
@@ -77,17 +77,24 @@ public class GhibliUniverseWebApplicationFactory<TProgram> : WebApplicationFacto
             ReleaseYear = ReleaseYear.From(1995),
             VoiceActors = new List<VoiceActor> {voiceActor}
         };
-        var films = new List<Film> { filmOne, filmTwo };
+        var films = new List<Film> { film, filmTwo };
         var review = new Review()
         {
             FilmId = Guid.Empty,
-            Id = Guid.Empty,
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
             Rating = Rating.From(10)
         };
+        var reviewTwo = new Review()
+        {
+            FilmId = Guid.Empty,
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
+            Rating = Rating.From(8)
+        };
+        var reviews = new List<Review> { review, reviewTwo };
 
         ghibliUniverseContext.VoiceActors.AddRange(voiceActors);
         ghibliUniverseContext.Films.AddRange(films);
-        ghibliUniverseContext.Reviews.Add(review);
+        ghibliUniverseContext.Reviews.AddRange(reviews);
         await ghibliUniverseContext.SaveChangesAsync();
     }
 }
