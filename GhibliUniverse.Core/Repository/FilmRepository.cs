@@ -14,18 +14,17 @@ public class FilmRepository : IFilmRepository
     {
         _ghibliUniverseContext = ghibliUniverseContext;
     }
-    
-    public List<Film> GetAllFilms()
+    public async Task<List<Film>> GetAllFilmsAsync()
     {
-        return _ghibliUniverseContext.Films
+        return await _ghibliUniverseContext.Films
             .Include(f => f.Reviews)
             .Include(f => f.VoiceActors)
-            .ToList();
+            .ToListAsync();
     }
 
-    public Film GetFilmById(Guid filmId)
+    public async Task<Film> GetFilmByIdAsync(Guid filmId)
     {
-        var film = _ghibliUniverseContext.Films.FirstOrDefault(f => f.Id == filmId);
+        var film = await _ghibliUniverseContext.Films.FirstOrDefaultAsync(f => f.Id == filmId);
         if (film == null)
         {
             throw new ModelNotFoundException(filmId);
@@ -34,11 +33,11 @@ public class FilmRepository : IFilmRepository
         return film;
     }
 
-    public List<VoiceActor> GetVoiceActorsByFilm(Guid filmId)
+    public async Task<List<VoiceActor>> GetVoiceActorsByFilmAsync(Guid filmId)
     {
-        var film = _ghibliUniverseContext.Films
+        var film = await _ghibliUniverseContext.Films
             .Include(f => f.VoiceActors)
-            .FirstOrDefault(f => f.Id == filmId);
+            .FirstOrDefaultAsync(f => f.Id == filmId);
         if (film == null)
         {
             throw new ModelNotFoundException(filmId);
@@ -47,7 +46,7 @@ public class FilmRepository : IFilmRepository
         return film.VoiceActors;
     }
 
-    public Film CreateFilm(string title, string description, string director, string composer, int releaseYear)
+    public async Task<Film> CreateFilmAsync(string title, string description, string director, string composer, int releaseYear)
     {
         var film = new Film
         {
@@ -58,16 +57,16 @@ public class FilmRepository : IFilmRepository
             Composer = ValidatedString.From(composer),
             ReleaseYear = ReleaseYear.From(releaseYear)
         };
-        
+
         _ghibliUniverseContext.Films.Add(film);
-        _ghibliUniverseContext.SaveChanges();
-        
+        await _ghibliUniverseContext.SaveChangesAsync();
+
         return film;
     }
 
-    public Film UpdateFilm(Guid filmId, Film updatedFilm)
+    public async Task<Film> UpdateFilmAsync(Guid filmId, Film updatedFilm)
     {
-        var filmToUpdate = _ghibliUniverseContext.Films.FirstOrDefault(f => f.Id == filmId);
+        var filmToUpdate = await _ghibliUniverseContext.Films.FirstOrDefaultAsync(f => f.Id == filmId);
         if (filmToUpdate == null)
         {
             throw new ModelNotFoundException(filmId);
@@ -79,42 +78,41 @@ public class FilmRepository : IFilmRepository
         filmToUpdate.Composer = updatedFilm.Composer;
         filmToUpdate.ReleaseYear = updatedFilm.ReleaseYear;
 
-        _ghibliUniverseContext.Films.Update(filmToUpdate);
-        _ghibliUniverseContext.SaveChanges();
-        
+        await _ghibliUniverseContext.SaveChangesAsync();
+
         return filmToUpdate;
     }
 
-    public void DeleteFilm(Guid filmId)
+    public async Task DeleteFilmAsync(Guid filmId)
     {
-        var filmToDelete = _ghibliUniverseContext.Films.FirstOrDefault(f => f.Id == filmId);
+        var filmToDelete = await _ghibliUniverseContext.Films.FirstOrDefaultAsync(f => f.Id == filmId);
         if (filmToDelete == null)
         {
             throw new ModelNotFoundException(filmId);
         }
 
         _ghibliUniverseContext.Films.Remove(filmToDelete);
-        _ghibliUniverseContext.SaveChanges();
+        await _ghibliUniverseContext.SaveChangesAsync();
     }
 
-    public void LinkVoiceActor(Guid filmId, Guid voiceActorId)
+    public async Task LinkVoiceActorAsync(Guid filmId, Guid voiceActorId)
     {
-        var filmToAddVoiceActor = _ghibliUniverseContext.Films
+        var filmToAddVoiceActor = await _ghibliUniverseContext.Films
             .Include(f => f.VoiceActors)
-            .FirstOrDefault(f => f.Id == filmId);
+            .FirstOrDefaultAsync(f => f.Id == filmId);
         if (filmToAddVoiceActor == null)
         {
             throw new ModelNotFoundException(filmId);
         }
 
-        var voiceActorToLink = _ghibliUniverseContext.VoiceActors
+        var voiceActorToLink = await _ghibliUniverseContext.VoiceActors
             .Include(v => v.Films)
-            .FirstOrDefault(v => v.Id == voiceActorId);
+            .FirstOrDefaultAsync(v => v.Id == voiceActorId);
         if (voiceActorToLink == null)
         {
             throw new ModelNotFoundException(voiceActorId);
         }
-        
+
         var voiceActorsIdList = filmToAddVoiceActor.VoiceActors.Select(v => v.Id).ToList();
 
         if (!voiceActorsIdList.Contains(voiceActorId))
@@ -125,30 +123,30 @@ public class FilmRepository : IFilmRepository
             {
                 voiceActorToLink.Films.Add(filmToAddVoiceActor);
             }
-            _ghibliUniverseContext.SaveChanges();
+            await _ghibliUniverseContext.SaveChangesAsync();
         }
     }
 
-    public void UnlinkVoiceActor(Guid filmId, Guid voiceActorId)
+    public async Task UnlinkVoiceActorAsync(Guid filmId, Guid voiceActorId)
     {
-        var filmToHaveVoiceActorRemoved = _ghibliUniverseContext.Films
+        var filmToHaveVoiceActorRemoved = await _ghibliUniverseContext.Films
             .Include(f => f.VoiceActors)
-            .FirstOrDefault(f => f.Id == filmId);
+            .FirstOrDefaultAsync(f => f.Id == filmId);
         if (filmToHaveVoiceActorRemoved == null)
         {
             throw new ModelNotFoundException(filmId);
         }
-        
-        var voiceActorToUnlink = _ghibliUniverseContext.VoiceActors
-            .Include(v => v.Films)    
-            .FirstOrDefault(v => v.Id == voiceActorId);
+
+        var voiceActorToUnlink = await _ghibliUniverseContext.VoiceActors
+            .Include(v => v.Films)
+            .FirstOrDefaultAsync(v => v.Id == voiceActorId);
         if (voiceActorToUnlink == null)
         {
             throw new ModelNotFoundException(voiceActorId);
         }
-        
+
         var voiceActorIdList = filmToHaveVoiceActorRemoved.VoiceActors.Select(v => v.Id).ToList();
-        
+
         if (voiceActorIdList.Contains(voiceActorId))
         {
             filmToHaveVoiceActorRemoved.VoiceActors.RemoveAll(v => v.Id == voiceActorId);
@@ -158,7 +156,7 @@ public class FilmRepository : IFilmRepository
                 voiceActorToUnlink.Films.RemoveAll(f => f.Id == filmToHaveVoiceActorRemoved.Id);
             }
 
-            _ghibliUniverseContext.SaveChanges();
+            await _ghibliUniverseContext.SaveChangesAsync();
         }
     }
 }

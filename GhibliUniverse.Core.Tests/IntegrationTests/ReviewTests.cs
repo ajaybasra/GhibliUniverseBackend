@@ -4,8 +4,8 @@ using AutoMapper;
 using GhibliUniverse.API.DTOs;
 using GhibliUniverse.API.Mapper;
 using GhibliUniverse.Core.Context;
-using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
@@ -30,51 +30,51 @@ public class ReviewTests
     }
 
     [Fact]
-    public void GetAllReviewsEndpoint_ReturnsListOfReviewResponseDTOAnd200StatusCode_WhenCalled()
+    public async Task GetAllReviewsEndpoint_ReturnsListOfReviewResponseDTOAnd200StatusCode_WhenCalled()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
-        var reviews = context.Reviews
-            .Select(review => review).ToList();
+        var reviews = await context.Reviews
+            .ToListAsync();
         var reviewResponseDTOS = _mapper.Map<List<ReviewResponseDTO>>(reviews);
         var expectedResult = JsonConvert.SerializeObject(reviewResponseDTOS,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
-        var response = _client.GetAsync("api/Review").Result;
-        var result = response.Content.ReadAsStringAsync().Result;
+        var response = await _client.GetAsync("api/Review");
+        var result = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(expectedResult, result);
     }
 
     [Fact]
-    public void GetReviewByIdEndpoint_ReturnsReviewResponseDTOAnd200StatusCode_WhenGivenValidId()
+    public async Task GetReviewByIdEndpoint_ReturnsReviewResponseDTOAnd200StatusCode_WhenGivenValidId()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
-        var reviews = context.Reviews
-            .Select(review => review).ToList();
+        var reviews = await context.Reviews
+            .ToListAsync();
         var reviewResponseDTO = _mapper.Map<ReviewResponseDTO>(reviews[1]);
         var expectedResult = JsonConvert.SerializeObject(reviewResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
-        var response = _client.GetAsync("api/Review/00000000-0000-0000-0000-000000000002").Result;
-        var result = response.Content.ReadAsStringAsync().Result;
+        var response = await _client.GetAsync("api/Review/00000000-0000-0000-0000-000000000002");
+        var result = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(expectedResult, result);
     }
     
     [Fact]
-    public void GetReviewByIdEndpoint_Returns404StatusCodeWithGuid_WhenGivenNonExistentId()
+    public async Task GetReviewByIdEndpoint_Returns404StatusCodeWithGuid_WhenGivenNonExistentId()
     {
-        var response = _client.GetAsync("api/Review/00050040-0000-5000-0000-000000000001").Result;
-        
-        Assert.Equal(HttpStatusCode.NotFound ,response.StatusCode);
+        var response = await _client.GetAsync("api/Review/00050040-0000-5000-0000-000000000001");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
     
     [Fact]
-    public void CreateReviewEndpoint_ReturnsVoiceActorResponseDTOAnd200StatusCode_WhenGivenValidInput() 
+    public async Task CreateReviewEndpoint_ReturnsVoiceActorResponseDTOAnd200StatusCode_WhenGivenValidInput()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
@@ -85,21 +85,20 @@ public class ReviewTests
         var reviewRequestDTOAsJSON = JsonConvert.SerializeObject(
             reviewRequestDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-        
-        var response = _client.PostAsync("/api/Review/10000000-0000-0000-0000-000000000000",
-            new StringContent(reviewRequestDTOAsJSON, Encoding.UTF8, "application/json")).Result;
-        var reviews = context.Reviews
-            .Select(review => review).ToList();
+
+        var response = await _client.PostAsync("/api/Review/10000000-0000-0000-0000-000000000000",
+            new StringContent(reviewRequestDTOAsJSON, Encoding.UTF8, "application/json"));
+        var reviews = await context.Reviews
+            .ToListAsync();
         var reviewResponseDTO = _mapper.Map<ReviewResponseDTO>(reviews[2]);
         var expectedResult = JsonConvert.SerializeObject(reviewResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
         var actualHttpStatusCode = response.StatusCode;
-        var actualReview = response.Content.ReadAsStringAsync().Result;
+        var actualReview = await response.Content.ReadAsStringAsync();
 
-        
         Assert.Equal(HttpStatusCode.OK, actualHttpStatusCode);
         Assert.Equal(expectedResult, actualReview);
-        
+
     }
     
     [Fact]
@@ -120,29 +119,31 @@ public class ReviewTests
     }
     
     [Fact]
-    public void UpdateReviewEndpoint_ReturnsReviewResponseDTOAnd200StatusCode_WhenGivenValidInput()
+    public async Task UpdateReviewEndpoint_ReturnsReviewResponseDTOAnd200StatusCode_WhenGivenValidInput()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
         var reviewRequestDTO = new ReviewRequestDTO()
-            { rating = 4 };
-        var reviewRequestAsJSON = JsonConvert.SerializeObject(reviewRequestDTO, 
+        {
+            rating = 4
+        };
+        var reviewRequestAsJSON = JsonConvert.SerializeObject(reviewRequestDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-         
-        var response = _client.PutAsync($"/api/Review/00000000-0000-0000-0000-000000000002", new StringContent(reviewRequestAsJSON, Encoding.UTF8, "application/json")).Result;
-        var reviews = context.Reviews
-            .Select(review => review).ToList();
+
+        var response = await _client.PutAsync($"/api/Review/00000000-0000-0000-0000-000000000002", new StringContent(reviewRequestAsJSON, Encoding.UTF8, "application/json"));
+        var reviews = await context.Reviews
+            .ToListAsync();
         var reviewResponseDTO = _mapper.Map<ReviewResponseDTO>(reviews[1]);
         var expectedResult = JsonConvert.SerializeObject(reviewResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-        var actualUpdatedReview = response.Content.ReadAsStringAsync().Result;
-         
+        var actualUpdatedReview = await response.Content.ReadAsStringAsync();
+
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(expectedResult, actualUpdatedReview);
     }
     
     [Fact]
-    public void DeleteVoiceActorEndpoint_Returns200StatusCode_WhenGivenValidId()
+    public async Task DeleteReviewEndpoint_Returns200StatusCode_WhenGivenValidId()
     {
         var reviewToBeRemoved = new ReviewResponseDTO()
         {
@@ -151,12 +152,12 @@ public class ReviewTests
         };
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
-         
-        var response = _client.DeleteAsync($"api/Review/00000000-0000-0000-0000-000000000002").Result;
+
+        var response = await _client.DeleteAsync($"api/Review/00000000-0000-0000-0000-000000000002");
         var actualHttpStatusCode = response.StatusCode;
-        var reviews = context.Reviews
-            .Select(review => review).ToList();
-         
+        var reviews = await context.Reviews
+            .ToListAsync();
+
         Assert.Equal(HttpStatusCode.OK, actualHttpStatusCode);
         Assert.DoesNotContain(reviews, review => review.Equals(reviewToBeRemoved));
     }

@@ -16,45 +16,39 @@ public class VoiceActorService : IVoiceActorService
         _voiceActorRepository = voiceActorRepository;
     }
     
-    public List<VoiceActor> GetAllVoiceActors()
+    public async Task<List<VoiceActor>> GetAllVoiceActorsAsync()
     {
-        return _voiceActorRepository.GetAllVoiceActors();
+        return await _voiceActorRepository.GetAllVoiceActorsAsync();
     }
 
-    public VoiceActor GetVoiceActorById(Guid voiceActorId)
+    public async Task<VoiceActor> GetVoiceActorByIdAsync(Guid voiceActorId)
     {
-        return _voiceActorRepository.GetVoiceActorById(voiceActorId);
+        return await _voiceActorRepository.GetVoiceActorByIdAsync(voiceActorId);
     }
 
-    public List<Film> GetFilmsByVoiceActor(Guid voiceActorId)
+    public async Task<List<Film>> GetFilmsByVoiceActorAsync(Guid voiceActorId)
     {
-        return _voiceActorRepository.GetFilmsByVoiceActor(voiceActorId);
+        return await _voiceActorRepository.GetFilmsByVoiceActorAsync(voiceActorId);
     }
 
-    public VoiceActor CreateVoiceActor(string name)
+    public async Task<VoiceActor> CreateVoiceActorAsync(string name)
     {
-        return _voiceActorRepository.CreateVoiceActor(name);
+        return await _voiceActorRepository.CreateVoiceActorAsync(name);
     }
 
-    public VoiceActor UpdateVoiceActor(Guid voiceActorId, string name)
+    public async Task<VoiceActor> UpdateVoiceActorAsync(Guid voiceActorId, string name)
     {
-        return _voiceActorRepository.UpdateVoiceActor(voiceActorId, name);
+        return await _voiceActorRepository.UpdateVoiceActorAsync(voiceActorId, name);
     }
 
-    public void DeleteVoiceActor(Guid voiceActorId)
+    public async Task DeleteVoiceActorAsync(Guid voiceActorId)
     {
-        _voiceActorRepository.DeleteVoiceActor(voiceActorId);
-    }
-    
-    public bool VoiceActorAlreadyExists(string name)
-    {
-        var voiceActorsWithMatchingName = GetAllVoiceActors().FirstOrDefault(f => f.Name == ValidatedString.From(name));
-        return voiceActorsWithMatchingName != null;
+        await _voiceActorRepository.DeleteVoiceActorAsync(voiceActorId);
     }
 
-    public string BuildVoiceActorList()
+    public async Task<string> BuildVoiceActorListAsync()
     {
-        var savedVoiceActors = GetAllVoiceActors();
+        var savedVoiceActors = await GetAllVoiceActorsAsync();
         var stringBuilder = new StringBuilder();
         foreach (var voiceActor in savedVoiceActors)
         {

@@ -19,20 +19,21 @@ public class VoiceActorController : Controller
         _voiceActorService = voiceActorService;
         _mapper = mapper;
     }
+    
     [HttpGet]
-    public IActionResult GetAllVoiceActors()
+    public async Task<IActionResult> GetAllVoiceActors()
     {
-        var voiceActors = _mapper.Map<List<VoiceActorResponseDTO>>(_voiceActorService.GetAllVoiceActors());
-        return Ok(voiceActors);
+        var voiceActors = await _voiceActorService.GetAllVoiceActorsAsync();
+        var voiceActorResponseDTOs = _mapper.Map<List<VoiceActorResponseDTO>>(voiceActors);
+        return Ok(voiceActorResponseDTOs);
     }
-    
-    [HttpGet("{voiceActorId:guid}")]
-    public IActionResult GetVoiceActorById(Guid voiceActorId)
+    public async Task<IActionResult> GetVoiceActorById(Guid voiceActorId)
     {
         try
         {
-            var voiceActor = _mapper.Map<VoiceActorResponseDTO>(_voiceActorService.GetVoiceActorById(voiceActorId));
-            return Ok(voiceActor);
+            var voiceActor = await _voiceActorService.GetVoiceActorByIdAsync(voiceActorId);
+            var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(voiceActor);
+            return Ok(voiceActorResponseDTO);
         }
         catch (ModelNotFoundException)
         {
@@ -40,51 +41,43 @@ public class VoiceActorController : Controller
         }
     }
     
-    [HttpGet("{voiceActorId:guid}/films")]
-    public IActionResult GetFilmsByVoiceActor(Guid voiceActorId)
+    public async Task<IActionResult> GetFilmsByVoiceActor(Guid voiceActorId)
     {
         try
         {
-            var filmsByVoiceActor = _mapper.Map<List<FilmResponseDTO>>(_voiceActorService.GetFilmsByVoiceActor(voiceActorId));
-            return Ok(filmsByVoiceActor);
+            var filmsByVoiceActor = await _voiceActorService.GetFilmsByVoiceActorAsync(voiceActorId);
+            var filmsByVoiceActorResponseDTO = _mapper.Map<List<FilmResponseDTO>>(filmsByVoiceActor);
+            return Ok(filmsByVoiceActorResponseDTO);
         }
         catch (ModelNotFoundException)
         {
             return NotFound("No voice actor found with the following id: " + voiceActorId);
         }
     }
-    
-    [HttpPost]
-    public IActionResult CreateVoiceActor([FromBody] VoiceActorRequestDTO voiceActorCreate)
+    public async Task<IActionResult> CreateVoiceActor([FromBody] VoiceActorRequestDTO voiceActorCreate)
     {
         if (voiceActorCreate == null)
         {
             return BadRequest(ModelState);
         }
-        
-        // if (_voiceActorService.VoiceActorAlreadyExists(voiceActorCreate.Name))
-        // {
-        //     ModelState.AddModelError("", "Voice actor with the same name already exists");
-        //     return StatusCode(422, ModelState);
-        // }
-        
+
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         try
         {
-            var createdVoiceActor = _mapper.Map<VoiceActorResponseDTO>(_voiceActorService.CreateVoiceActor(voiceActorCreate.Name));
-            return Ok(createdVoiceActor);
+            var createdVoiceActor = await _voiceActorService.CreateVoiceActorAsync(voiceActorCreate.Name);
+            var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(createdVoiceActor);
+            return Ok(voiceActorResponseDTO);
         }
         catch (ArgumentException e)
         {
             return BadRequest(e.Message);
         }
-        
     }
     
     [HttpPut("{voiceActorId:guid}")]
-    public IActionResult UpdateVoiceActor(Guid voiceActorId, [FromBody] VoiceActorRequestDTO voiceActorUpdate)
+    public async Task<IActionResult> UpdateVoiceActor(Guid voiceActorId, [FromBody] VoiceActorRequestDTO voiceActorUpdate)
     {
         if (voiceActorUpdate == null)
         {
@@ -93,8 +86,9 @@ public class VoiceActorController : Controller
 
         try
         {
-            var updatedVoiceActor = _mapper.Map<VoiceActorResponseDTO>(_voiceActorService.UpdateVoiceActor(voiceActorId, voiceActorUpdate.Name));
-            return Ok(updatedVoiceActor);
+            var updatedVoiceActor = await _voiceActorService.UpdateVoiceActorAsync(voiceActorId, voiceActorUpdate.Name);
+            var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(updatedVoiceActor);
+            return Ok(voiceActorResponseDTO);
         }
         catch (ModelNotFoundException)
         {
@@ -104,16 +98,14 @@ public class VoiceActorController : Controller
         {
             return BadRequest(e.Message);
         }
-        
-        
     }
     
     [HttpDelete("{voiceActorId:guid}")]
-    public IActionResult DeleteVoiceActor(Guid voiceActorId)
+    public async Task<IActionResult> DeleteVoiceActor(Guid voiceActorId)
     {
         try
         {
-            _voiceActorService.DeleteVoiceActor(voiceActorId);
+            await _voiceActorService.DeleteVoiceActorAsync(voiceActorId);
             return Ok("Successfully deleted voice actor");
         }
         catch (ModelNotFoundException)

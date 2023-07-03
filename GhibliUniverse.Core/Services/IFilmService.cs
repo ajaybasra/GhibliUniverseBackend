@@ -4,13 +4,13 @@ namespace GhibliUniverse.Core.Services;
 
 public interface IFilmService
 {
-    List<Film> GetAllFilms();
-    Film GetFilmById(Guid filmId);
-    List<VoiceActor> GetVoiceActorsByFilm(Guid filmId);
-    Film CreateFilm(string title, string description, string director, string composer, int releaseYear);
-    Film UpdateFilm(Guid filmId, Film film);
-    void DeleteFilm(Guid filmId);
-    void LinkVoiceActor(Guid filmId, Guid voiceActorId);
-    void UnlinkVoiceActor(Guid filmId, Guid voiceActorId);
-    bool FilmTitleAlreadyExists(string title);
+    Task<List<Film>> GetAllFilmsAsync();
+    Task<Film> GetFilmByIdAsync(Guid filmId);
+    Task<List<VoiceActor>> GetVoiceActorsByFilmAsync(Guid filmId);
+    Task<Film> CreateFilmAsync(string title, string description, string director, string composer, int releaseYear);
+    Task<Film> UpdateFilmAsync(Guid filmId, Film film);
+    Task DeleteFilmAsync(Guid filmId);
+    Task LinkVoiceActorAsync(Guid filmId, Guid voiceActorId);
+    Task UnlinkVoiceActorAsync(Guid filmId, Guid voiceActorId);
+    Task<bool> FilmTitleAlreadyExistsAsync(string title);
 }

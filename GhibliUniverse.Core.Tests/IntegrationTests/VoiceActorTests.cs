@@ -32,78 +32,78 @@ public class VoiceActorTests
     }
     
     [Fact]
-    public void GetAllVoiceActorsEndpoint_ReturnsListOfVoiceActorResponseDTOAnd200StatusCode_WhenCalled()
+    public async Task GetAllVoiceActorsEndpoint_ReturnsListOfVoiceActorResponseDTOAnd200StatusCode_WhenCalled()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
-        var voiceActors = context.VoiceActors
-            .Select(voiceActor => voiceActor).ToList();
+        var voiceActors = await context.VoiceActors
+            .Select(voiceActor => voiceActor).ToListAsync();
         var voiceActorResponseDTOS = _mapper.Map<List<VoiceActorResponseDTO>>(voiceActors);
         var expectedResult = JsonConvert.SerializeObject(voiceActorResponseDTOS,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
-        var response = _client.GetAsync("api/VoiceActor").Result;
-        var result = response.Content.ReadAsStringAsync().Result;
-        
-        Assert.Equal(HttpStatusCode.OK ,response.StatusCode);
+        var response = await _client.GetAsync("api/VoiceActor");
+        var result = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(expectedResult, result);
     }
-    
+
     [Fact]
-    public void GetVoiceActorByIdEndpoint_ReturnsVoiceActorResponseDTOAnd200StatusCode_WhenGivenValidId()
+    public async Task GetVoiceActorByIdEndpoint_ReturnsVoiceActorResponseDTOAnd200StatusCode_WhenGivenValidId()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
-        var voiceActors = context.VoiceActors
-            .Select(voiceActor => voiceActor).ToList();
+        var voiceActors = await context.VoiceActors
+            .Select(voiceActor => voiceActor).ToListAsync();
         var voiceActorResponseDto = _mapper.Map<VoiceActorResponseDTO>(voiceActors[1]);
         var expectedResult = JsonConvert.SerializeObject(voiceActorResponseDto,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
-        var response = _client.GetAsync("api/VoiceActor/00000000-0000-0000-0000-000000000002").Result;
-        var result = response.Content.ReadAsStringAsync().Result;
-        
-        Assert.Equal(HttpStatusCode.OK ,response.StatusCode);
+        var response = await _client.GetAsync("api/VoiceActor/00000000-0000-0000-0000-000000000002");
+        var result = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(expectedResult, result);
     }
     
     [Fact]
-    public void GetVoiceActorByIdEndpoint_Returns404StatusCodeWithGuid_WhenGivenNonExistentId()
+    public async Task GetVoiceActorByIdEndpoint_Returns404StatusCodeWithGuid_WhenGivenNonExistentId()
     {
-        var response = _client.GetAsync("api/VoiceActor/00050040-0000-5000-0000-000000000001").Result;
-        
-        Assert.Equal(HttpStatusCode.NotFound ,response.StatusCode);
+        var response = await _client.GetAsync("api/VoiceActor/00050040-0000-5000-0000-000000000001");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
     
     [Fact]
-    public void GetFilmsByVoiceActorEndpoint_ReturnsListOfFilmResponseDTOAnd200StatusCode_WhenGivenValidId()
+    public async Task GetFilmsByVoiceActorEndpoint_ReturnsListOfFilmResponseDTOAnd200StatusCode_WhenGivenValidId()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
-        var voiceActors = context.VoiceActors
+        var voiceActors = await context.VoiceActors
             .Include(v => v.Films)
-            .Select(voiceActor => voiceActor).ToList();
+            .Select(voiceActor => voiceActor).ToListAsync();
         var filmResponseDTOS = _mapper.Map<List<FilmResponseDTO>>(voiceActors[0].Films);
         var expectedResult = JsonConvert.SerializeObject(filmResponseDTOS,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
-        var response = _client.GetAsync($"api/VoiceActor/10000000-0000-0000-0000-000000000000/Films").Result;
-        var result = response.Content.ReadAsStringAsync().Result;
-        
-        Assert.Equal(HttpStatusCode.OK ,response.StatusCode);
+        var response = await _client.GetAsync($"api/VoiceActor/10000000-0000-0000-0000-000000000000/Films");
+        var result = await response.Content.ReadAsStringAsync();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(expectedResult, result);
     }
     
     [Fact]
-    public void GetFilmsByVoiceActorEndpoint_Returns404StatusCode_WhenGivenNonExistentId()
+    public async Task GetFilmsByVoiceActorEndpoint_Returns404StatusCode_WhenGivenNonExistentId()
     {
-        var response = _client.GetAsync($"api/VoiceActor/00005000-0000-0000-0000-000000000001/Films").Result;
-        
-        Assert.Equal(HttpStatusCode.NotFound ,response.StatusCode);
+        var response = await _client.GetAsync($"api/VoiceActor/00005000-0000-0000-0000-000000000001/Films");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
     
     [Fact]
-    public void CreateVoiceActorEndpoint_ReturnsVoiceActorResponseDTOAnd200StatusCode_WhenGivenValidInput() 
+    public async Task CreateVoiceActorEndpoint_ReturnsVoiceActorResponseDTOAnd200StatusCode_WhenGivenValidInput()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
@@ -116,24 +116,22 @@ public class VoiceActorTests
             _mapper.Map<VoiceActorRequestDTO>(voiceActor),
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
-        var response = _client.PostAsync("/api/VoiceActor",
-            new StringContent(voiceActorRequestDTOAsJson, Encoding.UTF8, "application/json")).Result;
-        var voiceActors = context.VoiceActors
-            .Select(voiceActor => voiceActor).ToList();
+        var response = await _client.PostAsync("/api/VoiceActor",
+            new StringContent(voiceActorRequestDTOAsJson, Encoding.UTF8, "application/json"));
+        var voiceActors = await context.VoiceActors
+            .Select(voiceActor => voiceActor).ToListAsync();
         var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(voiceActors[2]);
         var expectedResult = JsonConvert.SerializeObject(voiceActorResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
         var actualHttpStatusCode = response.StatusCode;
-        var actualVoiceActor = response.Content.ReadAsStringAsync().Result;
+        var actualVoiceActor = await response.Content.ReadAsStringAsync();
 
-        
         Assert.Equal(HttpStatusCode.OK, actualHttpStatusCode);
         Assert.Equal(expectedResult, actualVoiceActor);
-        
     }
 
     [Fact]
-    public void CreatVoiceActorEndpoint_Returns400StatusCode_WhenGivenInvalidInput()
+    public async Task CreatVoiceActorEndpoint_Returns400StatusCode_WhenGivenInvalidInput()
     {
         var voiceActorRequestDTO = new VoiceActorRequestDTO()
         {
@@ -143,36 +141,39 @@ public class VoiceActorTests
             voiceActorRequestDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
-        var response = _client.PostAsync("/api/VoiceActor",
-            new StringContent(voiceActorRequestDTOAsJson, Encoding.UTF8, "application/json")).Result;
+        var response = await _client.PostAsync("/api/VoiceActor",
+            new StringContent(voiceActorRequestDTOAsJson, Encoding.UTF8, "application/json"));
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
     
     [Fact]
-    public void UpdateVoiceActorEndpoint_ReturnsVoiceActorResponseDTOAnd200StatusCode_WhenGivenValidInput()
+    public async Task UpdateVoiceActorEndpoint_ReturnsVoiceActorResponseDTOAnd200StatusCode_WhenGivenValidInput()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
         var voiceActorRequestDTO = new VoiceActorRequestDTO()
-            { Name = "test name" };
-        var filmRequestDtoAsJson = JsonConvert.SerializeObject(voiceActorRequestDTO, 
+        {
+            Name = "test name"
+        };
+        var filmRequestDtoAsJson = JsonConvert.SerializeObject(voiceActorRequestDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-         
-        var response = _client.PutAsync($"/api/VoiceActor/00000000-0000-0000-0000-000000000002", new StringContent(filmRequestDtoAsJson, Encoding.UTF8, "application/json")).Result;
-        var voiceActors = context.VoiceActors
-            .Select(voiceActor => voiceActor).ToList();
+
+        var response = await _client.PutAsync($"/api/VoiceActor/00000000-0000-0000-0000-000000000002", new StringContent(filmRequestDtoAsJson, Encoding.UTF8, "application/json"));
+        var voiceActors = await context.VoiceActors
+            .Select(voiceActor => voiceActor).ToListAsync();
         var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(voiceActors[1]);
         var expectedResult = JsonConvert.SerializeObject(voiceActorResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
-        var actualUpdatedVoiceActor = response.Content.ReadAsStringAsync().Result;
-         
+        var actualUpdatedVoiceActor = await response.Content.ReadAsStringAsync();
+
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(expectedResult, actualUpdatedVoiceActor);
     }
+
     
     [Fact]
-    public void DeleteVoiceActorEndpoint_Returns200StatusCode_WhenGivenValidId()
+    public async Task DeleteVoiceActorEndpoint_Returns200StatusCode_WhenGivenValidId()
     {
         var voiceActorToBeRemoved = new VoiceActorResponseDTO()
         {
@@ -181,12 +182,12 @@ public class VoiceActorTests
         };
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<GhibliUniverseContext>();
-         
-        var response = _client.DeleteAsync($"api/VoiceActor/00000000-0000-0000-0000-000000000002").Result;
+
+        var response = await _client.DeleteAsync($"api/VoiceActor/00000000-0000-0000-0000-000000000002");
         var actualHttpStatusCode = response.StatusCode;
-        var voiceActors = context.VoiceActors
-            .Select(voiceActor => voiceActor).ToList();
-         
+        var voiceActors = await context.VoiceActors
+            .Select(voiceActor => voiceActor).ToListAsync();
+
         Assert.Equal(HttpStatusCode.OK, actualHttpStatusCode);
         Assert.DoesNotContain(voiceActors, voiceActor => voiceActor.Equals(voiceActorToBeRemoved));
     }

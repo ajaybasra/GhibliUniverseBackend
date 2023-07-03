@@ -80,9 +80,9 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleGetAllFilms()
+    private async Task HandleGetAllFilms()
     {
-        var allFilms = _filmService.GetAllFilms();
+        var allFilms = await _filmService.GetAllFilmsAsync();
         PrintModelEntries(allFilms);
     }
 
@@ -90,7 +90,7 @@ public class ArgumentProcessor
     {
         try
         {
-            _writer.WriteLine(_filmService.GetFilmById(Guid.Parse(filmId)));
+            _writer.WriteLine(_filmService.GetFilmByIdAsync(Guid.Parse(filmId)));
         }
         catch (FormatException fe)
         {
@@ -102,11 +102,11 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleGetVoiceActorsByFilm(string filmId)
+    private async Task HandleGetVoiceActorsByFilm(string filmId)
     {
         try
         {
-            var voiceActors = _filmService.GetVoiceActorsByFilm(Guid.Parse(filmId));
+            var voiceActors = await _filmService.GetVoiceActorsByFilmAsync(Guid.Parse(filmId));
             PrintModelEntries(voiceActors);
         }
         catch (FormatException fe)
@@ -125,7 +125,7 @@ public class ArgumentProcessor
 
         try
         {
-            _filmService.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
+            _filmService.CreateFilmAsync(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
         }
         catch (ReleaseYear.NotFourCharactersException e)
         {
@@ -145,7 +145,7 @@ public class ArgumentProcessor
     {
         try
         {
-            _filmService.DeleteFilm(Guid.Parse(filmId));
+            _filmService.DeleteFilmAsync(Guid.Parse(filmId));
         }
         catch (FormatException fe)
         {
@@ -161,7 +161,7 @@ public class ArgumentProcessor
     {
         try
         {
-            _filmService.LinkVoiceActor(Guid.Parse(filmId), Guid.Parse(voiceActorId));
+            _filmService.LinkVoiceActorAsync(Guid.Parse(filmId), Guid.Parse(voiceActorId));
         }
         catch (FormatException fe)
         {
@@ -177,7 +177,7 @@ public class ArgumentProcessor
     {
         try
         {
-            _filmService.UnlinkVoiceActor(Guid.Parse(filmId), Guid.Parse(voiceActorId));
+            _filmService.UnlinkVoiceActorAsync(Guid.Parse(filmId), Guid.Parse(voiceActorId));
         }
         catch (FormatException fe)
         {
@@ -189,16 +189,16 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleGetAllVoiceActors()
+    private async Task HandleGetAllVoiceActors()
     {
-        PrintModelEntries(_voiceActorService.GetAllVoiceActors());
+        PrintModelEntries(await _voiceActorService.GetAllVoiceActorsAsync());
     }
 
-    private void HandleGetVoiceActorById(string voiceActorId)
+    private async Task HandleGetVoiceActorById(string voiceActorId)
     {
         try
         {
-            _writer.WriteLine(_voiceActorService.GetVoiceActorById(Guid.Parse(voiceActorId)));
+            _writer.WriteLine(_voiceActorService.GetVoiceActorByIdAsync(Guid.Parse(voiceActorId)));
         }
         catch (FormatException fe)
         {
@@ -210,11 +210,11 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleGetFilmsByVoiceActor(string voiceActorId)
+    private async Task HandleGetFilmsByVoiceActor(string voiceActorId)
     {
         try
         {
-            var films = _voiceActorService.GetFilmsByVoiceActor(Guid.Parse(voiceActorId));
+            var films = await _voiceActorService.GetFilmsByVoiceActorAsync(Guid.Parse(voiceActorId));
             PrintModelEntries(films);
         }
         catch (FormatException fe)
@@ -227,11 +227,11 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleCreateVoiceActor()
+    private async Task HandleCreateVoiceActor()
     {
         try
         {
-            _voiceActorService.CreateVoiceActor(_programArguments[2]);
+            await _voiceActorService.CreateVoiceActorAsync(_programArguments[2]);
         }
         catch (ArgumentException ae)
         {
@@ -239,11 +239,11 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleDeleteVoiceActor(string voiceActorId)
+    private async Task HandleDeleteVoiceActor(string voiceActorId)
     {
         try
         {
-            _voiceActorService.DeleteVoiceActor(Guid.Parse(voiceActorId));
+            await _voiceActorService.DeleteVoiceActorAsync(Guid.Parse(voiceActorId));
         }
         catch (FormatException fe)
         {

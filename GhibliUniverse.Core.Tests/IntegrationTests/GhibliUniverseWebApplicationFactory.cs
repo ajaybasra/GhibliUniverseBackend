@@ -32,8 +32,9 @@ public class GhibliUniverseWebApplicationFactory<TProgram> : WebApplicationFacto
             {
                 var scopedServices = scope.ServiceProvider;
                 var _ghibliUniverseContext = scopedServices.GetRequiredService<GhibliUniverseContext>();
+                _ghibliUniverseContext.Database.EnsureCreated();
                 
-                InitializeDbForTests(_ghibliUniverseContext).Wait();
+                InitializeDbForTests(_ghibliUniverseContext);
             }
         });
     }
@@ -50,7 +51,7 @@ public class GhibliUniverseWebApplicationFactory<TProgram> : WebApplicationFacto
         };
         var voiceActorTwo = new VoiceActor()
         {
-            Id = Guid.Parse("00000000-0000-0000-0000-000000000002"), // cheeky
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),  
             Name = ValidatedString.From("Test Actor")
         };
         var voiceActors = new List<VoiceActor> { voiceActor, voiceActorTwo };

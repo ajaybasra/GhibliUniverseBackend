@@ -15,14 +15,16 @@ public class VoiceActorRepository : IVoiceActorRepository
         _ghibliUniverseContext = ghibliUniverseContext;
     }
 
-    public List<VoiceActor> GetAllVoiceActors()
+    public async Task<List<VoiceActor>> GetAllVoiceActorsAsync()
     {
-        return _ghibliUniverseContext.VoiceActors.ToList();
+        return await _ghibliUniverseContext.VoiceActors
+            .Include(voiceActor => voiceActor.Films)
+            .ToListAsync();
     }
-
-    public VoiceActor GetVoiceActorById(Guid voiceActorId)
+    
+    public async Task<VoiceActor> GetVoiceActorByIdAsync(Guid voiceActorId)
     {
-        var voiceActor = _ghibliUniverseContext.VoiceActors.FirstOrDefault(v => v.Id == voiceActorId);
+        var voiceActor = await _ghibliUniverseContext.VoiceActors.FirstOrDefaultAsync(v => v.Id == voiceActorId);
         if (voiceActor == null)
         {
             throw new ModelNotFoundException(voiceActorId);
@@ -31,12 +33,13 @@ public class VoiceActorRepository : IVoiceActorRepository
         return voiceActor;
     }
 
-    public List<Film> GetFilmsByVoiceActor(Guid voiceActorId)
+
+    public async Task<List<Film>> GetFilmsByVoiceActorAsync(Guid voiceActorId)
     {
-        var voiceActor = _ghibliUniverseContext.VoiceActors
+        var voiceActor = await _ghibliUniverseContext.VoiceActors
             .Include(v => v.Films)
             .ThenInclude(f => f.Reviews)
-            .FirstOrDefault(v => v.Id == voiceActorId);
+            .FirstOrDefaultAsync(v => v.Id == voiceActorId);
         if (voiceActor == null)
         {
             throw new ModelNotFoundException(voiceActorId);
@@ -45,7 +48,7 @@ public class VoiceActorRepository : IVoiceActorRepository
         return voiceActor.Films;
     }
 
-    public VoiceActor CreateVoiceActor(string name)
+    public async Task<VoiceActor> CreateVoiceActorAsync(string name)
     {
         var voiceActor = new VoiceActor
         {
@@ -54,14 +57,14 @@ public class VoiceActorRepository : IVoiceActorRepository
         };
 
         _ghibliUniverseContext.VoiceActors.Add(voiceActor);
-        _ghibliUniverseContext.SaveChanges();
+        await _ghibliUniverseContext.SaveChangesAsync();
 
         return voiceActor;
     }
 
-    public VoiceActor UpdateVoiceActor(Guid voiceActorId, string name)
+    public async Task<VoiceActor> UpdateVoiceActorAsync(Guid voiceActorId, string name)
     {
-        var voiceActorToUpdate = _ghibliUniverseContext.VoiceActors.FirstOrDefault(v => v.Id == voiceActorId);
+        var voiceActorToUpdate = await _ghibliUniverseContext.VoiceActors.FirstOrDefaultAsync(v => v.Id == voiceActorId);
         if (voiceActorToUpdate == null)
         {
             throw new ModelNotFoundException(voiceActorId);
@@ -70,21 +73,22 @@ public class VoiceActorRepository : IVoiceActorRepository
         voiceActorToUpdate.Name = ValidatedString.From(name);
 
         _ghibliUniverseContext.VoiceActors.Update(voiceActorToUpdate);
-        _ghibliUniverseContext.SaveChanges();
+        await _ghibliUniverseContext.SaveChangesAsync();
 
         return voiceActorToUpdate;
     }
 
-    public void DeleteVoiceActor(Guid voiceActorId)
+
+    public async Task DeleteVoiceActorAsync(Guid voiceActorId)
     {
-        var voiceActorToDelete = _ghibliUniverseContext.VoiceActors.FirstOrDefault(v => v.Id == voiceActorId);
+        var voiceActorToDelete = await _ghibliUniverseContext.VoiceActors.FirstOrDefaultAsync(v => v.Id == voiceActorId);
         if (voiceActorToDelete == null)
         {
             throw new ModelNotFoundException(voiceActorId);
         }
 
         _ghibliUniverseContext.VoiceActors.Remove(voiceActorToDelete);
-        _ghibliUniverseContext.SaveChanges();
+        await _ghibliUniverseContext.SaveChangesAsync();
     }
     
 }
