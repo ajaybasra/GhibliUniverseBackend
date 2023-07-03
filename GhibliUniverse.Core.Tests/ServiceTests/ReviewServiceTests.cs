@@ -33,37 +33,37 @@ public class ReviewServiceTests
     }
 
     [Fact]
-    public void GetAllReviews_ReturnsAllReviews_WhenCalled()
+    public async Task GetAllReviews_ReturnsAllReviews_WhenCalled()
     {
-        _mockedReviewRepository.Setup(x => x.GetAllReviews()).Returns(_reviews);
+        _mockedReviewRepository.Setup(x => x.GetAllReviews()).ReturnsAsync(_reviews);
         
-        var reviewCount = _reviewService.GetAllReviews().Count;
+        var reviews = await _reviewService.GetAllReviews();
         
-        Assert.Equal(2, reviewCount);
+        Assert.Equal(2, reviews.Count);
     }
     
     [Fact]
-    public void GetReviewById_ReturnsReviewWithMatchingId_WhenGivenReviewId()
+    public async Task GetReviewById_ReturnsReviewWithMatchingId_WhenGivenReviewId()
     {
         var expectedId = new Guid("00000000-0000-0000-0000-000000000000");
-        _mockedReviewRepository.Setup(x => x.GetReviewById(Guid.Empty)).Returns(_reviews[0]);
+        _mockedReviewRepository.Setup(x => x.GetReviewById(Guid.Empty)).ReturnsAsync(_reviews[0]);
 
 
-        var actualFilm = _reviewService.GetReviewById(new Guid("00000000-0000-0000-0000-000000000000"));
+        var actualFilm = await _reviewService.GetReviewById(new Guid("00000000-0000-0000-0000-000000000000"));
 
         Assert.Equal(expectedId, actualFilm.Id);
     }
     
     [Fact]
-    public void GetReviewById_ThrowsModelNotFoundException_WhenGivenIdOfReviewWhichDoesNotExist()
+    public async Task GetReviewById_ThrowsModelNotFoundException_WhenGivenIdOfReviewWhichDoesNotExist()
     {
         _mockedReviewRepository.Setup(x => x.GetReviewById(Guid.Parse("00000000-0000-0000-0000-000000000005"))).Throws(new ModelNotFoundException(Guid.Parse("00000000-0000-0000-0000-000000000005")));
 
-        Assert.Throws<ModelNotFoundException>(() => _reviewService.GetReviewById(Guid.Parse("00000000-0000-0000-0000-000000000005")));
+        await Assert.ThrowsAsync<ModelNotFoundException>(() => _reviewService.GetReviewById(Guid.Parse("00000000-0000-0000-0000-000000000005")));
     }
     
     [Fact]
-    public void CreateFilm_PersistsNewlyCreatedReview_WhenCalled()
+    public async Task CreateFilm_PersistsNewlyCreatedReview_WhenCalled()
     {
         _mockedReviewRepository
             .Setup(x => x.CreateReview(Guid.Empty, 10))
@@ -78,8 +78,8 @@ public class ReviewServiceTests
                 _reviews.Add(newReview);
             });
         
-        _reviewService.CreateReview(Guid.Empty, 10);
-        _mockedReviewRepository.Setup(x => x.GetReviewById(_reviews[2].Id)).Returns(_reviews[2]);
+        await _reviewService.CreateReview(Guid.Empty, 10);
+        _mockedReviewRepository.Setup(x => x.GetReviewById(_reviews[2].Id)).ReturnsAsync(_reviews[2]);
         
         var reviewId = _reviews[2].Id;
         var reviewCount = _reviews.Count;
@@ -90,15 +90,15 @@ public class ReviewServiceTests
     }
     
     [Fact]
-    public void CreateReview_ThrowsRatingOutOfRangeException_WhenGivenInvalidRating()
+    public async Task CreateReview_ThrowsRatingOutOfRangeException_WhenGivenInvalidRating()
     {
         _mockedReviewRepository.Setup(x => x.CreateReview(Guid.Empty, -1)).Throws(new Rating.RatingOutOfRangeException(-1));
 
-        Assert.Throws<Rating.RatingOutOfRangeException>(() => _reviewService.CreateReview(Guid.Empty, -1));
+        await Assert.ThrowsAsync<Rating.RatingOutOfRangeException>(() => _reviewService.CreateReview(Guid.Empty, -1));
     }
     
     [Fact]
-    public void UpdateReview_UpdatesReviewRating_WhenCalled()
+    public async Task UpdateReview_UpdatesReviewRating_WhenCalled()
     {
         var reviewId = _reviews[0].Id;
         _mockedReviewRepository.Setup(x => x.UpdateReview(reviewId, 9)).Callback((Guid id, int rating) =>
@@ -106,19 +106,19 @@ public class ReviewServiceTests
             _reviews[0].Rating = Rating.From(rating);
 
         });
-        _reviewService.UpdateReview(reviewId, 9);
+        await _reviewService.UpdateReview(reviewId, 9);
         var reviewWithUpdatedName = _reviews[0];
 
         Assert.Equal(Rating.From(9), reviewWithUpdatedName.Rating);
     }
 
     [Fact]
-    public void DeleteReview_RemovesReviewWithMatchingId_WhenGivenReviewId()
+    public async Task DeleteReview_RemovesReviewWithMatchingId_WhenGivenReviewId()
     {
         var reviewId = _reviews[0].Id;
         _mockedReviewRepository.Setup(x => x.DeleteReview(reviewId)).Callback(() => _reviews.Remove(_reviews[0]));
         
-        _reviewService.DeleteReview(reviewId);
+        await _reviewService.DeleteReview(reviewId);
         var reviewCount = _reviews.Count;
         
         Assert.Equal(1, reviewCount);

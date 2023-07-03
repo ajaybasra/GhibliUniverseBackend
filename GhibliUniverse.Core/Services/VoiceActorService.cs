@@ -16,39 +16,39 @@ public class VoiceActorService : IVoiceActorService
         _voiceActorRepository = voiceActorRepository;
     }
     
-    public async Task<List<VoiceActor>> GetAllVoiceActorsAsync()
+    public async Task<List<VoiceActor>> GetAllVoiceActors()
     {
-        return await _voiceActorRepository.GetAllVoiceActorsAsync();
+        return await _voiceActorRepository.GetAllVoiceActors();
     }
 
-    public async Task<VoiceActor> GetVoiceActorByIdAsync(Guid voiceActorId)
+    public async Task<VoiceActor> GetVoiceActorById(Guid voiceActorId)
     {
-        return await _voiceActorRepository.GetVoiceActorByIdAsync(voiceActorId);
+        return await _voiceActorRepository.GetVoiceActorById(voiceActorId);
     }
 
-    public async Task<List<Film>> GetFilmsByVoiceActorAsync(Guid voiceActorId)
+    public async Task<List<Film>> GetFilmsByVoiceActor(Guid voiceActorId)
     {
-        return await _voiceActorRepository.GetFilmsByVoiceActorAsync(voiceActorId);
+        return await _voiceActorRepository.GetFilmsByVoiceActor(voiceActorId);
     }
 
-    public async Task<VoiceActor> CreateVoiceActorAsync(string name)
+    public async Task<VoiceActor> CreateVoiceActor(string name)
     {
-        return await _voiceActorRepository.CreateVoiceActorAsync(name);
+        return await _voiceActorRepository.CreateVoiceActor(name);
     }
 
-    public async Task<VoiceActor> UpdateVoiceActorAsync(Guid voiceActorId, string name)
+    public async Task<VoiceActor> UpdateVoiceActor(Guid voiceActorId, string name)
     {
-        return await _voiceActorRepository.UpdateVoiceActorAsync(voiceActorId, name);
+        return await _voiceActorRepository.UpdateVoiceActor(voiceActorId, name);
     }
 
-    public async Task DeleteVoiceActorAsync(Guid voiceActorId)
+    public async Task DeleteVoiceActor(Guid voiceActorId)
     {
-        await _voiceActorRepository.DeleteVoiceActorAsync(voiceActorId);
+        await _voiceActorRepository.DeleteVoiceActor(voiceActorId);
     }
 
-    public async Task<string> BuildVoiceActorListAsync()
+    public async Task<string> BuildVoiceActorList()
     {
-        var savedVoiceActors = await GetAllVoiceActorsAsync();
+        var savedVoiceActors = await GetAllVoiceActors();
         var stringBuilder = new StringBuilder();
         foreach (var voiceActor in savedVoiceActors)
         {

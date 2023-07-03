@@ -15,34 +15,34 @@ public class ReviewService : IReviewService
     {
         _reviewRepository = reviewRepository;
     }
-    public List<Review> GetAllReviews()
+    public async Task<List<Review>> GetAllReviews()
     {
-        return _reviewRepository.GetAllReviews();
+        return await _reviewRepository.GetAllReviews();
     }
 
-    public Review GetReviewById(Guid reviewId)
+    public async Task<Review> GetReviewById(Guid reviewId)
     {
-        return _reviewRepository.GetReviewById(reviewId);
+        return await _reviewRepository.GetReviewById(reviewId);
     }
 
-    public Review CreateReview(Guid filmId, int rating)
+    public async Task<Review> CreateReview(Guid filmId, int rating)
     {
-        return _reviewRepository.CreateReview(filmId, rating);
+        return await _reviewRepository.CreateReview(filmId, rating);
     }
 
-    public Review UpdateReview(Guid reviewId, int rating)
+    public async Task<Review> UpdateReview(Guid reviewId, int rating)
     {
-        return _reviewRepository.UpdateReview(reviewId, rating);
+        return await _reviewRepository.UpdateReview(reviewId, rating);
     }
-    public void DeleteReview(Guid reviewId)
+    public async Task DeleteReview(Guid reviewId)
     {
-        _reviewRepository.DeleteReview(reviewId);
+        await _reviewRepository.DeleteReview(reviewId);
     }
     
-    public string BuildReviewList()
+    public async Task<string> BuildReviewList()
     {
         var stringBuilder = new StringBuilder();
-        var allReviews = GetAllReviews();
+        var allReviews = await GetAllReviews();
         foreach (var review in allReviews)
         {
             stringBuilder.Append(review);

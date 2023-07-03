@@ -23,7 +23,7 @@ public class VoiceActorController : Controller
     [HttpGet]
     public async Task<IActionResult> GetAllVoiceActors()
     {
-        var voiceActors = await _voiceActorService.GetAllVoiceActorsAsync();
+        var voiceActors = await _voiceActorService.GetAllVoiceActors();
         var voiceActorResponseDTOs = _mapper.Map<List<VoiceActorResponseDTO>>(voiceActors);
         return Ok(voiceActorResponseDTOs);
     }
@@ -31,7 +31,7 @@ public class VoiceActorController : Controller
     {
         try
         {
-            var voiceActor = await _voiceActorService.GetVoiceActorByIdAsync(voiceActorId);
+            var voiceActor = await _voiceActorService.GetVoiceActorById(voiceActorId);
             var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(voiceActor);
             return Ok(voiceActorResponseDTO);
         }
@@ -45,7 +45,7 @@ public class VoiceActorController : Controller
     {
         try
         {
-            var filmsByVoiceActor = await _voiceActorService.GetFilmsByVoiceActorAsync(voiceActorId);
+            var filmsByVoiceActor = await _voiceActorService.GetFilmsByVoiceActor(voiceActorId);
             var filmsByVoiceActorResponseDTO = _mapper.Map<List<FilmResponseDTO>>(filmsByVoiceActor);
             return Ok(filmsByVoiceActorResponseDTO);
         }
@@ -66,7 +66,7 @@ public class VoiceActorController : Controller
 
         try
         {
-            var createdVoiceActor = await _voiceActorService.CreateVoiceActorAsync(voiceActorCreate.Name);
+            var createdVoiceActor = await _voiceActorService.CreateVoiceActor(voiceActorCreate.Name);
             var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(createdVoiceActor);
             return Ok(voiceActorResponseDTO);
         }
@@ -86,7 +86,7 @@ public class VoiceActorController : Controller
 
         try
         {
-            var updatedVoiceActor = await _voiceActorService.UpdateVoiceActorAsync(voiceActorId, voiceActorUpdate.Name);
+            var updatedVoiceActor = await _voiceActorService.UpdateVoiceActor(voiceActorId, voiceActorUpdate.Name);
             var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(updatedVoiceActor);
             return Ok(voiceActorResponseDTO);
         }
@@ -105,7 +105,7 @@ public class VoiceActorController : Controller
     {
         try
         {
-            await _voiceActorService.DeleteVoiceActorAsync(voiceActorId);
+            await _voiceActorService.DeleteVoiceActor(voiceActorId);
             return Ok("Successfully deleted voice actor");
         }
         catch (ModelNotFoundException)

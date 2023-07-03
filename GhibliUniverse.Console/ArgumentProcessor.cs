@@ -82,15 +82,15 @@ public class ArgumentProcessor
 
     private async Task HandleGetAllFilms()
     {
-        var allFilms = await _filmService.GetAllFilmsAsync();
+        var allFilms = await _filmService.GetAllFilms();
         PrintModelEntries(allFilms);
     }
 
-    private void HandleGetFilmById(string filmId)
+    private async Task HandleGetFilmById(string filmId)
     {
         try
         {
-            _writer.WriteLine(_filmService.GetFilmByIdAsync(Guid.Parse(filmId)));
+            _writer.WriteLine(await _filmService.GetFilmById(Guid.Parse(filmId)));
         }
         catch (FormatException fe)
         {
@@ -106,7 +106,7 @@ public class ArgumentProcessor
     {
         try
         {
-            var voiceActors = await _filmService.GetVoiceActorsByFilmAsync(Guid.Parse(filmId));
+            var voiceActors = await _filmService.GetVoiceActorsByFilm(Guid.Parse(filmId));
             PrintModelEntries(voiceActors);
         }
         catch (FormatException fe)
@@ -119,13 +119,13 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleCreateFilm()
+    private async Task HandleCreateFilm()
     {
         var releaseYear = int.Parse(GetListOfPropertiesNeededToCreateFilm()[4]);
 
         try
         {
-            _filmService.CreateFilmAsync(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
+            await _filmService.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
         }
         catch (ReleaseYear.NotFourCharactersException e)
         {
@@ -141,11 +141,11 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleDeleteFilm(string filmId)
+    private async Task HandleDeleteFilm(string filmId)
     {
         try
         {
-            _filmService.DeleteFilmAsync(Guid.Parse(filmId));
+            await _filmService.DeleteFilm(Guid.Parse(filmId));
         }
         catch (FormatException fe)
         {
@@ -157,11 +157,11 @@ public class ArgumentProcessor
         }
     }
     
-    private void HandleAddVoiceActorToFilm(string filmId, string voiceActorId)
+    private async Task HandleAddVoiceActorToFilm(string filmId, string voiceActorId)
     {
         try
         {
-            _filmService.LinkVoiceActorAsync(Guid.Parse(filmId), Guid.Parse(voiceActorId));
+            await _filmService.LinkVoiceActor(Guid.Parse(filmId), Guid.Parse(voiceActorId));
         }
         catch (FormatException fe)
         {
@@ -173,11 +173,11 @@ public class ArgumentProcessor
         }
     }
     
-    private void HandleRemoveVoiceActorFromFilm(string filmId, string voiceActorId)
+    private async Task HandleRemoveVoiceActorFromFilm(string filmId, string voiceActorId)
     {
         try
         {
-            _filmService.UnlinkVoiceActorAsync(Guid.Parse(filmId), Guid.Parse(voiceActorId));
+            await _filmService.UnlinkVoiceActor(Guid.Parse(filmId), Guid.Parse(voiceActorId));
         }
         catch (FormatException fe)
         {
@@ -191,14 +191,14 @@ public class ArgumentProcessor
 
     private async Task HandleGetAllVoiceActors()
     {
-        PrintModelEntries(await _voiceActorService.GetAllVoiceActorsAsync());
+        PrintModelEntries(await _voiceActorService.GetAllVoiceActors());
     }
 
     private async Task HandleGetVoiceActorById(string voiceActorId)
     {
         try
         {
-            _writer.WriteLine(_voiceActorService.GetVoiceActorByIdAsync(Guid.Parse(voiceActorId)));
+            _writer.WriteLine(await _voiceActorService.GetVoiceActorById(Guid.Parse(voiceActorId)));
         }
         catch (FormatException fe)
         {
@@ -214,7 +214,7 @@ public class ArgumentProcessor
     {
         try
         {
-            var films = await _voiceActorService.GetFilmsByVoiceActorAsync(Guid.Parse(voiceActorId));
+            var films = await _voiceActorService.GetFilmsByVoiceActor(Guid.Parse(voiceActorId));
             PrintModelEntries(films);
         }
         catch (FormatException fe)
@@ -231,7 +231,7 @@ public class ArgumentProcessor
     {
         try
         {
-            await _voiceActorService.CreateVoiceActorAsync(_programArguments[2]);
+            await _voiceActorService.CreateVoiceActor(_programArguments[2]);
         }
         catch (ArgumentException ae)
         {
@@ -243,7 +243,7 @@ public class ArgumentProcessor
     {
         try
         {
-            await _voiceActorService.DeleteVoiceActorAsync(Guid.Parse(voiceActorId));
+            await _voiceActorService.DeleteVoiceActor(Guid.Parse(voiceActorId));
         }
         catch (FormatException fe)
         {
@@ -255,16 +255,17 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleGetAllReviews()
+    private async Task HandleGetAllReviews()
     {
-        PrintModelEntries(_reviewService.GetAllReviews());
+        var allReviews = await _reviewService.GetAllReviews();
+        PrintModelEntries(allReviews);
     }
 
-    private void HandleGetReviewById(string reviewId)
+    private async Task HandleGetReviewById(string reviewId)
     {
         try
         {
-            _writer.Write(_reviewService.GetReviewById(Guid.Parse(reviewId)));
+            _writer.Write(await _reviewService.GetReviewById(Guid.Parse(reviewId)));
         }
         catch (FormatException fe)
         {
@@ -276,12 +277,12 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleCreateReview(string filmId, string rating)
+    private async Task HandleCreateReview(string filmId, string rating)
     {
         try
         {
             var ratingAsInt = int.Parse(rating);
-            _reviewService.CreateReview(Guid.Parse(filmId), ratingAsInt);
+            await _reviewService.CreateReview(Guid.Parse(filmId), ratingAsInt);
         }
         catch (ModelNotFoundException e)
         {
@@ -297,11 +298,11 @@ public class ArgumentProcessor
         }
     }
 
-    private void HandleDeleteReview(string reviewId)
+    private async Task HandleDeleteReview(string reviewId)
     {
         try
         {
-            _reviewService.DeleteReview(Guid.Parse(reviewId));
+            await _reviewService.DeleteReview(Guid.Parse(reviewId));
         }
         catch (FormatException fe)
         {

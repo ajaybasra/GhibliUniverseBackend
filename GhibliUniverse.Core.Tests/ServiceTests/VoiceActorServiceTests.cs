@@ -36,9 +36,9 @@ public class VoiceActorServiceTests
     [Fact]
     public async Task GetAllVoiceActors_ReturnsAllVoiceActors_WhenCalled()
     {
-        _mockedVoiceActorRepository.Setup(x => x.GetAllVoiceActorsAsync()).ReturnsAsync(_voiceActors);
+        _mockedVoiceActorRepository.Setup(x => x.GetAllVoiceActors()).ReturnsAsync(_voiceActors);
 
-        var voiceActors = await _voiceActorService.GetAllVoiceActorsAsync();
+        var voiceActors = await _voiceActorService.GetAllVoiceActors();
 
         Assert.Equal(2, voiceActors.Count);
     }
@@ -47,53 +47,53 @@ public class VoiceActorServiceTests
     public async Task GetVoiceActorById_ReturnsVoiceActorWithMatchingId_WhenGivenVoiceActorId()
     {
         var voiceActorId = _voiceActors[0].Id;
-        _mockedVoiceActorRepository.Setup(x => x.GetVoiceActorByIdAsync(voiceActorId)).ReturnsAsync(_voiceActors[0]);
+        _mockedVoiceActorRepository.Setup(x => x.GetVoiceActorById(voiceActorId)).ReturnsAsync(_voiceActors[0]);
         var expectedVoiceActor = new VoiceActor()
         {
             Id = voiceActorId,
             Name = ValidatedString.From("John Doe")
         };
 
-        var actualVoiceActor = await _voiceActorService.GetVoiceActorByIdAsync(voiceActorId);
+        var actualVoiceActor = await _voiceActorService.GetVoiceActorById(voiceActorId);
 
         Assert.Equal(expectedVoiceActor.Id, actualVoiceActor.Id);
         Assert.Equal(expectedVoiceActor.Name.Value, actualVoiceActor.Name.Value);
     }
 
     [Fact]
-    public void GetVoiceActorById_ThrowsModelNotFoundException_WhenGivenIdOfVoiceActorWhichDoesNotExist()
+    public async Task GetVoiceActorById_ThrowsModelNotFoundException_WhenGivenIdOfVoiceActorWhichDoesNotExist()
     {
         var nonExistentVoiceActorId = Guid.Parse("00000000-0000-0000-0000-000000000005");
-        _mockedVoiceActorRepository.Setup(x => x.GetVoiceActorByIdAsync(nonExistentVoiceActorId))
+        _mockedVoiceActorRepository.Setup(x => x.GetVoiceActorById(nonExistentVoiceActorId))
             .ThrowsAsync(new ModelNotFoundException(nonExistentVoiceActorId));
 
-        Assert.ThrowsAsync<ModelNotFoundException>(() =>
-            _voiceActorService.GetVoiceActorByIdAsync(nonExistentVoiceActorId));
+        await Assert.ThrowsAsync<ModelNotFoundException>(() =>
+            _voiceActorService.GetVoiceActorById(nonExistentVoiceActorId));
     }
 
     [Fact]
     public async Task GetFilmsByVoiceActor_ReturnsFilmsWhichTheVoiceActorBelongsTo_WhenCalled()
     {
         var voiceActorId = _voiceActors[0].Id;
-        _mockedVoiceActorRepository.Setup(x => x.GetFilmsByVoiceActorAsync(voiceActorId)).ReturnsAsync(_voiceActors[0].Films);
+        _mockedVoiceActorRepository.Setup(x => x.GetFilmsByVoiceActor(voiceActorId)).ReturnsAsync(_voiceActors[0].Films);
         _voiceActors[0].Films.Add(new Film());
 
-        var films = await _voiceActorService.GetFilmsByVoiceActorAsync(voiceActorId);
+        var films = await _voiceActorService.GetFilmsByVoiceActor(voiceActorId);
 
-        Assert.Equal(1, films.Count);
+        Assert.Single(films);
     }
      
 
     [Fact]
-    public void GetFilmsByVoiceActor_ThrowsModelNotFoundException_WhenGivenIdOfVoiceActorWhichDoesNotExist()
+    public async Task GetFilmsByVoiceActor_ThrowsModelNotFoundException_WhenGivenIdOfVoiceActorWhichDoesNotExist()
     {
         var nonExistentVoiceActorId = Guid.Parse("00000000-0000-0000-0000-000000000005");
         _mockedVoiceActorRepository
-            .Setup(x => x.GetFilmsByVoiceActorAsync(nonExistentVoiceActorId))
+            .Setup(x => x.GetFilmsByVoiceActor(nonExistentVoiceActorId))
             .ThrowsAsync(new ModelNotFoundException(nonExistentVoiceActorId));
 
-        Assert.ThrowsAsync<ModelNotFoundException>(() =>
-            _voiceActorService.GetFilmsByVoiceActorAsync(nonExistentVoiceActorId));
+        await Assert.ThrowsAsync<ModelNotFoundException>(() =>
+            _voiceActorService.GetFilmsByVoiceActor(nonExistentVoiceActorId));
     }
      
     [Fact]
@@ -101,7 +101,7 @@ public class VoiceActorServiceTests
     {
         var newVoiceActorName = "John Doe";
         _mockedVoiceActorRepository
-            .Setup(x => x.CreateVoiceActorAsync(newVoiceActorName))
+            .Setup(x => x.CreateVoiceActor(newVoiceActorName))
             .Callback((string name) =>
             {
                 var newVoiceActor = new VoiceActor()
@@ -113,7 +113,7 @@ public class VoiceActorServiceTests
                 _voiceActors.Add(newVoiceActor);
             });
 
-        await _voiceActorService.CreateVoiceActorAsync(newVoiceActorName);
+        await _voiceActorService.CreateVoiceActor(newVoiceActorName);
         var voiceActorId = _voiceActors[^1].Id;
 
         var voiceActorCount = _voiceActors.Count;
@@ -124,50 +124,50 @@ public class VoiceActorServiceTests
     }
 
     [Fact]
-    public void CreateVoiceActor_ThrowsArgumentException_WhenGivenInvalidInput()
+    public async Task CreateVoiceActor_ThrowsArgumentException_WhenGivenInvalidInput()
     {
-        _mockedVoiceActorRepository.Setup(x => x.CreateVoiceActorAsync("")).ThrowsAsync(new ArgumentException());
+        _mockedVoiceActorRepository.Setup(x => x.CreateVoiceActor("")).ThrowsAsync(new ArgumentException());
 
-        Assert.ThrowsAsync<ArgumentException>(() => _voiceActorService.CreateVoiceActorAsync(""));
+        await Assert.ThrowsAsync<ArgumentException>(() => _voiceActorService.CreateVoiceActor(""));
     }
 
     [Fact]
     public async Task UpdateVoiceActor_UpdatesVoiceActorName_WhenCalled()
     {
         var voiceActorId = _voiceActors[0].Id;
-        _mockedVoiceActorRepository.Setup(x => x.UpdateVoiceActorAsync(voiceActorId, "Joe Doe"))
+        _mockedVoiceActorRepository.Setup(x => x.UpdateVoiceActor(voiceActorId, "Joe Doe"))
             .Callback((Guid voiceActorId, string newName) =>
             {
                 _voiceActors[0].Name = ValidatedString.From(newName);
             });
 
-        await _voiceActorService.UpdateVoiceActorAsync(voiceActorId, "Joe Doe");
+        await _voiceActorService.UpdateVoiceActor(voiceActorId, "Joe Doe");
         var voiceActorWithUpdatedName = _voiceActors[0];
 
         Assert.Equal(ValidatedString.From("Joe Doe"), voiceActorWithUpdatedName.Name);
     }
      
     [Fact]
-    public void DeleteVoiceActor_RemovesActorWithMatchingIdFromVoiceActorList_WhenGivenVoiceActorId()
+    public async Task DeleteVoiceActor_RemovesActorWithMatchingIdFromVoiceActorList_WhenGivenVoiceActorId()
     {
         var voiceActorId = _voiceActors[0].Id;
-        _mockedVoiceActorRepository.Setup(x => x.DeleteVoiceActorAsync(voiceActorId))
+        _mockedVoiceActorRepository.Setup(x => x.DeleteVoiceActor(voiceActorId))
             .Callback(() => _voiceActors.Remove(_voiceActors[0]));
 
-        _voiceActorService.DeleteVoiceActorAsync(voiceActorId);
+        await _voiceActorService.DeleteVoiceActor(voiceActorId);
         var voiceActorCount = _voiceActors.Count;
 
         Assert.Equal(1, voiceActorCount);
     }
 
     [Fact]
-    public void DeleteVoiceActor_ThrowsModelNotFoundException_WhenGivenNonExistentVoiceActorId()
+    public async Task DeleteVoiceActor_ThrowsModelNotFoundException_WhenGivenNonExistentVoiceActorId()
     {
         var nonExistentVoiceActorId = Guid.Parse("00000000-0000-0000-0000-000000000005");
-        _mockedVoiceActorRepository.Setup(x => x.DeleteVoiceActorAsync(nonExistentVoiceActorId))
+        _mockedVoiceActorRepository.Setup(x => x.DeleteVoiceActor(nonExistentVoiceActorId))
             .ThrowsAsync(new ModelNotFoundException(nonExistentVoiceActorId));
 
-        Assert.ThrowsAsync<ModelNotFoundException>(() =>
-            _voiceActorService.DeleteVoiceActorAsync(nonExistentVoiceActorId));
+        await Assert.ThrowsAsync<ModelNotFoundException>(() =>
+            _voiceActorService.DeleteVoiceActor(nonExistentVoiceActorId));
     }
 }

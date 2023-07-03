@@ -4,9 +4,9 @@ namespace GhibliUniverse.Core.Repository;
 
 public interface IReviewRepository
 {
-    List<Review> GetAllReviews();
-    Review GetReviewById(Guid reviewId);
-    Review CreateReview(Guid filmId, int rating);
-    Review UpdateReview(Guid reviewId, int rating);
-    void DeleteReview(Guid reviewId);
+    Task<List<Review>> GetAllReviews();
+    Task<Review> GetReviewById(Guid reviewId);
+    Task<Review> CreateReview(Guid filmId, int rating);
+    Task<Review> UpdateReview(Guid reviewId, int rating);
+    Task DeleteReview(Guid reviewId);
 }

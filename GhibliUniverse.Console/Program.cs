@@ -47,9 +47,9 @@ var argumentProcessor = new ArgumentProcessor(commandLine, consoleWriter, filmSe
 // filmService.UnlinkVoiceActor(Guid.Parse("0af40df1-a634-445b-be1f-0b5e671d1c16"),Guid.Parse("b9c73f57-5c61-4e70-9f14-d1eeed144ab6"));
 // voiceActorService.DeleteVoiceActor(Guid.Parse("6a427101-4c08-4b64-a230-a7eeb1d32ec8"));
 
-var g = await filmService.GetAllFilmsAsync();
+var g = await filmService.GetAllFilms();
 Console.WriteLine(g[0]);
-// var v = await voiceActorService.GetAllVoiceActorsAsync();
+// var v = await voiceActorService.GetAllVoiceActors();
 // Console.WriteLine(v[0]);
 // var y = voiceActorService.BuildVoiceActorList();
 // // Console.WriteLine(y);

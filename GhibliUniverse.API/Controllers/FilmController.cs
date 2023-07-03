@@ -25,7 +25,7 @@ public class FilmController : Controller
     [HttpGet]
     public async Task<IActionResult> GetAllFilms()
     {
-        var films = await _filmService.GetAllFilmsAsync();
+        var films = await _filmService.GetAllFilms();
         var filmResponseDTOs = _mapper.Map<List<FilmResponseDTO>>(films);
         return Ok(filmResponseDTOs);
     }
@@ -35,7 +35,7 @@ public class FilmController : Controller
     {
         try
         {
-            var film = await _filmService.GetFilmByIdAsync(filmId);
+            var film = await _filmService.GetFilmById(filmId);
             var filmResponseDTO = _mapper.Map<FilmResponseDTO>(film);
             return Ok(filmResponseDTO);
         }
@@ -50,7 +50,7 @@ public class FilmController : Controller
     {
         try
         {
-            var voiceActorsByFilm = await _filmService.GetVoiceActorsByFilmAsync(filmId);
+            var voiceActorsByFilm = await _filmService.GetVoiceActorsByFilm(filmId);
             var voiceActorDTOs = _mapper.Map<List<VoiceActorResponseDTO>>(voiceActorsByFilm);
             return Ok(voiceActorDTOs);
         }
@@ -68,7 +68,7 @@ public class FilmController : Controller
             return BadRequest(ModelState);
         }
 
-        if (await _filmService.FilmTitleAlreadyExistsAsync(filmCreate.Title))
+        if (await _filmService.FilmTitleAlreadyExists(filmCreate.Title))
         {
             ModelState.AddModelError("", "Film with the same name already exists");
             return StatusCode(422, ModelState);
@@ -79,7 +79,7 @@ public class FilmController : Controller
 
         try
         {
-            var createdFilm = await _filmService.CreateFilmAsync(filmCreate.Title, filmCreate.Description, filmCreate.Director, filmCreate.Composer, filmCreate.ReleaseYear);
+            var createdFilm = await _filmService.CreateFilm(filmCreate.Title, filmCreate.Description, filmCreate.Director, filmCreate.Composer, filmCreate.ReleaseYear);
             var filmDTO = _mapper.Map<FilmResponseDTO>(createdFilm);
             return Ok(filmDTO);
         }
@@ -102,7 +102,7 @@ public class FilmController : Controller
     {
         try
         {
-            await _filmService.LinkVoiceActorAsync(filmId, voiceActorId);
+            await _filmService.LinkVoiceActor(filmId, voiceActorId);
             return Ok("Successfully linked voice actor");
         }
         catch (ModelNotFoundException e)
@@ -116,7 +116,7 @@ public class FilmController : Controller
     {
         try
         {
-            await _filmService.UnlinkVoiceActorAsync(filmId, voiceActorId);
+            await _filmService.UnlinkVoiceActor(filmId, voiceActorId);
             return Ok("Successfully unlinked voice actor");
         }
         catch (ModelNotFoundException e)
@@ -136,7 +136,7 @@ public class FilmController : Controller
         try
         {
             var filmUpdateMap = _mapper.Map<Film>(filmUpdate);
-            var updatedFilm = await _filmService.UpdateFilmAsync(filmId, filmUpdateMap);
+            var updatedFilm = await _filmService.UpdateFilm(filmId, filmUpdateMap);
             var updatedFilmDTO = _mapper.Map<FilmResponseDTO>(updatedFilm);
             return Ok(updatedFilmDTO);
         }
@@ -155,7 +155,7 @@ public class FilmController : Controller
     {
         try
         {
-            await _filmService.DeleteFilmAsync(filmId);
+            await _filmService.DeleteFilm(filmId);
             return Ok("Successfully deleted film");
         }
         catch (ModelNotFoundException)

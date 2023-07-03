@@ -14,7 +14,7 @@ public class FilmRepository : IFilmRepository
     {
         _ghibliUniverseContext = ghibliUniverseContext;
     }
-    public async Task<List<Film>> GetAllFilmsAsync()
+    public async Task<List<Film>> GetAllFilms()
     {
         return await _ghibliUniverseContext.Films
             .Include(f => f.Reviews)
@@ -22,7 +22,7 @@ public class FilmRepository : IFilmRepository
             .ToListAsync();
     }
 
-    public async Task<Film> GetFilmByIdAsync(Guid filmId)
+    public async Task<Film> GetFilmById(Guid filmId)
     {
         var film = await _ghibliUniverseContext.Films.FirstOrDefaultAsync(f => f.Id == filmId);
         if (film == null)
@@ -33,7 +33,7 @@ public class FilmRepository : IFilmRepository
         return film;
     }
 
-    public async Task<List<VoiceActor>> GetVoiceActorsByFilmAsync(Guid filmId)
+    public async Task<List<VoiceActor>> GetVoiceActorsByFilm(Guid filmId)
     {
         var film = await _ghibliUniverseContext.Films
             .Include(f => f.VoiceActors)
@@ -46,7 +46,7 @@ public class FilmRepository : IFilmRepository
         return film.VoiceActors;
     }
 
-    public async Task<Film> CreateFilmAsync(string title, string description, string director, string composer, int releaseYear)
+    public async Task<Film> CreateFilm(string title, string description, string director, string composer, int releaseYear)
     {
         var film = new Film
         {
@@ -64,7 +64,7 @@ public class FilmRepository : IFilmRepository
         return film;
     }
 
-    public async Task<Film> UpdateFilmAsync(Guid filmId, Film updatedFilm)
+    public async Task<Film> UpdateFilm(Guid filmId, Film updatedFilm)
     {
         var filmToUpdate = await _ghibliUniverseContext.Films.FirstOrDefaultAsync(f => f.Id == filmId);
         if (filmToUpdate == null)
@@ -83,7 +83,7 @@ public class FilmRepository : IFilmRepository
         return filmToUpdate;
     }
 
-    public async Task DeleteFilmAsync(Guid filmId)
+    public async Task DeleteFilm(Guid filmId)
     {
         var filmToDelete = await _ghibliUniverseContext.Films.FirstOrDefaultAsync(f => f.Id == filmId);
         if (filmToDelete == null)
@@ -95,7 +95,7 @@ public class FilmRepository : IFilmRepository
         await _ghibliUniverseContext.SaveChangesAsync();
     }
 
-    public async Task LinkVoiceActorAsync(Guid filmId, Guid voiceActorId)
+    public async Task LinkVoiceActor(Guid filmId, Guid voiceActorId)
     {
         var filmToAddVoiceActor = await _ghibliUniverseContext.Films
             .Include(f => f.VoiceActors)
@@ -127,7 +127,7 @@ public class FilmRepository : IFilmRepository
         }
     }
 
-    public async Task UnlinkVoiceActorAsync(Guid filmId, Guid voiceActorId)
+    public async Task UnlinkVoiceActor(Guid filmId, Guid voiceActorId)
     {
         var filmToHaveVoiceActorRemoved = await _ghibliUniverseContext.Films
             .Include(f => f.VoiceActors)

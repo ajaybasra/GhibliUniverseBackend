@@ -15,61 +15,61 @@ public class FilmService : IFilmService
         _filmRepository = filmRepository;
     }
     
-    public async Task<List<Film>> GetAllFilmsAsync()
+    public async Task<List<Film>> GetAllFilms()
     {
-        return await _filmRepository.GetAllFilmsAsync();
+        return await _filmRepository.GetAllFilms();
     }
 
-    public async Task<Film> GetFilmByIdAsync(Guid filmId)
+    public async Task<Film> GetFilmById(Guid filmId)
     {
-        return await _filmRepository.GetFilmByIdAsync(filmId);
+        return await _filmRepository.GetFilmById(filmId);
     }
 
-    public async Task<List<VoiceActor>> GetVoiceActorsByFilmAsync(Guid filmId)
+    public async Task<List<VoiceActor>> GetVoiceActorsByFilm(Guid filmId)
     {
-        return await _filmRepository.GetVoiceActorsByFilmAsync(filmId);
+        return await _filmRepository.GetVoiceActorsByFilm(filmId);
     }
 
-    public async Task<Film> CreateFilmAsync(string title, string description, string director, string composer, int releaseYear)
+    public async Task<Film> CreateFilm(string title, string description, string director, string composer, int releaseYear)
     {
-        return await _filmRepository.CreateFilmAsync(title, description, director, composer, releaseYear);
+        return await _filmRepository.CreateFilm(title, description, director, composer, releaseYear);
     }
 
-    public async Task<Film> UpdateFilmAsync(Guid filmId, Film updatedFilm)
+    public async Task<Film> UpdateFilm(Guid filmId, Film updatedFilm)
     {
-        return await _filmRepository.UpdateFilmAsync(filmId, updatedFilm);
+        return await _filmRepository.UpdateFilm(filmId, updatedFilm);
     }
 
-    public async Task DeleteFilmAsync(Guid filmId)
+    public async Task DeleteFilm(Guid filmId)
     {
-        await _filmRepository.DeleteFilmAsync(filmId);
+        await _filmRepository.DeleteFilm(filmId);
     }
     
-    public async Task LinkVoiceActorAsync(Guid filmId, Guid voiceActorId)  
+    public async Task LinkVoiceActor(Guid filmId, Guid voiceActorId)  
     {
-        await _filmRepository.LinkVoiceActorAsync(filmId, voiceActorId);
+        await _filmRepository.LinkVoiceActor(filmId, voiceActorId);
     }
 
-    public async Task UnlinkVoiceActorAsync(Guid filmId, Guid voiceActorId)
+    public async Task UnlinkVoiceActor(Guid filmId, Guid voiceActorId)
     {
-       await _filmRepository.UnlinkVoiceActorAsync(filmId, voiceActorId);
+       await _filmRepository.UnlinkVoiceActor(filmId, voiceActorId);
     }
     
     public async Task<bool> FilmIdAlreadyExistsAsync(Guid filmId)
     {
-        var films = await GetAllFilmsAsync();
+        var films = await GetAllFilms();
         return films.Any(f => f.Id == filmId);
     }
 
-    public async Task<bool> FilmTitleAlreadyExistsAsync(string title)
+    public async Task<bool> FilmTitleAlreadyExists(string title)
     {
-        var films = await GetAllFilmsAsync();
+        var films = await GetAllFilms();
         return films.Any(f => f.Title == ValidatedString.From(title));
     }
 
-    public async Task<string> BuildFilmListAsync()
+    public async Task<string> BuildFilmList()
     {
-        var films = await GetAllFilmsAsync();
+        var films = await GetAllFilms();
         var stringBuilder = new StringBuilder();
         foreach (var film in films)
         {

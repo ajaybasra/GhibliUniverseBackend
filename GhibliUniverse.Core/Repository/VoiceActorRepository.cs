@@ -15,14 +15,14 @@ public class VoiceActorRepository : IVoiceActorRepository
         _ghibliUniverseContext = ghibliUniverseContext;
     }
 
-    public async Task<List<VoiceActor>> GetAllVoiceActorsAsync()
+    public async Task<List<VoiceActor>> GetAllVoiceActors()
     {
         return await _ghibliUniverseContext.VoiceActors
             .Include(voiceActor => voiceActor.Films)
             .ToListAsync();
     }
     
-    public async Task<VoiceActor> GetVoiceActorByIdAsync(Guid voiceActorId)
+    public async Task<VoiceActor> GetVoiceActorById(Guid voiceActorId)
     {
         var voiceActor = await _ghibliUniverseContext.VoiceActors.FirstOrDefaultAsync(v => v.Id == voiceActorId);
         if (voiceActor == null)
@@ -34,7 +34,7 @@ public class VoiceActorRepository : IVoiceActorRepository
     }
 
 
-    public async Task<List<Film>> GetFilmsByVoiceActorAsync(Guid voiceActorId)
+    public async Task<List<Film>> GetFilmsByVoiceActor(Guid voiceActorId)
     {
         var voiceActor = await _ghibliUniverseContext.VoiceActors
             .Include(v => v.Films)
@@ -48,7 +48,7 @@ public class VoiceActorRepository : IVoiceActorRepository
         return voiceActor.Films;
     }
 
-    public async Task<VoiceActor> CreateVoiceActorAsync(string name)
+    public async Task<VoiceActor> CreateVoiceActor(string name)
     {
         var voiceActor = new VoiceActor
         {
@@ -62,7 +62,7 @@ public class VoiceActorRepository : IVoiceActorRepository
         return voiceActor;
     }
 
-    public async Task<VoiceActor> UpdateVoiceActorAsync(Guid voiceActorId, string name)
+    public async Task<VoiceActor> UpdateVoiceActor(Guid voiceActorId, string name)
     {
         var voiceActorToUpdate = await _ghibliUniverseContext.VoiceActors.FirstOrDefaultAsync(v => v.Id == voiceActorId);
         if (voiceActorToUpdate == null)
@@ -79,7 +79,7 @@ public class VoiceActorRepository : IVoiceActorRepository
     }
 
 
-    public async Task DeleteVoiceActorAsync(Guid voiceActorId)
+    public async Task DeleteVoiceActor(Guid voiceActorId)
     {
         var voiceActorToDelete = await _ghibliUniverseContext.VoiceActors.FirstOrDefaultAsync(v => v.Id == voiceActorId);
         if (voiceActorToDelete == null)

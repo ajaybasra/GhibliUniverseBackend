@@ -2,6 +2,7 @@ using GhibliUniverse.Core.Context;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore;
 
 namespace GhibliUniverse.Core.Repository;
 
@@ -14,14 +15,14 @@ public class ReviewRepository : IReviewRepository
         _ghibliUniverseContext = ghibliUniverseContext;
     }
 
-    public List<Review> GetAllReviews()
+    public async Task<List<Review>> GetAllReviews()
     {
-        return _ghibliUniverseContext.Reviews.ToList();
+        return await _ghibliUniverseContext.Reviews.ToListAsync();
     }
 
-    public Review GetReviewById(Guid reviewId)
+    public async Task<Review> GetReviewById(Guid reviewId)
     {
-        var review = _ghibliUniverseContext.Reviews.FirstOrDefault(r => r.Id == reviewId);
+        var review = await _ghibliUniverseContext.Reviews.FirstOrDefaultAsync(r => r.Id == reviewId);
         if (review == null)
         {
             throw new ModelNotFoundException(reviewId);
@@ -29,10 +30,9 @@ public class ReviewRepository : IReviewRepository
 
         return review;
     }
-
-    public Review CreateReview(Guid filmId, int rating)
+    public async Task<Review> CreateReview(Guid filmId, int rating)
     {
-        var film = _ghibliUniverseContext.Films.FirstOrDefault(f => f.Id == filmId);
+        var film = await _ghibliUniverseContext.Films.FirstOrDefaultAsync(f => f.Id == filmId);
         if (film == null)
         {
             throw new ModelNotFoundException(filmId);
@@ -46,14 +46,14 @@ public class ReviewRepository : IReviewRepository
         };
 
         _ghibliUniverseContext.Reviews.Add(review);
-        _ghibliUniverseContext.SaveChanges();
+        await _ghibliUniverseContext.SaveChangesAsync();
 
         return review;
     }
 
-    public Review UpdateReview(Guid reviewId, int rating)
+    public async Task<Review> UpdateReview(Guid reviewId, int rating)
     {
-        var reviewToUpdate = _ghibliUniverseContext.Reviews.FirstOrDefault(r => r.Id == reviewId);
+        var reviewToUpdate = await _ghibliUniverseContext.Reviews.FirstOrDefaultAsync(r => r.Id == reviewId);
         if (reviewToUpdate == null)
         {
             throw new ModelNotFoundException(reviewId);
@@ -61,19 +61,19 @@ public class ReviewRepository : IReviewRepository
         
         reviewToUpdate.Rating = Rating.From(rating);
         _ghibliUniverseContext.Reviews.Update(reviewToUpdate);
-        _ghibliUniverseContext.SaveChanges();
+        await _ghibliUniverseContext.SaveChangesAsync();
         return reviewToUpdate;
     }
 
-    public void DeleteReview(Guid reviewId)
+    public async Task DeleteReview(Guid reviewId)
     {
-        var reviewToDelete = _ghibliUniverseContext.Reviews.FirstOrDefault(r => r.Id == reviewId);
+        var reviewToDelete = await _ghibliUniverseContext.Reviews.FirstOrDefaultAsync(r => r.Id == reviewId);
         if (reviewToDelete == null)
         {
             throw new ModelNotFoundException(reviewId);
         }
 
         _ghibliUniverseContext.Reviews.Remove(reviewToDelete);
-        _ghibliUniverseContext.SaveChanges();
+        await _ghibliUniverseContext.SaveChangesAsync();
     }
 }
