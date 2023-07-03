@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
-namespace GhibliUniverse.Core.Tests.IntegrationTests;
+namespace GhibliUniverse.IntegrationTests;
 
 public class GhibliUniverseWebApplicationFactory<TProgram> : WebApplicationFactory<TProgram> where TProgram : class
 {

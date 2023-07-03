@@ -10,9 +10,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace GhibliUniverse.Core.Tests.IntegrationTests;
+namespace GhibliUniverse.IntegrationTests;
 
-public class ReviewTests
+public class ReviewControllerTests
 {
     private readonly MappingProfiles _mappingProfiles;
     private readonly MapperConfiguration _mapperConfiguration;
@@ -20,7 +20,7 @@ public class ReviewTests
     private readonly GhibliUniverseWebApplicationFactory<Program> _ghibliUniverseWebApplicationFactory;
     private readonly HttpClient _client;
 
-    public ReviewTests()
+    public ReviewControllerTests()
     {
         _mappingProfiles = new MappingProfiles();
         _mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile(_mappingProfiles));
@@ -28,8 +28,8 @@ public class ReviewTests
         _ghibliUniverseWebApplicationFactory = new GhibliUniverseWebApplicationFactory<Program>();
         _client = _ghibliUniverseWebApplicationFactory.CreateClient();
     }
-
-    [Fact]
+    
+        [Fact]
     public async Task GetAllReviewsEndpoint_ReturnsListOfReviewResponseDTOAnd200StatusCode_WhenCalled()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();

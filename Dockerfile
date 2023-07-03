@@ -7,6 +7,7 @@ COPY ./GhibliUniverse.API/*.csproj ./GhibliUniverse.API/
 COPY ./GhibliUniverse.Core/*.csproj ./GhibliUniverse.Core/
 COPY ./GhibliUniverse.Console.Tests/*.csproj ./GhibliUniverse.Console.Tests/
 COPY ./GhibliUniverse.Core.Tests/*.csproj ./GhibliUniverse.Core.Tests/
+COPY ./GhibliUniverse.IntegrationTests/*.csproj ./GhibliUniverse.IntegrationTests/
 
 RUN dotnet restore
 COPY ./ ./

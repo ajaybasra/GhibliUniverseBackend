@@ -1,7 +1,6 @@
 using System.Net;
 using System.Text;
 using AutoMapper;
-using GhibliUniverse.API.Controllers;
 using GhibliUniverse.API.DTOs;
 using GhibliUniverse.API.Mapper;
 using GhibliUniverse.Core.Context;
@@ -12,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace GhibliUniverse.Core.Tests.IntegrationTests;
+namespace GhibliUniverse.IntegrationTests;
 
-public class VoiceActorTests
+public class VoiceActorControllerTests
 {
     private readonly MappingProfiles _mappingProfiles;
     private readonly MapperConfiguration _mapperConfiguration;
@@ -22,7 +21,7 @@ public class VoiceActorTests
     private readonly GhibliUniverseWebApplicationFactory<Program> _ghibliUniverseWebApplicationFactory;
     private readonly HttpClient _client;
 
-    public VoiceActorTests()
+    public VoiceActorControllerTests()
     {
         _mappingProfiles = new MappingProfiles();
         _mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile(_mappingProfiles));
@@ -31,7 +30,7 @@ public class VoiceActorTests
         _client = _ghibliUniverseWebApplicationFactory.CreateClient();
     }
     
-    [Fact]
+        [Fact]
     public async Task GetAllVoiceActorsEndpoint_ReturnsListOfVoiceActorResponseDTOAnd200StatusCode_WhenCalled()
     {
         using var scope = _ghibliUniverseWebApplicationFactory.Services.CreateScope();

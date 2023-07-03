@@ -11,17 +11,17 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace GhibliUniverse.Core.Tests.IntegrationTests;
+namespace GhibliUniverse.IntegrationTests;
 
-public class FilmTests
+public class FilmControllerTests
 {
     private readonly MappingProfiles _mappingProfiles;
-     private readonly MapperConfiguration _mapperConfiguration;
+    private readonly MapperConfiguration _mapperConfiguration;
     private readonly IMapper _mapper;
     private readonly GhibliUniverseWebApplicationFactory<Program> _ghibliUniverseWebApplicationFactory;
     private readonly HttpClient _client;
 
-    public FilmTests()
+    public FilmControllerTests()
     {
         _mappingProfiles = new MappingProfiles();
         _mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile(_mappingProfiles));
@@ -259,5 +259,4 @@ public class FilmTests
         Assert.Equal(HttpStatusCode.OK, actualHttpStatusCode);
         Assert.DoesNotContain(films, film => film.Id == filmToBeRemoved.Id);
     }
-     
 }
