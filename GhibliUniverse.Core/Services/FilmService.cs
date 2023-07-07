@@ -63,6 +63,10 @@ public class FilmService : IFilmService
 
     public async Task<bool> FilmTitleAlreadyExists(string title)
     {
+        if (string.IsNullOrEmpty(title))
+        {
+            return false;
+        }
         var films = await GetAllFilms();
         return films.Any(f => f.Title == ValidatedString.From(title));
     }

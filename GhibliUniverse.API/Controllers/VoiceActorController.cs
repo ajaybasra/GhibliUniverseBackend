@@ -27,6 +27,8 @@ public class VoiceActorController : Controller
         var voiceActorResponseDTOs = _mapper.Map<List<VoiceActorResponseDTO>>(voiceActors);
         return Ok(voiceActorResponseDTOs);
     }
+    
+    [HttpGet("{voiceActorId:guid}")]
     public async Task<IActionResult> GetVoiceActorById(Guid voiceActorId)
     {
         try
@@ -41,6 +43,7 @@ public class VoiceActorController : Controller
         }
     }
     
+    [HttpGet("{voiceActorId:guid}/films")]
     public async Task<IActionResult> GetFilmsByVoiceActor(Guid voiceActorId)
     {
         try
@@ -54,13 +57,10 @@ public class VoiceActorController : Controller
             return NotFound("No voice actor found with the following id: " + voiceActorId);
         }
     }
+    
+    [HttpPost]
     public async Task<IActionResult> CreateVoiceActor([FromBody] VoiceActorRequestDTO voiceActorCreate)
     {
-        if (voiceActorCreate == null)
-        {
-            return BadRequest(ModelState);
-        }
-
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
@@ -79,11 +79,6 @@ public class VoiceActorController : Controller
     [HttpPut("{voiceActorId:guid}")]
     public async Task<IActionResult> UpdateVoiceActor(Guid voiceActorId, [FromBody] VoiceActorRequestDTO voiceActorUpdate)
     {
-        if (voiceActorUpdate == null)
-        {
-            return BadRequest(ModelState);
-        }
-
         try
         {
             var updatedVoiceActor = await _voiceActorService.UpdateVoiceActor(voiceActorId, voiceActorUpdate.Name);

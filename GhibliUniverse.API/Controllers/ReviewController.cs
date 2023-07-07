@@ -20,6 +20,7 @@ public class ReviewController : Controller
         _reviewService = reviewService;
         _mapper = mapper;
     }
+    
     [HttpGet]
     public async Task<IActionResult> GetAllReviews()
     {
@@ -46,11 +47,6 @@ public class ReviewController : Controller
     [HttpPost("{filmId:guid}")] 
     public async Task<IActionResult> CreateReview(Guid filmId, [FromBody] ReviewRequestDTO reviewCreate)
     {
-        if (reviewCreate == null)
-        {
-            return BadRequest(ModelState);
-        }
-
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
@@ -73,11 +69,6 @@ public class ReviewController : Controller
     [HttpPut("{reviewId:guid}")]
     public async Task<IActionResult> UpdateReview(Guid reviewId, [FromBody] ReviewRequestDTO reviewUpdate)
     {
-        if (reviewUpdate == null)
-        {
-            return BadRequest(ModelState);
-        }
-
         try
         {
             var updatedReview = await _reviewService.UpdateReview(reviewId, reviewUpdate.rating);

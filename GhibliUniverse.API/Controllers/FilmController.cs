@@ -63,11 +63,6 @@ public class FilmController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateFilm([FromBody] FilmRequestDTO filmCreate)
     {
-        if (filmCreate == null)
-        {
-            return BadRequest(ModelState);
-        }
-
         if (await _filmService.FilmTitleAlreadyExists(filmCreate.Title))
         {
             ModelState.AddModelError("", "Film with the same name already exists");
@@ -80,8 +75,8 @@ public class FilmController : Controller
         try
         {
             var createdFilm = await _filmService.CreateFilm(filmCreate.Title, filmCreate.Description, filmCreate.Director, filmCreate.Composer, filmCreate.ReleaseYear);
-            var filmDTO = _mapper.Map<FilmResponseDTO>(createdFilm);
-            return Ok(filmDTO);
+            var filmResponseDTO = _mapper.Map<FilmResponseDTO>(createdFilm);
+            return Ok(filmResponseDTO);
         }
         catch (ReleaseYear.NotFourCharactersException e)
         {
@@ -95,6 +90,7 @@ public class FilmController : Controller
         {
             return BadRequest(e.Message);
         }
+
     }
     
     [HttpPost("{filmId:guid}/LinkVoiceActor")]
@@ -128,11 +124,6 @@ public class FilmController : Controller
     [HttpPut("{filmId:guid}")]
     public async Task<IActionResult> UpdateFilm(Guid filmId, [FromBody] FilmRequestDTO filmUpdate)
     {
-        if (filmUpdate == null)
-        {
-            return BadRequest(ModelState);
-        }
-
         try
         {
             var filmUpdateMap = _mapper.Map<Film>(filmUpdate);
