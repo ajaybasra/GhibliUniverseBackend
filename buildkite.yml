@@ -13,7 +13,7 @@ steps:
   - wait
 
   - label: ':docker: Building Image and Pushing to Cloudsmith'
-    branches: 'main'
+    # branches: 'main'
     command: ./scripts/build-and-push.sh
     agents:
       queue: fma-dev 
@@ -22,6 +22,6 @@ steps:
 
   - label: ":k8s: Deploy to Europa Pre-Prod"
     command: ./scripts/deploy.sh
-    branches: main
+    # branches: main
     agents:
       queue: "europa-preprod-fma" 
