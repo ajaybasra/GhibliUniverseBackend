@@ -24,6 +24,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app
 
 COPY --from=publish /app/publish .
-EXPOSE 3000
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "GhibliUniverse.API.dll"]
 # ENTRYPOINT ["/bin/sh"]

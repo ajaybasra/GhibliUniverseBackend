@@ -37,4 +37,3 @@ var argumentProcessor = new ArgumentProcessor(commandLine, consoleWriter, filmSe
 
 var g = await filmService.GetAllFilms();
 Console.WriteLine(g[0]);
-argumentProcessor.Process();

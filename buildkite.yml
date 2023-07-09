@@ -1,9 +1,9 @@
 ---
 steps:
-  # - label: 'do not panic :cherry_blossom::whale:'
-  #   command: 'echo hello, engineer'
-  #   agents:
-  #     queue: fma-dev
+  - label: 'do not panic :cherry_blossom::whale:'
+    command: 'echo hello, engineer'
+    agents:
+      queue: fma-dev
 
   - label: ':test_tube: Building Image and Running tests'
     command: 'docker build -t test --target test .'
