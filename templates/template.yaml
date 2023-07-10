@@ -148,7 +148,7 @@ parameters:
     description: "hostname application will be exposed on (eg. go-boldly.svc.platform.myobdev.com)"
     required: true
     parameterType: string
-      - name: "dbName"
+  - name: "dbName"
     description: "database name"
     required: true
     parameterType: string
