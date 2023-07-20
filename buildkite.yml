@@ -1,10 +1,5 @@
 ---
 steps:
-  - label: 'do not panic :cherry_blossom::whale:'
-    command: 'echo hello, engineer'
-    agents:
-      queue: fma-dev
-
   - label: ':test_tube: Building Image and Running tests'
     command: 'docker build -t test --target test .'
     agents:
@@ -12,8 +7,15 @@ steps:
 
   - wait
 
+  - label: "🔎 Run SonarQube scan"
+    command: "./.sonarqube/scan.sh"
+    agents:
+      queue: "fma-dev"      
+
+  - wait
+
   - label: ':docker: Building Image and Pushing to Cloudsmith'
-    # branches: 'main'
+    branches: 'main'
     command: ./scripts/build-and-push.sh
     agents:
       queue: fma-dev 
@@ -22,6 +24,6 @@ steps:
 
   - label: ":k8s: Deploy to Europa Pre-Prod"
     command: ./scripts/deploy.sh
-    # branches: main
+    branches: main
     agents:
       queue: "europa-preprod-fma" 
