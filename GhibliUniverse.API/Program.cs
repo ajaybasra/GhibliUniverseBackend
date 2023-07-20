@@ -1,19 +1,25 @@
+using GhibliUniverse.Core.Context;
 using GhibliUniverse.Core.DataPersistence;
+using GhibliUniverse.Core.Repository;
 using GhibliUniverse.Core.Services;
+using GhibliUniverse.Core.Utils;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<GhibliUniverseContext>(options =>
+{
+    options.UseNpgsql(Configuration.GetDbConnectionString());
+
+});
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IFilmService, FilmService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IVoiceActorService, VoiceActorService>();
-builder.Services.AddScoped<IFileOperations, FileOperations>();
-builder.Services.AddScoped<IFilmPersistence, FilmPersistence>();
-builder.Services.AddScoped<IReviewPersistence, ReviewPersistence>();
-builder.Services.AddScoped<IVoiceActorPersistence, VoiceActorPersistence>();
-builder.Services.AddScoped<IFilmVoiceActorPersistence, FilmVoiceActorPersistence>();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddScoped<IFilmRepository, FilmRepository>();
+builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IVoiceActorRepository, VoiceActorRepository>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -32,4 +38,22 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+if (app.Environment.IsProduction())
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+  
+        var context = services.GetRequiredService<GhibliUniverseContext>();
+        if (context.Database.GetPendingMigrations().Any())
+        {
+            context.Database.Migrate();
+        }
+    }
+}
+
 app.Run();
+
+public abstract partial class Program
+{
+}

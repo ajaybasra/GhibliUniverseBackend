@@ -4,3 +4,6 @@ namespace: fma
 image: docker.myob.com/future-makers-academy/ghibli-universe
 containerPort: "80"
 host: ghibliuniverse.svc.platform.myobdev.com
+dbName: "ghibliuniverse-db"
+dbInstance: "db.t4g.small"
+dbStorage: "20"

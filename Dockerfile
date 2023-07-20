@@ -7,6 +7,7 @@ COPY ./GhibliUniverse.API/*.csproj ./GhibliUniverse.API/
 COPY ./GhibliUniverse.Core/*.csproj ./GhibliUniverse.Core/
 COPY ./GhibliUniverse.Console.Tests/*.csproj ./GhibliUniverse.Console.Tests/
 COPY ./GhibliUniverse.Core.Tests/*.csproj ./GhibliUniverse.Core.Tests/
+COPY ./GhibliUniverse.IntegrationTests/*.csproj ./GhibliUniverse.IntegrationTests/
 
 RUN dotnet restore
 COPY ./ ./
@@ -23,6 +24,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app
 
 COPY --from=publish /app/publish .
-EXPOSE 3000
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "GhibliUniverse.API.dll"]
 # ENTRYPOINT ["/bin/sh"]

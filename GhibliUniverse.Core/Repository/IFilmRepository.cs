@@ -1,8 +1,8 @@
 using GhibliUniverse.Core.Domain.Models;
 
-namespace GhibliUniverse.Core.Services;
+namespace GhibliUniverse.Core.Repository;
 
-public interface IFilmService
+public interface IFilmRepository
 {
     Task<List<Film>> GetAllFilms();
     Task<Film> GetFilmById(Guid filmId);
@@ -12,5 +12,4 @@ public interface IFilmService
     Task DeleteFilm(Guid filmId);
     Task LinkVoiceActor(Guid filmId, Guid voiceActorId);
     Task UnlinkVoiceActor(Guid filmId, Guid voiceActorId);
-    Task<bool> FilmTitleAlreadyExists(string title);
 }

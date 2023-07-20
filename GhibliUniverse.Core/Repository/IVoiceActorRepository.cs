@@ -1,8 +1,8 @@
 using GhibliUniverse.Core.Domain.Models;
 
-namespace GhibliUniverse.Core.Services;
+namespace GhibliUniverse.Core.Repository;
 
-public interface IVoiceActorService
+public interface IVoiceActorRepository
 {
     Task<List<VoiceActor>> GetAllVoiceActors();
     Task<VoiceActor> GetVoiceActorById(Guid voiceActorId);

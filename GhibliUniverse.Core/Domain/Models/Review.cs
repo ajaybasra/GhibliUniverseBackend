@@ -5,7 +5,7 @@ namespace GhibliUniverse.Core.Domain.Models;
 
 public record Review()
 {
-    public Guid Id { get; init; }
+    public Guid Id { get; set; }
     public Rating Rating { get; set; }
     
     public Guid FilmId { get; set; }

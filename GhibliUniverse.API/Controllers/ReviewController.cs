@@ -20,42 +20,41 @@ public class ReviewController : Controller
         _reviewService = reviewService;
         _mapper = mapper;
     }
+    
     [HttpGet]
-    public IActionResult GetAllReviews()
+    public async Task<IActionResult> GetAllReviews()
     {
-        var reviews = _mapper.Map<List<ReviewResponseDTO>>(_reviewService.GetAllReviews());
-        return Ok(reviews);
+        var reviews = await _reviewService.GetAllReviews();
+        var reviewsResponseDTO = _mapper.Map<List<ReviewResponseDTO>>(reviews);
+        return Ok(reviewsResponseDTO);
     }
     
     [HttpGet("{reviewId:guid}")]
-    public IActionResult GetReviewById(Guid reviewId)
+    public async Task<IActionResult> GetReviewById(Guid reviewId)
     {
         try
         {
-            var review = _mapper.Map<ReviewResponseDTO>(_reviewService.GetReviewById(reviewId));
-            return Ok(review);
+            var review = await _reviewService.GetReviewById(reviewId);
+            var reviewResponseDTO = _mapper.Map<ReviewResponseDTO>(review);
+            return Ok(reviewResponseDTO);
         }
         catch (ModelNotFoundException)
         {
             return NotFound("No review found with the following id: " + reviewId);
         }
     }
-    
-    [HttpPost("filmId:guid")]
-    public IActionResult CreateReview(Guid filmId, [FromBody] ReviewRequestDTO reviewCreate)
-    {
-        if (reviewCreate == null)
-        {
-            return BadRequest(ModelState);
-        }
 
+    [HttpPost("{filmId:guid}")] 
+    public async Task<IActionResult> CreateReview(Guid filmId, [FromBody] ReviewRequestDTO reviewCreate)
+    {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         try
         {
-            var createdReview = _mapper.Map<ReviewResponseDTO>(_reviewService.CreateReview(filmId, reviewCreate.rating));
-            return Ok(createdReview);
+            var createdReview = await _reviewService.CreateReview(filmId, reviewCreate.rating);
+            var reviewResponseDto = _mapper.Map<ReviewResponseDTO>(createdReview);
+            return Ok(reviewResponseDto);
         }
         catch (ModelNotFoundException)
         {
@@ -68,17 +67,13 @@ public class ReviewController : Controller
     }
     
     [HttpPut("{reviewId:guid}")]
-    public IActionResult UpdateReview(Guid reviewId, [FromBody] ReviewRequestDTO reviewUpdate)
+    public async Task<IActionResult> UpdateReview(Guid reviewId, [FromBody] ReviewRequestDTO reviewUpdate)
     {
-        if (reviewUpdate == null)
-        {
-            return BadRequest(ModelState);
-        }
-
         try
         {
-            var updatedReview = _mapper.Map<ReviewResponseDTO>(_reviewService.UpdateReview(reviewId, reviewUpdate.rating));
-            return Ok(updatedReview);
+            var updatedReview = await _reviewService.UpdateReview(reviewId, reviewUpdate.rating);
+            var reviewResponseDTO = _mapper.Map<ReviewResponseDTO>(updatedReview);
+            return Ok(reviewResponseDTO);
         }
         catch (ModelNotFoundException)
         {
@@ -92,11 +87,11 @@ public class ReviewController : Controller
     }
     
     [HttpDelete("{reviewId:guid}")]
-    public IActionResult DeleteReview(Guid reviewId)
+    public async Task<IActionResult> DeleteReview(Guid reviewId)
     {
         try
         {
-            _reviewService.DeleteReview(reviewId);
+            await _reviewService.DeleteReview(reviewId);
             return Ok("Successfully deleted review");
         }
         catch (ModelNotFoundException)

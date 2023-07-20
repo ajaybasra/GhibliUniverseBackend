@@ -1,8 +1,8 @@
 using GhibliUniverse.Core.Domain.Models;
 
-namespace GhibliUniverse.Core.Services;
+namespace GhibliUniverse.Core.Repository;
 
-public interface IReviewService
+public interface IReviewRepository
 {
     Task<List<Review>> GetAllReviews();
     Task<Review> GetReviewById(Guid reviewId);

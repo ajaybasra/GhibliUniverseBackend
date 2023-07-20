@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  postgres-db:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - ./db/init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ghibliuniverse-db
+    user: postgres
+    ports:
+      - "5432:5432"        
+
+  web:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SECRET_HOST: postgres-db
+      SECRET_PORT: 5432
+      SECRET_DATABASE: ghibliuniverse-db
+      SECRET_USERNAME: dev
+      SECRET_PASSWORD: password
+    depends_on:
+      - postgres-db

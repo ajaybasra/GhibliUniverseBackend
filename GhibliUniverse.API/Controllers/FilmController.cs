@@ -3,6 +3,7 @@ using GhibliUniverse.API.DTOs;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
+using GhibliUniverse.Core.Repository;
 using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,35 +21,38 @@ public class FilmController : Controller
         _filmService = filmService;
         _mapper = mapper;
     }
-
+    
     [HttpGet]
-    public IActionResult GetAllFilms()
+    public async Task<IActionResult> GetAllFilms()
     {
-        var films = _mapper.Map<List<FilmResponseDTO>>(_filmService.GetAllFilms());
-        return Ok(films);
+        var films = await _filmService.GetAllFilms();
+        var filmResponseDTOs = _mapper.Map<List<FilmResponseDTO>>(films);
+        return Ok(filmResponseDTOs);
     }
-
+    
     [HttpGet("{filmId:guid}")]
-    public IActionResult GetFilmById(Guid filmId)
+    public async Task<IActionResult> GetFilmById(Guid filmId)
     {
         try
         {
-            var film = _mapper.Map<FilmResponseDTO>(_filmService.GetFilmById(filmId));
-            return Ok(film);
+            var film = await _filmService.GetFilmById(filmId);
+            var filmResponseDTO = _mapper.Map<FilmResponseDTO>(film);
+            return Ok(filmResponseDTO);
         }
         catch (ModelNotFoundException)
         {
             return NotFound("No film found with the following id: " + filmId);
         }
     }
-
+    
     [HttpGet("{filmId:guid}/voiceActors")]
-    public IActionResult GetVoiceActorsByFilm(Guid filmId)
+    public async Task<IActionResult> GetVoiceActorsByFilm(Guid filmId)
     {
         try
         {
-            var voiceActorsByFilm = _mapper.Map<List<VoiceActorResponseDTO>>(_filmService.GetVoiceActorsByFilm(filmId));
-            return Ok(voiceActorsByFilm);
+            var voiceActorsByFilm = await _filmService.GetVoiceActorsByFilm(filmId);
+            var voiceActorDTOs = _mapper.Map<List<VoiceActorResponseDTO>>(voiceActorsByFilm);
+            return Ok(voiceActorDTOs);
         }
         catch (ModelNotFoundException)
         {
@@ -57,27 +61,22 @@ public class FilmController : Controller
     }
     
     [HttpPost]
-    public IActionResult CreateFilm([FromBody] FilmRequestDTO filmCreate)
+    public async Task<IActionResult> CreateFilm([FromBody] FilmRequestDTO filmCreate)
     {
-        if (filmCreate == null)
-        {
-            return BadRequest(ModelState);
-        }
-        
-        if (_filmService.FilmTitleAlreadyExists(filmCreate.Title))
+        if (await _filmService.FilmTitleAlreadyExists(filmCreate.Title))
         {
             ModelState.AddModelError("", "Film with the same name already exists");
             return StatusCode(422, ModelState);
         }
-        
+
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
         try
         {
-            var createdFilm = _mapper.Map<FilmResponseDTO>(_filmService.CreateFilm(filmCreate.Title,
-                filmCreate.Description, filmCreate.Director, filmCreate.Composer, filmCreate.ReleaseYear));
-            return Ok(createdFilm);
+            var createdFilm = await _filmService.CreateFilm(filmCreate.Title, filmCreate.Description, filmCreate.Director, filmCreate.Composer, filmCreate.ReleaseYear);
+            var filmResponseDTO = _mapper.Map<FilmResponseDTO>(createdFilm);
+            return Ok(filmResponseDTO);
         }
         catch (ReleaseYear.NotFourCharactersException e)
         {
@@ -91,16 +90,15 @@ public class FilmController : Controller
         {
             return BadRequest(e.Message);
         }
-        
 
     }
-
+    
     [HttpPost("{filmId:guid}/LinkVoiceActor")]
-    public IActionResult LinkVoiceActor(Guid filmId, [FromBody] Guid voiceActorId)
+    public async Task<IActionResult> LinkVoiceActor(Guid filmId, [FromBody] Guid voiceActorId)
     {
         try
         {
-            _filmService.LinkVoiceActor(filmId, voiceActorId);
+            await _filmService.LinkVoiceActor(filmId, voiceActorId);
             return Ok("Successfully linked voice actor");
         }
         catch (ModelNotFoundException e)
@@ -110,11 +108,11 @@ public class FilmController : Controller
     }
     
     [HttpPost("{filmId:guid}/UnlinkVoiceActor")]
-    public IActionResult UnlinkVoiceActor(Guid filmId, [FromBody] Guid voiceActorId)
+    public async Task<IActionResult> UnlinkVoiceActor(Guid filmId, [FromBody] Guid voiceActorId)
     {
         try
         {
-            _filmService.UnlinkVoiceActor(filmId, voiceActorId);
+            await _filmService.UnlinkVoiceActor(filmId, voiceActorId);
             return Ok("Successfully unlinked voice actor");
         }
         catch (ModelNotFoundException e)
@@ -122,20 +120,16 @@ public class FilmController : Controller
             return NotFound(e.Message);
         }
     }
-
+    
     [HttpPut("{filmId:guid}")]
-    public IActionResult UpdateFilm(Guid filmId, [FromBody] FilmRequestDTO filmUpdate) 
+    public async Task<IActionResult> UpdateFilm(Guid filmId, [FromBody] FilmRequestDTO filmUpdate)
     {
-        if (filmUpdate == null)
-        {
-            return BadRequest(ModelState);
-        }
-
         try
         {
             var filmUpdateMap = _mapper.Map<Film>(filmUpdate);
-            var updatedFilm = _mapper.Map<FilmResponseDTO>(_filmService.UpdateFilm(filmId, filmUpdateMap));
-            return Ok(updatedFilm);
+            var updatedFilm = await _filmService.UpdateFilm(filmId, filmUpdateMap);
+            var updatedFilmDTO = _mapper.Map<FilmResponseDTO>(updatedFilm);
+            return Ok(updatedFilmDTO);
         }
         catch (ModelNotFoundException)
         {
@@ -145,16 +139,14 @@ public class FilmController : Controller
         {
             return BadRequest(e.InnerException.Message);
         }
-
-
     }
 
     [HttpDelete("{filmId:guid}")]
-    public IActionResult DeleteFilm(Guid filmId)
+    public async Task<IActionResult> DeleteFilm(Guid filmId)
     {
         try
         {
-            _filmService.DeleteFilm(filmId);
+            await _filmService.DeleteFilm(filmId);
             return Ok("Successfully deleted film");
         }
         catch (ModelNotFoundException)
@@ -162,6 +154,5 @@ public class FilmController : Controller
             return NotFound("No film found with the following id: " + filmId);
         }
     }
-    
-    
+
 }
