@@ -269,11 +269,11 @@ public class FilmControllerTests
         var expectedFilmResponseDTO = new FilmResponseDTO()
         {
             Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
-            Title = ValidatedString.From("test"),
-            Description = ValidatedString.From("test"),
-            Director = ValidatedString.From("test"),
-            Composer = ValidatedString.From("test"),
-            ReleaseYear = ReleaseYear.From(2000),
+            Title = "test",
+            Description = "test",
+            Director = "test",
+            Composer = "test",
+            ReleaseYear = 2000,
         };
         var expectedResult = JsonConvert.SerializeObject(expectedFilmResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
@@ -327,11 +327,11 @@ public class FilmControllerTests
         var filmToBeRemoved = new FilmResponseDTO
         {
             Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
-            Title = ValidatedString.From("Not Spirited Away"),
-            Description = ValidatedString.From("This is a description.."),
-            Director = ValidatedString.From("Lebron"),
-            Composer = ValidatedString.From("MJ"),
-            ReleaseYear = ReleaseYear.From(1995),
+            Title = "Not Spirited Away",
+            Description = "This is a description..",
+            Director = "Lebron",
+            Composer = "MJ",
+            ReleaseYear = 1995,
         };
 
         var response = await _httpClient.DeleteAsync($"api/Film/00000000-0000-0000-0000-000000000001");

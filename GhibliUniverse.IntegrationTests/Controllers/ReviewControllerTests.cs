@@ -136,7 +136,7 @@ public class ReviewControllerTests
         var expectedReviewResponseDTO = new ReviewResponseDTO()
         {
             Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
-            Rating = Rating.From(4)
+            Rating = 4
         };
         var expectedResult = JsonConvert.SerializeObject(expectedReviewResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
@@ -167,7 +167,7 @@ public class ReviewControllerTests
         var reviewToBeRemoved = new ReviewResponseDTO()
         {
             Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
-            Rating = Rating.From(8),
+            Rating = 8,
         };
 
         var response = await _httpClient.DeleteAsync($"api/Review/00000000-0000-0000-0000-000000000002");

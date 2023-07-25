@@ -5,5 +5,5 @@ namespace GhibliUniverse.API.DTOs;
 public record VoiceActorResponseDTO()
 {
     public Guid Id { get; init; }
-    public ValidatedString Name { get; set; }
+    public string Name { get; set; }
 }

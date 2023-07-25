@@ -164,7 +164,7 @@ public class VoiceActorControllerTests
         var expectedVoiceActorResponseDTO = new VoiceActorResponseDTO()
         {
             Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
-            Name = ValidatedString.From("test name")
+            Name = "test name"
         };
         var expectedResult = JsonConvert.SerializeObject(expectedVoiceActorResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
@@ -196,7 +196,7 @@ public class VoiceActorControllerTests
         var voiceActorToBeRemoved = new VoiceActorResponseDTO()
         {
             Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
-            Name = ValidatedString.From("Test Actor"),
+            Name = "Test Actor"
         };
 
         var response = await _httpClient.DeleteAsync($"api/VoiceActor/00000000-0000-0000-0000-000000000002");
