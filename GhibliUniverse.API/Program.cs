@@ -26,7 +26,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowOrigin", builder =>
     {
-        builder.AllowAnyOrigin()
+        builder.WithOrigins(
+                "https://localhost:7212",  
+                "https://ghibliuniverse-frontend.svc.platform.myobdev.com"  
+            )
             .AllowAnyMethod()
             .AllowAnyHeader();
     });
