@@ -1,9 +1,9 @@
 repo: ajay-project-ghibli
-name: ghibliuniverse
+name: ghibliuniverse-test
 namespace: fma
 image: docker.myob.com/future-makers-academy/ghibli-universe
 containerPort: "80"
-host: ghibliuniverse.svc.platform.myobdev.com
-dbName: "ghibliuniverse-db"
+host: ghibliuniverse-test.svc.platform.myobdev.com
+dbName: "ghibliuniverse-test-db"
 dbInstance: "db.t4g.small"
 dbStorage: "20"

@@ -1,7 +1,7 @@
 ---
 steps:
-  - label: ':test_tube: Building Image and Running tests'
-    command: 'docker build -t test --target test .'
+  - label: ":test_tube: Building Image and Running tests"
+    command: "docker build -t test --target test ."
     agents:
       queue: fma-dev
 
@@ -10,20 +10,35 @@ steps:
   - label: "🔎 Run SonarQube scan"
     command: "./.sonarqube/scan.sh"
     agents:
-      queue: "fma-dev"      
+      queue: "fma-dev"
 
   - wait
 
-  - label: ':docker: Building Image and Pushing to Cloudsmith'
-    branches: 'main'
-    command: ./scripts/build-and-push.sh
+  - label: ":docker: Building Image and Pushing to Cloudsmith"
+    # branches: 'main'
+    command: ops/scripts/build-and-push.sh
     agents:
-      queue: fma-dev 
+      queue: fma-dev
 
   - wait
 
   - label: ":k8s: Deploy to Europa Pre-Prod"
-    command: ./scripts/deploy.sh
-    branches: main
+    command: ops/scripts/deploy.sh
+    # branches: main
+    env:
+      ENVIRONMENT: "test"
     agents:
-      queue: "europa-preprod-fma" 
+      queue: "europa-preprod-fma"
+
+  - block: "Deploy to production"
+    # branches: "main"
+
+  - wait
+
+  - label: ":partyparrot: Deploy to production"
+    command: ops/scripts/deploy.sh
+    # branches: main
+    env:
+      ENVIRONMENT: "production"
+    agents:
+      queue: "europa-preprod-fma"
