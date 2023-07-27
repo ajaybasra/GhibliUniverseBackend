@@ -22,7 +22,7 @@ steps:
 
   - wait
 
-  - label: ":k8s: Deploy to Europa Pre-Prod"
+  - label: ":k8s: Deploy to tests"
     command: ops/scripts/deploy.sh
     # branches: main
     env:

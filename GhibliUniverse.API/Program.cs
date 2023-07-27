@@ -1,5 +1,4 @@
 using GhibliUniverse.Core.Context;
-using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Repository;
 using GhibliUniverse.Core.Services;
 using GhibliUniverse.Core.Utils;
@@ -27,7 +26,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowOrigin", builder =>
     {
         builder.WithOrigins(
-                "http://localhost:3000",  
+                "http://localhost:3000",
+                "https://ghibliuniverse-frontend-test.svc.platform.myobdev.com",
                 "https://ghibliuniverse-frontend.svc.platform.myobdev.com"  
             )
             .AllowAnyMethod()
