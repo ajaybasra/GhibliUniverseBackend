@@ -36,4 +36,4 @@ var consoleWriter = scope.ServiceProvider.GetRequiredService<IWriter>();
 var argumentProcessor = new ArgumentProcessor(commandLine, consoleWriter, filmService, reviewService, voiceActorService);
 
 var g = await filmService.GetAllFilms();
-Console.WriteLine(g[0]);
+consoleWriter.WriteLine(g[0]);
