@@ -25,7 +25,6 @@ services:
       DB_NAME: ghibliuniverse-db
       DB_USER: dev
       DB_PASSWORD: password
-#      SWAGGER_HOST: localhost:3000
       ASPNETCORE_URLS: http://+:8080
       ASPNETCORE_ENVIRONMENT: Development
       DOCKER_COMPOSE: "true"
