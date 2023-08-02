@@ -6,7 +6,9 @@ public static class Configuration
     {
         var root = AppDomain.CurrentDomain.BaseDirectory;
         var localEnvironmentFilePath = root + "/Utils/env.local";
-        if (File.Exists(localEnvironmentFilePath))
+        var isInDockerCompose = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DOCKER_COMPOSE"));
+
+        if (!isInDockerCompose && File.Exists(localEnvironmentFilePath))
         {
             DotEnv.Load(localEnvironmentFilePath);
         }

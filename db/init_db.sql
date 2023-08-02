@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS Films;
+DROP TABLE IF EXISTS VoiceActors;
+DROP TABLE IF EXISTS Reviews;
+
 CREATE TABLE "Films" (
     "Id" UUID,
     "Title" TEXT,

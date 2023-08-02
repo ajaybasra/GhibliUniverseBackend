@@ -10,6 +10,7 @@ services:
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: password
       POSTGRES_DB: ghibliuniverse-db
+      DOCKER_COMPOSE: "true"
     user: postgres
     ports:
       - "5433:5432"        
@@ -19,10 +20,14 @@ services:
     ports:
       - "8080:8080"
     environment:
-      SECRET_HOST: postgres-db
-      SECRET_PORT: 5432
-      SECRET_DATABASE: ghibliuniverse-db
-      SECRET_USERNAME: dev
-      SECRET_PASSWORD: password
+      DB_HOST: postgres-db
+      DB_PORT: 5432
+      DB_NAME: ghibliuniverse-db
+      DB_USER: dev
+      DB_PASSWORD: password
+#      SWAGGER_HOST: localhost:3000
+      ASPNETCORE_URLS: http://+:8080
+      ASPNETCORE_ENVIRONMENT: Development
+      DOCKER_COMPOSE: "true"
     depends_on:
       - postgres-db
