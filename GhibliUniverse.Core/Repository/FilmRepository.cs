@@ -45,6 +45,19 @@ public class FilmRepository : IFilmRepository
 
         return film.VoiceActors;
     }
+    
+    public async Task<List<FilmReviewInfo>> GetFilmReviewsInfo()
+    {
+        return await _ghibliUniverseContext.Films
+            .Include(f => f.Reviews)
+            .Select(f => new FilmReviewInfo()
+            {
+                FilmId = f.Id,
+                AverageRating = f.Reviews.Any() ? f.Reviews.Average(r => r.Rating.Value) : 0,
+                NumberOfRatings = f.Reviews.Count
+            })
+            .ToListAsync();
+    }
 
     public async Task<Film> CreateFilm(string title, string description, string director, string composer, int releaseYear)
     {

@@ -60,6 +60,13 @@ public class FilmController : Controller
         }
     }
     
+    [HttpGet("ratings")]
+    public async Task<ActionResult<List<FilmReviewInfo>>> GetFilmRatingsInfo()
+    {
+        var ratingsInfo = await _filmService.GetFilmReviewsInfo();
+        return Ok(ratingsInfo);
+    }
+    
     [HttpPost]
     public async Task<IActionResult> CreateFilm([FromBody] FilmRequestDTO filmCreate)
     {
