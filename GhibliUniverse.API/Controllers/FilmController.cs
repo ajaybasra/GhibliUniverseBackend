@@ -59,14 +59,7 @@ public class FilmController : Controller
             return NotFound("No film found with the following id: " + filmId);
         }
     }
-    
-    [HttpGet("ratings")]
-    public async Task<ActionResult<List<FilmReviewInfo>>> GetFilmRatingsInfo()
-    {
-        var ratingsInfo = await _filmService.GetFilmReviewsInfo();
-        return Ok(ratingsInfo);
-    }
-    
+
     [HttpPost]
     public async Task<IActionResult> CreateFilm([FromBody] FilmRequestDTO filmCreate)
     {

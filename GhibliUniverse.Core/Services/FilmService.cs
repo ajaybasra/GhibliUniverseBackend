@@ -29,11 +29,6 @@ public class FilmService : IFilmService
     {
         return await _filmRepository.GetVoiceActorsByFilm(filmId);
     }
-    
-    public async Task<List<FilmReviewInfo>> GetFilmReviewsInfo()
-    {
-        return await _filmRepository.GetFilmReviewsInfo();
-    }
 
     public async Task<Film> CreateFilm(string title, string description, string director, string composer, int releaseYear)
     {
