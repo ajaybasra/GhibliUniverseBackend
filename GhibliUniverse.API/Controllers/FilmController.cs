@@ -1,5 +1,6 @@
 using AutoMapper;
 using GhibliUniverse.API.DTOs;
+using GhibliUniverse.API.Mapper;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
@@ -26,7 +27,8 @@ public class FilmController : Controller
     public async Task<IActionResult> GetAllFilms()
     {
         var films = await _filmService.GetAllFilms();
-        var filmResponseDTOs = _mapper.Map<List<FilmResponseDTO>>(films);
+        var filmWithReviewInfoList = films.Select(CustomMapper.MapToFilmWithReviewInfo).ToList();
+        var filmResponseDTOs = _mapper.Map<List<FilmResponseDTO>>(filmWithReviewInfoList);
         return Ok(filmResponseDTOs);
     }
     
@@ -36,7 +38,8 @@ public class FilmController : Controller
         try
         {
             var film = await _filmService.GetFilmById(filmId);
-            var filmResponseDTO = _mapper.Map<FilmResponseDTO>(film);
+            var filmWithReviewInfo = CustomMapper.MapToFilmWithReviewInfo(film);
+            var filmResponseDTO = _mapper.Map<FilmResponseDTO>(filmWithReviewInfo);
             return Ok(filmResponseDTO);
         }
         catch (ModelNotFoundException)
