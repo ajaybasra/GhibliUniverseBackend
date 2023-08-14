@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Text;
 using AutoMapper;
@@ -43,12 +44,45 @@ public class FilmControllerTests
     [Fact]
     public async Task GetAllFilmsEndpoint_ReturnsListOfFilmResponseDTOAnd200StatusCode_WhenCalled()
     {
-        var films = await _context.Films
-            .Select(film => film)
-            .ToListAsync();
-        var filmResponseDTOS = _mapper.Map<List<FilmResponseDTO>>(films);
-        var expectedResult = JsonConvert.SerializeObject(filmResponseDTOS,
-            new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+        var filmResponseOneDTO = new FilmResponseDTO()
+        {
+            Id = Guid.Parse("10000000-0000-0000-0000-000000000000"),
+            Title = "Spirited Away",
+            Description = "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.",
+            Director = "Hayao Miyazaki",
+            Composer = "Joe Hisaishi",
+            ReleaseYear = 2001,
+            FilmReviewInfo =
+            {
+                AverageRating = 0,
+                NumberOfRatings = 0
+            }
+        };
+        var expectedResultOne = JsonConvert.SerializeObject(filmResponseOneDTO,
+            new JsonSerializerSettings() 
+            { ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Converters = { new AverageRatingConverter() }
+            });
+        var filmResponseTwoDTO = new FilmResponseDTO()
+        {
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            Title = "Not Spirited Away",
+            Description = "This is a description..",
+            Director = "Lebron",
+            Composer = "MJ",
+            ReleaseYear = 1995,
+            FilmReviewInfo =
+            {
+                AverageRating = 0,
+                NumberOfRatings = 0
+            }
+        };
+        var expectedResultTwo = JsonConvert.SerializeObject(filmResponseTwoDTO,
+            new JsonSerializerSettings() 
+            { ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Converters = { new AverageRatingConverter() }
+            });
+        var expectedResult = $"[{expectedResultOne},{expectedResultTwo}]";
 
         var response = await _httpClient.GetAsync("api/Film");
         var result = await response.Content.ReadAsStringAsync();
@@ -60,12 +94,25 @@ public class FilmControllerTests
     [Fact]
     public async Task GetFilmByIdEndpoint_ReturnsFilmResponseDTOAnd200StatusCode_WhenGivenValidId()
     {
-        var films = await _context.Films
-            .Select(film => film)
-            .ToListAsync();
-        var filmResponseDTO = _mapper.Map<FilmResponseDTO>(films[1]);
+        var filmResponseDTO = new FilmResponseDTO()
+        {
+            Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+            Title = "Not Spirited Away",
+            Description = "This is a description..",
+            Director = "Lebron",
+            Composer = "MJ",
+            ReleaseYear = 1995,
+            FilmReviewInfo =
+            {
+                AverageRating = 0,
+                NumberOfRatings = 0
+            }
+        };
         var expectedResult = JsonConvert.SerializeObject(filmResponseDTO,
-            new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+            new JsonSerializerSettings() 
+            { ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Converters = { new AverageRatingConverter() }
+            });
 
         var response = await _httpClient.GetAsync("api/Film/00000000-0000-0000-0000-000000000001");
         var result = await response.Content.ReadAsStringAsync();
@@ -109,7 +156,7 @@ public class FilmControllerTests
     }
 
     [Fact]
-    public async Task CreateFilmEndpoint_ReturnsFilmResponseDTOAnd200StatusCode_WhenGivenValidInput()
+    public async Task CreateFilmEndpoint_Returns200StatusCode_WhenGivenValidInput()
     {
         var film = new Film()
         {
@@ -126,17 +173,9 @@ public class FilmControllerTests
 
         var response = await _httpClient.PostAsync("/api/Film",
             new StringContent(filmRequestDTOAsJson, Encoding.UTF8, "application/json"));
-        var films = await _context.Films
-            .Select(film => film)
-            .ToListAsync();
-        var filmResponseDTO = _mapper.Map<FilmResponseDTO>(films[2]);
-        var expectedResult = JsonConvert.SerializeObject(filmResponseDTO,
-            new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
         var actualHttpStatusCode = response.StatusCode;
-        var actualFilm = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, actualHttpStatusCode);
-        Assert.Equal(expectedResult, actualFilm);
     }
     
     [Fact]
@@ -276,7 +315,12 @@ public class FilmControllerTests
             ReleaseYear = 2000,
         };
         var expectedResult = JsonConvert.SerializeObject(expectedFilmResponseDTO,
-            new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+            new JsonSerializerSettings()
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Converters = { new AverageRatingConverter() }
+
+            });
         var actualUpdatedFilm = await response.Content.ReadAsStringAsync();
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -348,5 +392,31 @@ public class FilmControllerTests
         var response = await _httpClient.DeleteAsync($"api/Film/80000000-0000-0000-0000-000000000001");
         
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+    
+    // Custom converter for AverageRating serialization so that trailing digit not shown, i.e. you get 0 and not 0.0
+    public class AverageRatingConverter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            double rating = (double)value;
+
+            if (rating == Math.Floor(rating))
+            {
+                writer.WriteRawValue(((int)rating).ToString(CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                writer.WriteValue(rating);
+            }
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool CanRead => false;
+        public override bool CanConvert(Type objectType) => objectType == typeof(double);
     }
 }

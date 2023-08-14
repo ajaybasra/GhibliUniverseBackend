@@ -43,17 +43,24 @@ public class ArgumentProcessorTests
     {
         var filmList = new List<FilmWrapper>
         {
-            new()
+            new(new Film
             {
                 Title = ValidatedString.From("Spirited Away"),
                 Description = ValidatedString.From("Amazing movie, it is. Watch, you must."),
                 Director = ValidatedString.From("Hayao Miyazaki"),
                 Composer = ValidatedString.From("Joe Hisaishi"),
                 ReleaseYear = ReleaseYear.From(2001),
-            }
+                VoiceActors = new List<VoiceActor>
+                {
+                    new() { Name = ValidatedString.From("Miyu Irino") }
+                },
+                Reviews = new List<Review>
+                {
+                    new() { Rating = Rating.From(10) }
+                }
+            })
         };
-        filmList[0].VoiceActors.Add(new VoiceActor {Name = ValidatedString.From("Miyu Irino")});
-        filmList[0].Reviews.Add(new Review {Rating = Rating.From(10)});
+        
         var expectedOutput = "[Title:Spirited Away,Description:Amazing movie, it is. Watch, you must.,Director:Hayao Miyazaki,Composer:Joe Hisaishi,Release Year:2001,Voice Actors:[Miyu Irino],Film Ratings:[10]]";
         var args = new[] { "pathname", "get-all-films" };
         _mockedCommandLine.Setup(x => x.GetCommandLineArgs()).Returns(args);
@@ -65,7 +72,6 @@ public class ArgumentProcessorTests
         var actualOutput = _fakeWriter.GetOutput()[0].ToString();
 
         Assert.Equal(expectedOutput, actualOutput);
-
     }
     
     [Fact]
@@ -73,7 +79,7 @@ public class ArgumentProcessorTests
     {
         var args = new[] { "pathname", "get-film-by-id", "00000000-0000-0000-0000-000000000000" };
         _mockedCommandLine.Setup(x => x.GetCommandLineArgs()).Returns(args);
-        _mockedFilmService.Setup(x => x.GetFilmById(It.IsAny<Guid>())).Returns(Task.FromResult(new FilmWrapper(It.IsAny<Film>())));
+        _mockedFilmService.Setup(x => x.GetFilmById(It.IsAny<Guid>())).Returns(Task.FromResult(It.IsAny<FilmWrapper>()));
         _argumentProcessor = new ArgumentProcessor(_mockedCommandLine.Object, _fakeWriter, _mockedFilmService.Object,
             _mockedReviewService.Object, _mockedVoiceActorService.Object);
         

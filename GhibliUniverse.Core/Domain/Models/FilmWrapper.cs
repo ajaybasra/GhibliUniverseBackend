@@ -1,12 +1,11 @@
 using System.Text;
-using GhibliUniverse.Core.Domain.ValueObjects;
 
 namespace GhibliUniverse.Core.Domain.Models;
 
 public record FilmWrapper(Film Film)
 {
     public Guid Id => Film.Id;
-
+    
     public FilmInfo FilmInfo { get; } = new()
     {
         Title = Film.Title,
@@ -16,7 +15,7 @@ public record FilmWrapper(Film Film)
         ReleaseYear = Film.ReleaseYear
     };
 
-    public FilmReviewInfo FilmReviewInfo { get; init; }
+    public FilmReviewInfo FilmReviewInfo { get; init; } = new();
     
     public override string ToString()
     {

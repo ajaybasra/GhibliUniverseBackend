@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Net;
 using System.Text;
 using AutoMapper;
@@ -87,10 +88,17 @@ public class VoiceActorControllerTests
     {
         var voiceActors = await _context.VoiceActors
             .Include(v => v.Films)
-            .Select(voiceActor => voiceActor).ToListAsync();
+            .Select(voiceActor => voiceActor)
+            .ToListAsync();
+
         var filmResponseDTOS = _mapper.Map<List<FilmResponseDTO>>(voiceActors[0].Films);
-        var expectedResult = JsonConvert.SerializeObject(filmResponseDTOS,
-            new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
+
+        var serializerSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            Converters = { new AverageRatingConverter() }
+        };
+        var expectedResult = JsonConvert.SerializeObject(filmResponseDTOS, serializerSettings);
 
         var response = await _httpClient.GetAsync($"api/VoiceActor/10000000-0000-0000-0000-000000000000/Films");
         var result = await response.Content.ReadAsStringAsync();
@@ -98,6 +106,7 @@ public class VoiceActorControllerTests
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         Assert.Equal(expectedResult, result);
     }
+
     
     [Fact]
     public async Task GetFilmsByVoiceActorEndpoint_Returns404StatusCode_WhenGivenNonExistentId()
@@ -214,5 +223,31 @@ public class VoiceActorControllerTests
         var response = await _httpClient.DeleteAsync($"api/VoiceActor/08000000-0000-0000-0000-000000000002");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+    
+    // Custom converter for AverageRating serialization so that trailing digit not shown, i.e. you get 0 and not 0.0
+    public class AverageRatingConverter : JsonConverter
+    {
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            double rating = (double)value;
+
+            if (rating == Math.Floor(rating))
+            {
+                writer.WriteRawValue(((int)rating).ToString(CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                writer.WriteValue(rating);
+            }
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool CanRead => false;
+        public override bool CanConvert(Type objectType) => objectType == typeof(double);
     }
 }
