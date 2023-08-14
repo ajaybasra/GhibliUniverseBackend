@@ -2,7 +2,6 @@ using System.Text;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Repository;
-using Microsoft.EntityFrameworkCore;
 
 namespace GhibliUniverse.Core.Services;
 
@@ -15,14 +14,32 @@ public class FilmService : IFilmService
         _filmRepository = filmRepository;
     }
     
-    public async Task<List<Film>> GetAllFilms()
+    public async Task<List<FilmWrapper>> GetAllFilms()
     {
-        return await _filmRepository.GetAllFilms();
+        var films = await _filmRepository.GetAllFilms();
+        var wrappedFilms = films.Select(film => new FilmWrapper(film)
+        {
+            FilmReviewInfo = new FilmReviewInfo
+            {
+                AverageRating = CalculateAverageRating(film.Reviews),
+                NumberOfRatings = film.Reviews.Count
+            }
+        }).ToList();
+        return wrappedFilms;
     }
 
-    public async Task<Film> GetFilmById(Guid filmId)
+    public async Task<FilmWrapper> GetFilmById(Guid filmId)
     {
-        return await _filmRepository.GetFilmById(filmId);
+        var film = await _filmRepository.GetFilmById(filmId);
+        var wrappedFilm = new FilmWrapper(film)
+        {
+            FilmReviewInfo = new FilmReviewInfo()
+            {
+                AverageRating = CalculateAverageRating(film.Reviews),
+                NumberOfRatings = film.Reviews.Count
+            }
+        };
+        return wrappedFilm;
     }
 
     public async Task<List<VoiceActor>> GetVoiceActorsByFilm(Guid filmId)
@@ -68,7 +85,7 @@ public class FilmService : IFilmService
             return false;
         }
         var films = await GetAllFilms();
-        return films.Any(f => f.Title == ValidatedString.From(title));
+        return films.Any(f => f.FilmInfo.Title == ValidatedString.From(title));
     }
 
     public async Task<string> BuildFilmList()
@@ -82,6 +99,17 @@ public class FilmService : IFilmService
         }
         
         return stringBuilder.ToString();
+    }
+    
+    private double CalculateAverageRating(List<Review> reviews) 
+    {
+        if (reviews.Count == 0)
+        {
+            return 0; 
+        }
+
+        double totalRating = reviews.Sum(review => review.Rating.Value);
+        return totalRating / reviews.Count;
     }
     
 }

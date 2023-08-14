@@ -1,5 +1,4 @@
 using GhibliUniverse.Core.Domain.Models;
-using GhibliUniverse.Core.Domain.ValueObjects;
 
 namespace GhibliUniverse.API.DTOs;
 

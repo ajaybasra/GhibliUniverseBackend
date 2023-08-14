@@ -27,8 +27,7 @@ public class FilmController : Controller
     public async Task<IActionResult> GetAllFilms()
     {
         var films = await _filmService.GetAllFilms();
-        var filmWithReviewInfoList = films.Select(CustomMapper.MapToFilmWithReviewInfo).ToList();
-        var filmResponseDTOs = _mapper.Map<List<FilmResponseDTO>>(filmWithReviewInfoList);
+        var filmResponseDTOs = _mapper.Map<List<FilmResponseDTO>>(films);
         return Ok(filmResponseDTOs);
     }
     
@@ -38,8 +37,7 @@ public class FilmController : Controller
         try
         {
             var film = await _filmService.GetFilmById(filmId);
-            var filmWithReviewInfo = CustomMapper.MapToFilmWithReviewInfo(film);
-            var filmResponseDTO = _mapper.Map<FilmResponseDTO>(filmWithReviewInfo);
+            var filmResponseDTO = _mapper.Map<FilmResponseDTO>(film);
             return Ok(filmResponseDTO);
         }
         catch (ModelNotFoundException)

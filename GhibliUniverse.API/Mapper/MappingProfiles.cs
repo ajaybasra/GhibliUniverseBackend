@@ -9,12 +9,12 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<FilmWithReviewInfo, FilmResponseDTO>()
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Value))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Value))
-            .ForMember(dest => dest.Director, opt => opt.MapFrom(src => src.Director.Value))
-            .ForMember(dest => dest.Composer, opt => opt.MapFrom(src => src.Composer.Value))
-            .ForMember(dest => dest.ReleaseYear, opt => opt.MapFrom(src => src.ReleaseYear.Value));
+        CreateMap<FilmWrapper, FilmResponseDTO>()
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.FilmInfo.Title.Value))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.FilmInfo.Description.Value))
+            .ForMember(dest => dest.Director, opt => opt.MapFrom(src => src.FilmInfo.Director.Value))
+            .ForMember(dest => dest.Composer, opt => opt.MapFrom(src => src.FilmInfo.Composer.Value))
+            .ForMember(dest => dest.ReleaseYear, opt => opt.MapFrom(src => src.FilmInfo.ReleaseYear.Value));
         CreateMap<Film, FilmResponseDTO>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Value))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Value))
