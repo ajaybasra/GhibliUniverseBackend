@@ -1,4 +1,5 @@
 using GhibliUniverse.Core.Context;
+using GhibliUniverse.Core.DataEntities;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
@@ -17,9 +18,10 @@ public class VoiceActorRepository : IVoiceActorRepository
 
     public async Task<List<VoiceActor>> GetAllVoiceActors()
     {
-        return await _ghibliUniverseContext.VoiceActors
+        var voiceActors = await _ghibliUniverseContext.VoiceActors
             .Include(voiceActor => voiceActor.Films)
             .ToListAsync();
+        return voiceActors.Select(v => new VoiceActor(v)).ToList();
     }
     
     public async Task<VoiceActor> GetVoiceActorById(Guid voiceActorId)
@@ -30,7 +32,7 @@ public class VoiceActorRepository : IVoiceActorRepository
             throw new ModelNotFoundException(voiceActorId);
         }
 
-        return voiceActor;
+        return new VoiceActor(voiceActor);
     }
 
 
@@ -45,21 +47,21 @@ public class VoiceActorRepository : IVoiceActorRepository
             throw new ModelNotFoundException(voiceActorId);
         }
 
-        return voiceActor.Films;
+        return voiceActor.Films.Select(f => new Film(f)).ToList();
     }
 
     public async Task<VoiceActor> CreateVoiceActor(string name)
     {
-        var voiceActor = new VoiceActor
+        var voiceActor = new VoiceActorEntity()
         {
             Id = Guid.NewGuid(),
-            Name = ValidatedString.From(name)
+            Name = name
         };
 
         _ghibliUniverseContext.VoiceActors.Add(voiceActor);
         await _ghibliUniverseContext.SaveChangesAsync();
 
-        return voiceActor;
+        return new VoiceActor(voiceActor);
     }
 
     public async Task<VoiceActor> UpdateVoiceActor(Guid voiceActorId, string name)
@@ -70,12 +72,12 @@ public class VoiceActorRepository : IVoiceActorRepository
             throw new ModelNotFoundException(voiceActorId);
         }
 
-        voiceActorToUpdate.Name = ValidatedString.From(name);
+        voiceActorToUpdate.Name = name;
 
         _ghibliUniverseContext.VoiceActors.Update(voiceActorToUpdate);
         await _ghibliUniverseContext.SaveChangesAsync();
 
-        return voiceActorToUpdate;
+        return new VoiceActor(voiceActorToUpdate);
     }
 
 

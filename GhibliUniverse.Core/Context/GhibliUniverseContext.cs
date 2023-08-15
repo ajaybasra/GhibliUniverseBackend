@@ -1,6 +1,4 @@
 using GhibliUniverse.Core.DataEntities;
-using GhibliUniverse.Core.Domain.Models;
-using GhibliUniverse.Core.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace GhibliUniverse.Core.Context;

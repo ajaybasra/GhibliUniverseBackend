@@ -3,7 +3,6 @@
 using GhibliUniverse.Console;
 using GhibliUniverse.Core;
 using GhibliUniverse.Core.Context;
-using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Repository;
 using GhibliUniverse.Core.Services;
 using GhibliUniverse.Core.Utils;

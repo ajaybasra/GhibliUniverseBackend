@@ -1,4 +1,5 @@
 using GhibliUniverse.Core.Context;
+using GhibliUniverse.Core.DataEntities;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.ValueObjects;
 
@@ -17,67 +18,64 @@ public static class TestDatabaseSeeder
         context.SaveChanges();
     }
 
-    private static List<VoiceActor> GetSeedingVoiceActors()
+    private static List<VoiceActorEntity> GetSeedingVoiceActors()
     {
-        return new List<VoiceActor>() { 
+        return new List<VoiceActorEntity>() { 
             new()
             {
                 Id = Guid.Parse("10000000-0000-0000-0000-000000000000"),
-                Name = ValidatedString.From("John Doe"), 
+                Name = "John Doe", 
             },
             new()
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),  
-                Name = ValidatedString.From("Test Actor")
+                Name = "Test Actor"
             }
         };
     }
 
-    private static List<Film> GetSeedingFilms(List<VoiceActor> voiceActors)
+    private static List<FilmEntity> GetSeedingFilms(List<VoiceActorEntity> voiceActors)
     {
-        return new List<Film>
+        return new List<FilmEntity>
         {
             new()
             {
                 Id = Guid.Parse("10000000-0000-0000-0000-000000000000"),
-                Title = ValidatedString.From("Spirited Away"),
+                Title = "Spirited Away",
                 Description =
-                    ValidatedString.From(
-                        "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts."),
-                Director = ValidatedString.From("Hayao Miyazaki"),
-                Composer = ValidatedString.From("Joe Hisaishi"),
-                ReleaseYear = ReleaseYear.From(2001)
+                    "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches and spirits, a world where humans are changed into beasts.",
+                Director = "Hayao Miyazaki",
+                Composer = "Joe Hisaishi",
+                ReleaseYear = 2001
             },
             new()
             {
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
-                Title = ValidatedString.From("Not Spirited Away"),
-                Description =
-                    ValidatedString.From(
-                        "This is a description.."),
-                Director = ValidatedString.From("Lebron"),
-                Composer = ValidatedString.From("MJ"),
-                ReleaseYear = ReleaseYear.From(1995),
-                VoiceActors = new List<VoiceActor> {voiceActors[0]}
+                Title = "Not Spirited Away",
+                Description = "This is a description..",
+                Director = "Lebron",
+                Composer = "MJ",
+                ReleaseYear = 1995,
+                VoiceActors = new List<VoiceActorEntity> {voiceActors[0]}
             }
         };
     }
 
-    private static List<Review> GetSeedingReviews()
+    private static List<ReviewEntity> GetSeedingReviews()
     {
-        return new List<Review>
+        return new List<ReviewEntity>
         {
             new()
             {
                 FilmId = Guid.Empty,
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
-                Rating = Rating.From(10)
+                Rating = 10
             },
             new()
             {
                 FilmId = Guid.Empty,
                 Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
-                Rating = Rating.From(8)
+                Rating = 8
             }
         };
     }

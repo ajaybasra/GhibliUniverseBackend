@@ -9,31 +9,25 @@ public class MappingProfiles : Profile
 {
     public MappingProfiles()
     {
-        CreateMap<FilmWrapper, FilmResponseDTO>()
+        CreateMap<Film, FilmResponseDTO>()
             .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.FilmInfo.Title.Value))
             .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.FilmInfo.Description.Value))
             .ForMember(dest => dest.Director, opt => opt.MapFrom(src => src.FilmInfo.Director.Value))
             .ForMember(dest => dest.Composer, opt => opt.MapFrom(src => src.FilmInfo.Composer.Value))
             .ForMember(dest => dest.ReleaseYear, opt => opt.MapFrom(src => src.FilmInfo.ReleaseYear.Value));
-        CreateMap<Film, FilmResponseDTO>()
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Value))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Value))
-            .ForMember(dest => dest.Director, opt => opt.MapFrom(src => src.Director.Value))
-            .ForMember(dest => dest.Composer, opt => opt.MapFrom(src => src.Composer.Value))
-            .ForMember(dest => dest.ReleaseYear, opt => opt.MapFrom(src => src.ReleaseYear.Value));
         CreateMap<Film, FilmRequestDTO>()
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.Title.Value))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.Description.Value))
-            .ForMember(dest => dest.Director, opt => opt.MapFrom(src => src.Director.Value))
-            .ForMember(dest => dest.Composer, opt => opt.MapFrom(src => src.Composer.Value))
-            .ForMember(dest => dest.ReleaseYear, opt => opt.MapFrom(src => src.ReleaseYear.Value));
+            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => src.FilmInfo.Title.Value))
+            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => src.FilmInfo.Description.Value))
+            .ForMember(dest => dest.Director, opt => opt.MapFrom(src => src.FilmInfo.Director.Value))
+            .ForMember(dest => dest.Composer, opt => opt.MapFrom(src => src.FilmInfo.Composer.Value))
+            .ForMember(dest => dest.ReleaseYear, opt => opt.MapFrom(src => src.FilmInfo.ReleaseYear.Value));
         CreateMap<FilmResponseDTO, Film>();
         CreateMap<FilmRequestDTO, Film>()
-            .ForMember(dest => dest.Title, opt => opt.MapFrom(src => ValidatedString.From(src.Title)))
-            .ForMember(dest => dest.Description, opt => opt.MapFrom(src => ValidatedString.From(src.Description)))
-            .ForMember(dest => dest.Director, opt => opt.MapFrom(src => ValidatedString.From(src.Director)))
-            .ForMember(dest => dest.Composer, opt => opt.MapFrom(src => ValidatedString.From(src.Composer)))
-            .ForMember(dest => dest.ReleaseYear, opt => opt.MapFrom(src => ReleaseYear.From(src.ReleaseYear)));
+            .ForMember(dest => dest.FilmInfo.Title, opt => opt.MapFrom(src => ValidatedString.From(src.Title)))
+            .ForMember(dest => dest.FilmInfo.Description, opt => opt.MapFrom(src => ValidatedString.From(src.Description)))
+            .ForMember(dest => dest.FilmInfo.Director, opt => opt.MapFrom(src => ValidatedString.From(src.Director)))
+            .ForMember(dest => dest.FilmInfo.Composer, opt => opt.MapFrom(src => ValidatedString.From(src.Composer)))
+            .ForMember(dest => dest.FilmInfo.ReleaseYear, opt => opt.MapFrom(src => ReleaseYear.From(src.ReleaseYear)));
         CreateMap<Review, ReviewResponseDTO>()
             .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => src.Rating.Value));
         CreateMap<Review, ReviewRequestDTO>()

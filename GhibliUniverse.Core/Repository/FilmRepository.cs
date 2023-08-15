@@ -1,4 +1,5 @@
 using GhibliUniverse.Core.Context;
+using GhibliUniverse.Core.DataEntities;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
@@ -16,10 +17,11 @@ public class FilmRepository : IFilmRepository
     }
     public async Task<List<Film>> GetAllFilms()
     {
-        return await _ghibliUniverseContext.Films
+        var films = await _ghibliUniverseContext.Films
             .Include(f => f.Reviews)
             .Include(f => f.VoiceActors)
             .ToListAsync();
+        return films.Select(f => new Film(f)).ToList();
     }
 
     public async Task<Film> GetFilmById(Guid filmId)
@@ -30,7 +32,7 @@ public class FilmRepository : IFilmRepository
             throw new ModelNotFoundException(filmId);
         }
 
-        return film;
+        return new Film(film);
     }
 
     public async Task<List<VoiceActor>> GetVoiceActorsByFilm(Guid filmId)
@@ -43,25 +45,25 @@ public class FilmRepository : IFilmRepository
             throw new ModelNotFoundException(filmId);
         }
 
-        return film.VoiceActors;
+        return film.VoiceActors.Select(v => new VoiceActor(v)).ToList();
     }
 
     public async Task<Film> CreateFilm(string title, string description, string director, string composer, int releaseYear)
     {
-        var film = new Film
+        var film = new FilmEntity()
         {
             Id = Guid.NewGuid(),
-            Title = ValidatedString.From(title),
-            Description = ValidatedString.From(description),
-            Director = ValidatedString.From(director),
-            Composer = ValidatedString.From(composer),
-            ReleaseYear = ReleaseYear.From(releaseYear)
+            Title = title,
+            Description = description,
+            Director = director,
+            Composer = composer,
+            ReleaseYear = releaseYear
         };
 
         _ghibliUniverseContext.Films.Add(film);
         await _ghibliUniverseContext.SaveChangesAsync();
 
-        return film;
+        return new Film(film);
     }
 
     public async Task<Film> UpdateFilm(Guid filmId, Film updatedFilm)
@@ -72,15 +74,15 @@ public class FilmRepository : IFilmRepository
             throw new ModelNotFoundException(filmId);
         }
 
-        filmToUpdate.Title = updatedFilm.Title;
-        filmToUpdate.Description = updatedFilm.Description;
-        filmToUpdate.Director = updatedFilm.Director;
-        filmToUpdate.Composer = updatedFilm.Composer;
-        filmToUpdate.ReleaseYear = updatedFilm.ReleaseYear;
+        filmToUpdate.Title = updatedFilm.FilmInfo.Title.Value;
+        filmToUpdate.Description = updatedFilm.FilmInfo.Description.Value;
+        filmToUpdate.Director = updatedFilm.FilmInfo.Director.Value;
+        filmToUpdate.Composer = updatedFilm.FilmInfo.Composer.Value;
+        filmToUpdate.ReleaseYear = updatedFilm.FilmInfo.ReleaseYear.Value;
 
         await _ghibliUniverseContext.SaveChangesAsync();
 
-        return filmToUpdate;
+        return new Film(filmToUpdate);
     }
 
     public async Task DeleteFilm(Guid filmId)

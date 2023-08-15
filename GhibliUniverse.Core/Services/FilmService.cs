@@ -14,32 +14,16 @@ public class FilmService : IFilmService
         _filmRepository = filmRepository;
     }
     
-    public async Task<List<FilmWrapper>> GetAllFilms()
+    public async Task<List<Film>> GetAllFilms()
     {
         var films = await _filmRepository.GetAllFilms();
-        var wrappedFilms = films.Select(film => new FilmWrapper(film)
-        {
-            FilmReviewInfo = new FilmReviewInfo
-            {
-                AverageRating = CalculateAverageRating(film.Reviews),
-                NumberOfRatings = film.Reviews.Count
-            }
-        }).ToList();
-        return wrappedFilms;
+        return films;
     }
 
-    public async Task<FilmWrapper> GetFilmById(Guid filmId)
+    public async Task<Film> GetFilmById(Guid filmId)
     {
         var film = await _filmRepository.GetFilmById(filmId);
-        var wrappedFilm = new FilmWrapper(film)
-        {
-            FilmReviewInfo = new FilmReviewInfo()
-            {
-                AverageRating = CalculateAverageRating(film.Reviews),
-                NumberOfRatings = film.Reviews.Count
-            }
-        };
-        return wrappedFilm;
+        return film;
     }
 
     public async Task<List<VoiceActor>> GetVoiceActorsByFilm(Guid filmId)

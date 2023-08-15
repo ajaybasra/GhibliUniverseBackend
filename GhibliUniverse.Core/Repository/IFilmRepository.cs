@@ -1,3 +1,4 @@
+using GhibliUniverse.Core.DataEntities;
 using GhibliUniverse.Core.Domain.Models;
 
 namespace GhibliUniverse.Core.Repository;
