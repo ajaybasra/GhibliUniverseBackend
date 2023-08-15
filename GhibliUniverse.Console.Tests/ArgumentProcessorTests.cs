@@ -1,4 +1,5 @@
 using System.Collections;
+using GhibliUniverse.Core.DataEntities;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
@@ -29,7 +30,7 @@ public class ArgumentProcessorTests
     {
         var args = new[] { "pathname", "get-all-films" };
         _mockedCommandLine.Setup(x => x.GetCommandLineArgs()).Returns(args);
-        _mockedFilmService.Setup(x => x.GetAllFilms()).Returns(Task.FromResult(new List<FilmWrapper>()));
+        _mockedFilmService.Setup(x => x.GetAllFilms()).Returns(Task.FromResult(new List<Film>()));
         _argumentProcessor = new ArgumentProcessor(_mockedCommandLine.Object, _fakeWriter, _mockedFilmService.Object,
             _mockedReviewService.Object, _mockedVoiceActorService.Object);
         
@@ -41,22 +42,22 @@ public class ArgumentProcessorTests
     [Fact]
     public void Process_PrintsFilmAsExpected_WhenGetAllFilmsCommandGivenWithValidData()
     {
-        var filmList = new List<FilmWrapper>
+        var filmList = new List<Film>
         {
-            new(new Film
+            new(new FilmEntity()
             {
-                Title = ValidatedString.From("Spirited Away"),
-                Description = ValidatedString.From("Amazing movie, it is. Watch, you must."),
-                Director = ValidatedString.From("Hayao Miyazaki"),
-                Composer = ValidatedString.From("Joe Hisaishi"),
-                ReleaseYear = ReleaseYear.From(2001),
-                VoiceActors = new List<VoiceActor>
+                Title = "Spirited Away",
+                Description = "Amazing movie, it is. Watch, you must.",
+                Director = "Hayao Miyazaki",
+                Composer = "Joe Hisaishi",
+                ReleaseYear = 2001,
+                VoiceActors = new List<VoiceActorEntity>
                 {
-                    new() { Name = ValidatedString.From("Miyu Irino") }
+                    new() { Name = "Miyu Irino" }
                 },
-                Reviews = new List<Review>
+                Reviews = new List<ReviewEntity>
                 {
-                    new() { Rating = Rating.From(10) }
+                    new() { Rating = 10 }
                 }
             })
         };
@@ -79,7 +80,7 @@ public class ArgumentProcessorTests
     {
         var args = new[] { "pathname", "get-film-by-id", "00000000-0000-0000-0000-000000000000" };
         _mockedCommandLine.Setup(x => x.GetCommandLineArgs()).Returns(args);
-        _mockedFilmService.Setup(x => x.GetFilmById(It.IsAny<Guid>())).Returns(Task.FromResult(It.IsAny<FilmWrapper>()));
+        _mockedFilmService.Setup(x => x.GetFilmById(It.IsAny<Guid>())).Returns(Task.FromResult(It.IsAny<Film>()));
         _argumentProcessor = new ArgumentProcessor(_mockedCommandLine.Object, _fakeWriter, _mockedFilmService.Object,
             _mockedReviewService.Object, _mockedVoiceActorService.Object);
         

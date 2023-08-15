@@ -32,11 +32,11 @@ public record Film(FilmEntity FilmEntity)
         str.Append($"Release Year:{FilmInfo.ReleaseYear},");
         str.Append("Voice Actors:");
         str.Append('[');
-        str.Append(string.Join(",", FilmEntity.VoiceActors));
+        str.Append(string.Join(",", FilmInfo.VoiceActors));
         str.Append(']');
         str.Append(",Film Ratings:");
         str.Append('[');
-        str.Append(string.Join(",", FilmEntity.Reviews));
+        str.Append(string.Join(",", FilmInfo.Reviews));
         str.Append(']');
         str.Append(']');
         return str.ToString();
