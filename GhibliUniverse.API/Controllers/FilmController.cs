@@ -64,7 +64,7 @@ public class FilmController : Controller
     [HttpPost]
     public async Task<IActionResult> CreateFilm([FromBody] FilmRequestDTO filmCreate)
     {
-        if (await _filmService.FilmTitleAlreadyExists(filmCreate.Title))
+        if (await _filmService.FilmTitleAlreadyExists(filmCreate.Title)) // migrate
         {
             ModelState.AddModelError("", "Film with the same name already exists");
             return StatusCode(422, ModelState);
@@ -75,23 +75,16 @@ public class FilmController : Controller
 
         try
         {
-            var createdFilm = await _filmService.CreateFilm(filmCreate.Title, filmCreate.Description, filmCreate.Director, filmCreate.Composer, filmCreate.ReleaseYear);
+            var filmCreateRequestAsValueObject = _mapper.Map<Film>(filmCreate);
+            var createdFilm = await _filmService.CreateFilm(filmCreateRequestAsValueObject);
             var filmResponseDTO = _mapper.Map<FilmResponseDTO>(createdFilm);
             return Ok(filmResponseDTO);
         }
-        catch (ReleaseYear.NotFourCharactersException e)
+        catch (AutoMapperMappingException ex)
         {
-            return BadRequest(e.Message);
+            return BadRequest(ex.InnerException.Message);
         }
-        catch (ReleaseYear.ReleaseYearLessThanOldestReleaseYearException e)
-        {
-            return BadRequest(e.Message);
-        }
-        catch (ArgumentException e)
-        {
-            return BadRequest(e.Message);
-        }
-
+        
     }
     
     [HttpPost("{filmId:guid}/LinkVoiceActor")]
@@ -127,10 +120,10 @@ public class FilmController : Controller
     {
         try
         {
-            var filmUpdateMap = _mapper.Map<Film>(filmUpdate);
-            var updatedFilm = await _filmService.UpdateFilm(filmId, filmUpdateMap);
-            var updatedFilmDTO = _mapper.Map<FilmResponseDTO>(updatedFilm);
-            return Ok(updatedFilmDTO);
+            var filmUpdateRequestAsValueObject = _mapper.Map<Film>(filmUpdate);
+            var updatedFilm = await _filmService.UpdateFilm(filmId, filmUpdateRequestAsValueObject);
+            var filmResponseDTO = _mapper.Map<FilmResponseDTO>(updatedFilm);
+            return Ok(filmResponseDTO);
         }
         catch (ModelNotFoundException)
         {

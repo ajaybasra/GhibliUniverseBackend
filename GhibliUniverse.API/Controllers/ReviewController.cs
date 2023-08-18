@@ -52,7 +52,8 @@ public class ReviewController : Controller
 
         try
         {
-            var createdReview = await _reviewService.CreateReview(filmId, reviewCreate.rating);
+            var reviewCreateRequestAsValueObject = _mapper.Map<Review>(reviewCreate);
+            var createdReview = await _reviewService.CreateReview(filmId, reviewCreateRequestAsValueObject);
             var reviewResponseDto = _mapper.Map<ReviewResponseDTO>(createdReview);
             return Ok(reviewResponseDto);
         }
@@ -60,9 +61,9 @@ public class ReviewController : Controller
         {
             return  NotFound("No film found with the following id: " + filmId);
         }
-        catch (Rating.RatingOutOfRangeException e)
+        catch (AutoMapperMappingException ex)
         {
-            return BadRequest(e.Message);
+            return BadRequest(ex.InnerException.Message);
         }
     }
     
@@ -71,7 +72,8 @@ public class ReviewController : Controller
     {
         try
         {
-            var updatedReview = await _reviewService.UpdateReview(reviewId, reviewUpdate.rating);
+            var reviewUpdateRequestAsValueObject = _mapper.Map<Review>(reviewUpdate);
+            var updatedReview = await _reviewService.UpdateReview(reviewId, reviewUpdateRequestAsValueObject);
             var reviewResponseDTO = _mapper.Map<ReviewResponseDTO>(updatedReview);
             return Ok(reviewResponseDTO);
         }
@@ -79,9 +81,9 @@ public class ReviewController : Controller
         {
             return NotFound("No review found with the following id: " + reviewId);
         }
-        catch (Rating.RatingOutOfRangeException e)
+        catch (AutoMapperMappingException ex)
         {
-            return BadRequest(e.Message);
+            return BadRequest(ex.InnerException.Message);
         }
         
     }

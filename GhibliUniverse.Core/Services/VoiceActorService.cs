@@ -1,7 +1,5 @@
 using System.Text;
 using GhibliUniverse.Core.Domain.Models;
-using GhibliUniverse.Core.Domain.Models.Exceptions;
-using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Repository;
 
 namespace GhibliUniverse.Core.Services;
@@ -25,19 +23,19 @@ public class VoiceActorService : IVoiceActorService
         return await _voiceActorRepository.GetVoiceActorById(voiceActorId);
     }
 
-    public async Task<List<Film>> GetFilmsByVoiceActor(Guid voiceActorId)
+    public async Task<List<VoiceActorFilm>> GetFilmsByVoiceActor(Guid voiceActorId)
     {
         return await _voiceActorRepository.GetFilmsByVoiceActor(voiceActorId);
     }
 
-    public async Task<VoiceActor> CreateVoiceActor(string name)
+    public async Task<VoiceActor> CreateVoiceActor(VoiceActor voiceActorCreateRequest)
     {
-        return await _voiceActorRepository.CreateVoiceActor(name);
+        return await _voiceActorRepository.CreateVoiceActor(voiceActorCreateRequest);
     }
 
-    public async Task<VoiceActor> UpdateVoiceActor(Guid voiceActorId, string name)
+    public async Task<VoiceActor> UpdateVoiceActor(Guid voiceActorId, VoiceActor voiceActorUpdateRequest)
     {
-        return await _voiceActorRepository.UpdateVoiceActor(voiceActorId, name);
+        return await _voiceActorRepository.UpdateVoiceActor(voiceActorId, voiceActorUpdateRequest);
     }
 
     public async Task DeleteVoiceActor(Guid voiceActorId)

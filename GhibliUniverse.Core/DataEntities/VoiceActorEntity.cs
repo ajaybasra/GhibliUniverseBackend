@@ -1,9 +1,10 @@
-namespace GhibliUniverse.Core.DataEntities;
-
-public record VoiceActorEntity()
+namespace GhibliUniverse.Core.DataEntities
 {
-    public Guid Id { get; set; }
-    public string Name { get; set; }
+    public class VoiceActorEntity
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
 
-    public List<FilmEntity> Films { get; set; }  = new();
+        public List<FilmEntity> Films { get; set; } = new();
+    }
 }

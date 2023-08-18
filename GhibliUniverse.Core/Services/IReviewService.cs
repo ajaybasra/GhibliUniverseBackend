@@ -6,7 +6,7 @@ public interface IReviewService
 {
     Task<List<Review>> GetAllReviews();
     Task<Review> GetReviewById(Guid reviewId);
-    Task<Review> CreateReview(Guid filmId, int rating);
-    Task<Review> UpdateReview(Guid reviewId, int rating);
+    Task<Review> CreateReview(Guid filmId, Review reviewCreateRequest);
+    Task<Review> UpdateReview(Guid reviewId, Review reviewUpdateRequest);
     Task DeleteReview(Guid reviewId);
 }

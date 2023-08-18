@@ -1,8 +1,8 @@
+using AutoMapper;
 using GhibliUniverse.Core.Context;
 using GhibliUniverse.Core.DataEntities;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
-using GhibliUniverse.Core.Domain.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 
 namespace GhibliUniverse.Core.Repository;
@@ -10,10 +10,12 @@ namespace GhibliUniverse.Core.Repository;
 public class FilmRepository : IFilmRepository
 {
     private readonly GhibliUniverseContext _ghibliUniverseContext;
+    private readonly IMapper _mapper;
 
-    public FilmRepository(GhibliUniverseContext ghibliUniverseContext)
+    public FilmRepository(GhibliUniverseContext ghibliUniverseContext, IMapper mapper)
     {
         _ghibliUniverseContext = ghibliUniverseContext;
+        _mapper = mapper;
     }
     public async Task<List<Film>> GetAllFilms()
     {
@@ -21,18 +23,19 @@ public class FilmRepository : IFilmRepository
             .Include(f => f.Reviews)
             .Include(f => f.VoiceActors)
             .ToListAsync();
-        return films.Select(f => new Film(f)).ToList();
+        
+        return _mapper.Map<List<Film>>(films);
     }
 
     public async Task<Film> GetFilmById(Guid filmId)
     {
-        var film = await _ghibliUniverseContext.Films.FirstOrDefaultAsync(f => f.Id == filmId);
+        var film = await _ghibliUniverseContext.Films.Include(f => f.Reviews).FirstOrDefaultAsync(f => f.Id == filmId);
         if (film == null)
         {
             throw new ModelNotFoundException(filmId);
         }
 
-        return new Film(film);
+        return _mapper.Map<Film>(film);
     }
 
     public async Task<List<VoiceActor>> GetVoiceActorsByFilm(Guid filmId)
@@ -45,44 +48,44 @@ public class FilmRepository : IFilmRepository
             throw new ModelNotFoundException(filmId);
         }
 
-        return film.VoiceActors.Select(v => new VoiceActor(v)).ToList();
+        return _mapper.Map<List<VoiceActor>>(film.VoiceActors);
     }
 
-    public async Task<Film> CreateFilm(string title, string description, string director, string composer, int releaseYear)
+    public async Task<Film> CreateFilm(Film filmCreateRequest)
     {
-        var film = new FilmEntity()
+        var film = new FilmEntity()  
         {
             Id = Guid.NewGuid(),
-            Title = title,
-            Description = description,
-            Director = director,
-            Composer = composer,
-            ReleaseYear = releaseYear
+            Title = filmCreateRequest.FilmInfo.Title.Value,
+            Description = filmCreateRequest.FilmInfo.Description.Value,
+            Director = filmCreateRequest.FilmInfo.Director.Value,
+            Composer = filmCreateRequest.FilmInfo.Composer.Value,
+            ReleaseYear = filmCreateRequest.FilmInfo.ReleaseYear.Value
         };
 
         _ghibliUniverseContext.Films.Add(film);
         await _ghibliUniverseContext.SaveChangesAsync();
 
-        return new Film(film);
+        return _mapper.Map<Film>(film);
     }
 
-    public async Task<Film> UpdateFilm(Guid filmId, Film updatedFilm)
+    public async Task<Film> UpdateFilm(Guid filmId, Film filmUpdateRequest)
     {
-        var filmToUpdate = await _ghibliUniverseContext.Films.FirstOrDefaultAsync(f => f.Id == filmId);
+        var filmToUpdate = await _ghibliUniverseContext.Films.Include(f => f.Reviews).FirstOrDefaultAsync(f => f.Id == filmId);
         if (filmToUpdate == null)
         {
             throw new ModelNotFoundException(filmId);
         }
 
-        filmToUpdate.Title = updatedFilm.FilmInfo.Title.Value;
-        filmToUpdate.Description = updatedFilm.FilmInfo.Description.Value;
-        filmToUpdate.Director = updatedFilm.FilmInfo.Director.Value;
-        filmToUpdate.Composer = updatedFilm.FilmInfo.Composer.Value;
-        filmToUpdate.ReleaseYear = updatedFilm.FilmInfo.ReleaseYear.Value;
+        filmToUpdate.Title = filmUpdateRequest.FilmInfo.Title.Value;
+        filmToUpdate.Description = filmUpdateRequest.FilmInfo.Description.Value;
+        filmToUpdate.Director = filmUpdateRequest.FilmInfo.Director.Value;
+        filmToUpdate.Composer = filmUpdateRequest.FilmInfo.Composer.Value;
+        filmToUpdate.ReleaseYear = filmUpdateRequest.FilmInfo.ReleaseYear.Value;
 
         await _ghibliUniverseContext.SaveChangesAsync();
 
-        return new Film(filmToUpdate);
+        return _mapper.Map<Film>(filmToUpdate);
     }
 
     public async Task DeleteFilm(Guid filmId)

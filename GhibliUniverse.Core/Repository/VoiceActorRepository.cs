@@ -1,3 +1,4 @@
+using AutoMapper;
 using GhibliUniverse.Core.Context;
 using GhibliUniverse.Core.DataEntities;
 using GhibliUniverse.Core.Domain.Models;
@@ -10,10 +11,12 @@ namespace GhibliUniverse.Core.Repository;
 public class VoiceActorRepository : IVoiceActorRepository
 {
     private readonly GhibliUniverseContext _ghibliUniverseContext;
+    private readonly IMapper _mapper;
 
-    public VoiceActorRepository(GhibliUniverseContext ghibliUniverseContext)
+    public VoiceActorRepository(GhibliUniverseContext ghibliUniverseContext, IMapper mapper)
     {
         _ghibliUniverseContext = ghibliUniverseContext;
+        _mapper = mapper;
     }
 
     public async Task<List<VoiceActor>> GetAllVoiceActors()
@@ -21,7 +24,8 @@ public class VoiceActorRepository : IVoiceActorRepository
         var voiceActors = await _ghibliUniverseContext.VoiceActors
             .Include(voiceActor => voiceActor.Films)
             .ToListAsync();
-        return voiceActors.Select(v => new VoiceActor(v)).ToList();
+        
+        return _mapper.Map<List<VoiceActor>>(voiceActors);
     }
     
     public async Task<VoiceActor> GetVoiceActorById(Guid voiceActorId)
@@ -32,11 +36,11 @@ public class VoiceActorRepository : IVoiceActorRepository
             throw new ModelNotFoundException(voiceActorId);
         }
 
-        return new VoiceActor(voiceActor);
+        return _mapper.Map<VoiceActor>(voiceActor);
     }
 
 
-    public async Task<List<Film>> GetFilmsByVoiceActor(Guid voiceActorId)
+    public async Task<List<VoiceActorFilm>> GetFilmsByVoiceActor(Guid voiceActorId)
     {
         var voiceActor = await _ghibliUniverseContext.VoiceActors
             .Include(v => v.Films)
@@ -47,24 +51,24 @@ public class VoiceActorRepository : IVoiceActorRepository
             throw new ModelNotFoundException(voiceActorId);
         }
 
-        return voiceActor.Films.Select(f => new Film(f)).ToList();
+        return _mapper.Map<List<VoiceActorFilm>>(voiceActor.Films);
     }
 
-    public async Task<VoiceActor> CreateVoiceActor(string name)
+    public async Task<VoiceActor> CreateVoiceActor(VoiceActor voiceActorCreateRequest)
     {
         var voiceActor = new VoiceActorEntity()
         {
             Id = Guid.NewGuid(),
-            Name = name
+            Name = voiceActorCreateRequest.Name.Value
         };
 
         _ghibliUniverseContext.VoiceActors.Add(voiceActor);
         await _ghibliUniverseContext.SaveChangesAsync();
 
-        return new VoiceActor(voiceActor);
+        return _mapper.Map<VoiceActor>(voiceActor);
     }
 
-    public async Task<VoiceActor> UpdateVoiceActor(Guid voiceActorId, string name)
+    public async Task<VoiceActor> UpdateVoiceActor(Guid voiceActorId, VoiceActor voiceActorUpdateRequest)
     {
         var voiceActorToUpdate = await _ghibliUniverseContext.VoiceActors.FirstOrDefaultAsync(v => v.Id == voiceActorId);
         if (voiceActorToUpdate == null)
@@ -72,12 +76,12 @@ public class VoiceActorRepository : IVoiceActorRepository
             throw new ModelNotFoundException(voiceActorId);
         }
 
-        voiceActorToUpdate.Name = name;
+        voiceActorToUpdate.Name = voiceActorUpdateRequest.Name.Value;
 
         _ghibliUniverseContext.VoiceActors.Update(voiceActorToUpdate);
         await _ghibliUniverseContext.SaveChangesAsync();
 
-        return new VoiceActor(voiceActorToUpdate);
+        return _mapper.Map<VoiceActor>(voiceActorToUpdate);
     }
 
 

@@ -1,10 +1,11 @@
-namespace GhibliUniverse.Core.DataEntities;
-
-public record ReviewEntity()
+namespace GhibliUniverse.Core.DataEntities
 {
-    public Guid Id { get; set; }
-    public int Rating { get; set; }
-    
-    public Guid FilmId { get; set; }
-    public FilmEntity Film { get; set; } = null!;
+    public class ReviewEntity
+    {
+        public Guid Id { get; set; }
+        public int Rating { get; set; }
+        
+        public Guid FilmId { get; set; }
+        public FilmEntity Film { get; set; } = null!;
+    }
 }

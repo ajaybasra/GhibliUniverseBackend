@@ -1,7 +1,8 @@
-namespace GhibliUniverse.Core.Domain.Models;
-
-public record FilmReviewInfo()
+namespace GhibliUniverse.Core.Domain.Models
 {
-    public double AverageRating { get; set; }
-    public int NumberOfRatings { get; set; }
-};
+    public class FilmReviewInfo
+    {
+        public double AverageRating { get; set; }
+        public int NumberOfRatings { get; set; }
+    }
+}
