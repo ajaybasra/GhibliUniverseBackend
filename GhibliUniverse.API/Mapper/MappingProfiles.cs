@@ -36,7 +36,8 @@ public class MappingProfiles : Profile
         CreateMap<Review, ReviewRequestDTO>()
             .ForMember(dest => dest.rating, opt => opt.MapFrom(src => src.Rating.Value));
         
-        CreateMap<ReviewRequestDTO, Review>();
+        CreateMap<ReviewRequestDTO, Review>()
+            .ForMember(dest => dest.Rating, opt => opt.MapFrom(src => Rating.From(src.rating)));
         
         CreateMap<VoiceActor, VoiceActorResponseDTO>()
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.Value));
@@ -54,10 +55,11 @@ public class MappingProfiles : Profile
             .ForPath(dest => dest.Director, opt => opt.MapFrom(src => src.Director.Value))
             .ForPath(dest => dest.Composer, opt => opt.MapFrom(src => src.Composer.Value))
             .ForPath(dest => dest.ReleaseYear, opt => opt.MapFrom(src => src.ReleaseYear.Value));
-        // CreateMap<VoiceActor, VoiceActorRequestDTO>()
-        //     .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.Value));
+        CreateMap<VoiceActor, VoiceActorRequestDTO>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.Value));
         // CreateMap<VoiceActorResponseDTO, VoiceActor>();
-        CreateMap<VoiceActorRequestDTO, VoiceActor>();
+        CreateMap<VoiceActorRequestDTO, VoiceActor>()
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => ValidatedString.From(src.Name)));
     }
 }
  

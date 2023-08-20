@@ -124,17 +124,25 @@ public class VoiceActorServiceTests
     public async Task UpdateVoiceActor_UpdatesVoiceActorName_WhenCalled()
     {
         var voiceActorId = _voiceActors[0].Id;
-        _mockedVoiceActorRepository.Setup(x => x.UpdateVoiceActor(voiceActorId, new VoiceActor() {Name = ValidatedString.From("John Doe")}))
-            .Callback((Guid voiceActorId, string newName) =>
+
+        _mockedVoiceActorRepository.Setup(x => x.UpdateVoiceActor(voiceActorId, It.IsAny<VoiceActor>()))
+            .Callback((Guid id, VoiceActor updatedVoiceActor) =>
             {
-                _voiceActors[0].Name = ValidatedString.From(newName);
+                var voiceActorToUpdate = _voiceActors.FirstOrDefault(va => va.Id == id);
+                if (voiceActorToUpdate != null)
+                {
+                    voiceActorToUpdate.Name = updatedVoiceActor.Name;
+                }
             });
 
-        await _voiceActorService.UpdateVoiceActor(voiceActorId, new VoiceActor() {Name = ValidatedString.From("Joe Doe")});
+        var updatedName = "Joe Doe";
+        await _voiceActorService.UpdateVoiceActor(voiceActorId, new VoiceActor() { Name = ValidatedString.From(updatedName) });
+
         var voiceActorWithUpdatedName = _voiceActors[0];
 
-        Assert.Equal(ValidatedString.From("Joe Doe"), voiceActorWithUpdatedName.Name);
+        Assert.Equal(ValidatedString.From(updatedName), voiceActorWithUpdatedName.Name);
     }
+
      
     [Fact]
     public async Task DeleteVoiceActor_RemovesActorWithMatchingIdFromVoiceActorList_WhenGivenVoiceActorId()
