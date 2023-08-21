@@ -76,8 +76,8 @@ ALTER TABLE "Films" ADD "Title" text NOT NULL DEFAULT '';
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
 VALUES ('20230815025826_UpdateToNewDataModels', '7.0.5');
 
--- INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
--- VALUES ('20230615213710_InitialCreate', '7.0.5');
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20230615213710_InitialCreate', '7.0.5');
 
 INSERT INTO "Films" ("Id", "Title", "Description", "Director", "Composer", "ReleaseYear")
 VALUES ('00000000-0000-0000-0000-000000000001', 'Spirited Away', 'A young girl, Chihiro, finds herself trapped in a spirit world after her parents are transformed into pigs by a witch. In order to save her parents and find a way back home, she must work in a bathhouse for spirits and navigate through various challenges and encounters.', 'Hayao Miyazaki', 'Joe Hisaishi', 2001);
