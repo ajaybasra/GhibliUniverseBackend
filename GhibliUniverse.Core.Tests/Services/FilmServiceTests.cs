@@ -1,4 +1,3 @@
-using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
@@ -36,7 +35,7 @@ public class FilmServiceTests
         
         for (var i = 0; i < numberOfFilms; i++)
         {
-            _films.Add(new Film
+            _films.Add(new Film (new FilmInfo
             {
                 Id = new Guid($"{i}{i}{i}{i}{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}-{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}{i}"),
                 Title = ValidatedString.From(filmTitles[i]),
@@ -44,7 +43,7 @@ public class FilmServiceTests
                 Director = ValidatedString.From("Hayao Miyazaki"),
                 Composer = ValidatedString.From("Joe Hisaishi"),
                 ReleaseYear = ReleaseYear.From(releaseYears[i]),
-            });
+            }));
         }
 
     }
@@ -126,7 +125,7 @@ public class FilmServiceTests
          var director = "Hayao Miyazaki";
          var composer = "Joe Hisaishi";
          var releaseYear = 2001;
-         var createdFilm = new Film
+         var createdFilm = new Film (new FilmInfo
          {
              Id = Guid.NewGuid(),
              Title = ValidatedString.From(filmTitle),
@@ -134,67 +133,41 @@ public class FilmServiceTests
              Director = ValidatedString.From(director),
              Composer = ValidatedString.From(composer),
              ReleaseYear = ReleaseYear.From(releaseYear),
-         };
-         _mockedFilmRepository.Setup(x => x.CreateFilm(filmTitle, filmDescription, director, composer, releaseYear)).ReturnsAsync(createdFilm);
+         });
+         _mockedFilmRepository.Setup(x => x.CreateFilm(createdFilm)).ReturnsAsync(createdFilm);
 
-         var result = await _filmService.CreateFilm(filmTitle, filmDescription, director, composer, releaseYear);
+         var result = await _filmService.CreateFilm(createdFilm);
 
          Assert.Equal(createdFilm.Id, result.Id);
-         Assert.Equal(createdFilm.Title, result.Title);
-         Assert.Equal(createdFilm.Description, result.Description);
-         Assert.Equal(createdFilm.Director, result.Director);
-         Assert.Equal(createdFilm.Composer, result.Composer);
-         Assert.Equal(createdFilm.ReleaseYear, result.ReleaseYear);
+         Assert.Equal(createdFilm.FilmInfo.Title, result.FilmInfo.Title);
+         Assert.Equal(createdFilm.FilmInfo.Description, result.FilmInfo.Description);
+         Assert.Equal(createdFilm.FilmInfo.Director, result.FilmInfo.Director);
+         Assert.Equal(createdFilm.FilmInfo.Composer, result.FilmInfo.Composer);
+         Assert.Equal(createdFilm.FilmInfo.ReleaseYear, result.FilmInfo.ReleaseYear);
      }
-     
-     [Fact]
-     public async Task CreateFilm_ThrowsArgumentException_WhenGivenEmptyInputs()
-     {
-         _mockedFilmRepository.Setup(x => x.CreateFilm("", "", "", "", 2001)).Throws(new ArgumentException());
-         
-         await Assert.ThrowsAsync<ArgumentException>(() => _filmService.CreateFilm("", "", "", "", 2001));
-     }
-     
-     [Fact]
-     public async Task CreateFilm_ThrowsReleaseYearLessThanOldestReleaseYearException_WhenGivenReleaseYearLesserThan1984()
-     {
-         _mockedFilmRepository.Setup(x => x.CreateFilm("test", "test", "test", "test", 1983))
-             .Throws(new ReleaseYear.ReleaseYearLessThanOldestReleaseYearException(1983));
-         
-         await Assert.ThrowsAsync<ReleaseYear.ReleaseYearLessThanOldestReleaseYearException>(() => _filmService.CreateFilm("test", "test", "test", "test", 1983));
-     }
-     
-     [Fact]
-     public async Task CreateFilm_ThrowsNotFourCharactersException_WhenGivenReleaseYearWhichIsNotOfLengthFour()
-     {
-         _mockedFilmRepository.Setup(x => x.CreateFilm("test", "test", "test", "test", 200))
-             .ThrowsAsync(new ReleaseYear.NotFourCharactersException(200));
-         
-         await Assert.ThrowsAsync<ReleaseYear.NotFourCharactersException>(() => _filmService.CreateFilm("test", "test", "test", "test", 200));
-     }
-     
+
      [Fact]
      public async Task UpdateFilm_ReturnsUpdatedFilm_WhenCalledWithValidData()
      {
          var filmId = new Guid("00000000-0000-0000-0000-000000000000");
-         var updatedFilm = new Film
+         var updatedFilm = new Film(new FilmInfo
          {
              Title = ValidatedString.From("Updated Title"),
              Description = ValidatedString.From("Updated Description"),
              Director = ValidatedString.From("Updated Director"),
              Composer = ValidatedString.From("Updated Composer"),
              ReleaseYear = ReleaseYear.From(2000),
-         };
+         });
          _mockedFilmRepository.Setup(x => x.UpdateFilm(filmId, updatedFilm)).ReturnsAsync(updatedFilm);
 
          var result = await _filmService.UpdateFilm(filmId, updatedFilm);
 
          Assert.Equal(filmId, result.Id);
-         Assert.Equal(updatedFilm.Title, result.Title);
-         Assert.Equal(updatedFilm.Description, result.Description);
-         Assert.Equal(updatedFilm.Director, result.Director);
-         Assert.Equal(updatedFilm.Composer, result.Composer);
-         Assert.Equal(updatedFilm.ReleaseYear, result.ReleaseYear);
+         Assert.Equal(updatedFilm.FilmInfo.Title, result.FilmInfo.Title);
+         Assert.Equal(updatedFilm.FilmInfo.Description, result.FilmInfo.Description);
+         Assert.Equal(updatedFilm.FilmInfo.Director, result.FilmInfo.Director);
+         Assert.Equal(updatedFilm.FilmInfo.Composer, result.FilmInfo.Composer);
+         Assert.Equal(updatedFilm.FilmInfo.ReleaseYear, result.FilmInfo.ReleaseYear);
      }
      
      [Fact]
@@ -226,10 +199,10 @@ public class FilmServiceTests
          var filmToHaveVoiceActorAddedId = _films[0].Id;
          var voiceActor = new VoiceActor();
          _mockedFilmRepository.Setup(x => x.LinkVoiceActor(filmToHaveVoiceActorAddedId, voiceActor.Id))
-             .Callback(() => _films[0].VoiceActors.Add(new VoiceActor()));
+             .Callback(() => _films[0].FilmInfo.VoiceActors.Add(new VoiceActor()));
          
          await _filmService.LinkVoiceActor(filmToHaveVoiceActorAddedId, voiceActor.Id);
-         var filmVoiceActorCount = _films[0].VoiceActors.Count;
+         var filmVoiceActorCount = _films[0].FilmInfo.VoiceActors.Count;
          
          Assert.Equal(1, filmVoiceActorCount);
      }

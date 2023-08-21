@@ -22,57 +22,57 @@ public class ArgumentProcessor
         _voiceActorService = voiceActorService;
     }
 
-    public void Process()
+    public async void Process()
     {
         switch (_programArguments[1])
         {           
             case "get-all-films":
-                HandleGetAllFilms();
+                await HandleGetAllFilms();
                 break;
             case "get-film-by-id":
-                HandleGetFilmById(_programArguments[2]);
+                await HandleGetFilmById(_programArguments[2]);
                 break;
             case "get-voice-actors-by-film":
-                HandleGetVoiceActorsByFilm(_programArguments[2]);
+                await HandleGetVoiceActorsByFilm(_programArguments[2]);
                 break;
             case "create-film":
                 HandleCreateFilm();
                 break;
             case "delete-film":
-                HandleDeleteFilm(_programArguments[2]);
+                await HandleDeleteFilm(_programArguments[2]);
                 break;
             case "link-voice-actor-to-film":
-                HandleAddVoiceActorToFilm(_programArguments[2], _programArguments[3]);
+                await HandleAddVoiceActorToFilm(_programArguments[2], _programArguments[3]);
                 break;
             case "unlink-voice-actor-from-film":
-                HandleRemoveVoiceActorFromFilm(_programArguments[2], _programArguments[3]);
+                await HandleRemoveVoiceActorFromFilm(_programArguments[2], _programArguments[3]);
                 break;
             case "get-all-voice-actors":
-                HandleGetAllVoiceActors();
+                await HandleGetAllVoiceActors();
                 break;
             case "get-voice-actor-by-id":
-                HandleGetVoiceActorById(_programArguments[2]);
+                await HandleGetVoiceActorById(_programArguments[2]);
                 break;
             case "get-films-by-voice-actor":
-                HandleGetFilmsByVoiceActor(_programArguments[2]);
+                await HandleGetFilmsByVoiceActor(_programArguments[2]);
                 break;
             case "create-voice-actor":
-                HandleCreateVoiceActor();
+                await HandleCreateVoiceActor();
                 break;
             case "delete-voice-actor":
-                HandleDeleteVoiceActor(_programArguments[2]);
+                await HandleDeleteVoiceActor(_programArguments[2]);
                 break;
             case "get-all-reviews":
-                HandleGetAllReviews();
+                await HandleGetAllReviews();
                 break;
             case "get-review-by-id":
-                HandleGetReviewById(_programArguments[2]);
+                await HandleGetReviewById(_programArguments[2]);
                 break;
             case "create-review":
-                HandleCreateReview(_programArguments[2], _programArguments[3]);
+                await HandleCreateReview(_programArguments[2], _programArguments[3]);
                 break;
             case "delete-review":
-                HandleDeleteReview(_programArguments[2]);
+                await HandleDeleteReview(_programArguments[2]);
                 break;
             default:
                 _writer.WriteLine("Invalid command(s)!");
@@ -125,7 +125,15 @@ public class ArgumentProcessor
 
         try
         {
-            await _filmService.CreateFilm(GetListOfPropertiesNeededToCreateFilm()[0], GetListOfPropertiesNeededToCreateFilm()[1], GetListOfPropertiesNeededToCreateFilm()[2], GetListOfPropertiesNeededToCreateFilm()[3], releaseYear);
+            var filmInfo = new FilmInfo()
+            {
+                Title = ValidatedString.From(GetListOfPropertiesNeededToCreateFilm()[0]),
+                Description = ValidatedString.From(GetListOfPropertiesNeededToCreateFilm()[1]),
+                Director = ValidatedString.From(GetListOfPropertiesNeededToCreateFilm()[2]),
+                Composer = ValidatedString.From(GetListOfPropertiesNeededToCreateFilm()[3]),
+                ReleaseYear = ReleaseYear.From(releaseYear)
+            };
+            await _filmService.CreateFilm(new Film(filmInfo));
         }
         catch (ReleaseYear.NotFourCharactersException e)
         {
@@ -231,7 +239,11 @@ public class ArgumentProcessor
     {
         try
         {
-            await _voiceActorService.CreateVoiceActor(_programArguments[2]);
+            var voiceActor = new VoiceActor()
+            {
+                Name = ValidatedString.From(_programArguments[2])
+            };
+            await _voiceActorService.CreateVoiceActor(voiceActor);
         }
         catch (ArgumentException ae)
         {
@@ -281,8 +293,11 @@ public class ArgumentProcessor
     {
         try
         {
-            var ratingAsInt = int.Parse(rating);
-            await _reviewService.CreateReview(Guid.Parse(filmId), ratingAsInt);
+            var review = new Review()
+            {
+                Rating = Rating.From(int.Parse(rating))
+            };
+            await _reviewService.CreateReview(Guid.Parse(filmId), review);
         }
         catch (ModelNotFoundException e)
         {

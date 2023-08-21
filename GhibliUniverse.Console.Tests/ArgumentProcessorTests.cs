@@ -1,4 +1,5 @@
 using System.Collections;
+using GhibliUniverse.Core.DataEntities;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
@@ -29,7 +30,7 @@ public class ArgumentProcessorTests
     {
         var args = new[] { "pathname", "get-all-films" };
         _mockedCommandLine.Setup(x => x.GetCommandLineArgs()).Returns(args);
-        _mockedFilmService.Setup(x => x.GetAllFilms()).Returns(Task.FromResult(new List<FilmWrapper>()));
+        _mockedFilmService.Setup(x => x.GetAllFilms()).Returns(Task.FromResult(new List<Film>()));
         _argumentProcessor = new ArgumentProcessor(_mockedCommandLine.Object, _fakeWriter, _mockedFilmService.Object,
             _mockedReviewService.Object, _mockedVoiceActorService.Object);
         
@@ -41,9 +42,9 @@ public class ArgumentProcessorTests
     [Fact]
     public void Process_PrintsFilmAsExpected_WhenGetAllFilmsCommandGivenWithValidData()
     {
-        var filmList = new List<FilmWrapper>
+        var filmList = new List<Film>
         {
-            new(new Film
+            new(new FilmInfo()
             {
                 Title = ValidatedString.From("Spirited Away"),
                 Description = ValidatedString.From("Amazing movie, it is. Watch, you must."),
@@ -79,7 +80,7 @@ public class ArgumentProcessorTests
     {
         var args = new[] { "pathname", "get-film-by-id", "00000000-0000-0000-0000-000000000000" };
         _mockedCommandLine.Setup(x => x.GetCommandLineArgs()).Returns(args);
-        _mockedFilmService.Setup(x => x.GetFilmById(It.IsAny<Guid>())).Returns(Task.FromResult(It.IsAny<FilmWrapper>()));
+        _mockedFilmService.Setup(x => x.GetFilmById(It.IsAny<Guid>())).Returns(Task.FromResult(It.IsAny<Film>()));
         _argumentProcessor = new ArgumentProcessor(_mockedCommandLine.Object, _fakeWriter, _mockedFilmService.Object,
             _mockedReviewService.Object, _mockedVoiceActorService.Object);
         
@@ -128,7 +129,7 @@ public class ArgumentProcessorTests
         
         _argumentProcessor.Process();
         
-        _mockedFilmService.Verify(x => x.CreateFilm(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+        _mockedFilmService.Verify(x => x.CreateFilm(It.IsAny<Film>()));
     }
     
     [Fact]
@@ -218,7 +219,7 @@ public class ArgumentProcessorTests
     {
         var args = new[] { "pathname", "get-films-by-voice-actor", "00000000-0000-0000-0000-000000000000" };
         _mockedCommandLine.Setup(x => x.GetCommandLineArgs()).Returns(args);
-        _mockedVoiceActorService.Setup(x => x.GetFilmsByVoiceActor(It.IsAny<Guid>())).Returns(Task.FromResult(new List<Film>()));
+        _mockedVoiceActorService.Setup(x => x.GetFilmsByVoiceActor(It.IsAny<Guid>())).Returns(Task.FromResult(new List<VoiceActorFilm>()));
         _argumentProcessor = new ArgumentProcessor(_mockedCommandLine.Object, _fakeWriter, _mockedFilmService.Object,
             _mockedReviewService.Object, _mockedVoiceActorService.Object);
 
@@ -237,7 +238,7 @@ public class ArgumentProcessorTests
         
         _argumentProcessor.Process();
         
-        _mockedVoiceActorService.Verify(x => x.CreateVoiceActor(It.IsAny<string>()));
+        _mockedVoiceActorService.Verify(x => x.CreateVoiceActor(It.IsAny<VoiceActor>()));
     }
     
     [Fact]
@@ -290,7 +291,7 @@ public class ArgumentProcessorTests
         
         _argumentProcessor.Process();
         
-        _mockedReviewService.Verify(x => x.CreateReview(It.IsAny<Guid>(), It.IsAny<int>()));
+        _mockedReviewService.Verify(x => x.CreateReview(It.IsAny<Guid>(), It.IsAny<Review>()));
     }
     
     [Fact]

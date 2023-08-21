@@ -1,5 +1,6 @@
 using AutoMapper;
 using GhibliUniverse.API.DTOs;
+using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +50,7 @@ public class VoiceActorController : Controller
         try
         {
             var filmsByVoiceActor = await _voiceActorService.GetFilmsByVoiceActor(voiceActorId);
-            var filmsByVoiceActorResponseDTO = _mapper.Map<List<FilmResponseDTO>>(filmsByVoiceActor);
+            var filmsByVoiceActorResponseDTO = _mapper.Map<List<VoiceActorFilmResponseDTO>>(filmsByVoiceActor);
             return Ok(filmsByVoiceActorResponseDTO);
         }
         catch (ModelNotFoundException)
@@ -66,13 +67,14 @@ public class VoiceActorController : Controller
 
         try
         {
-            var createdVoiceActor = await _voiceActorService.CreateVoiceActor(voiceActorCreate.Name);
+            var voiceActorCreateRequestAsValueObject = _mapper.Map<VoiceActor>(voiceActorCreate);
+            var createdVoiceActor = await _voiceActorService.CreateVoiceActor(voiceActorCreateRequestAsValueObject);
             var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(createdVoiceActor);
             return Ok(voiceActorResponseDTO);
         }
-        catch (ArgumentException e)
+        catch (AutoMapperMappingException ex)
         {
-            return BadRequest(e.Message);
+            return BadRequest(ex.InnerException.Message);
         }
     }
     
@@ -81,7 +83,8 @@ public class VoiceActorController : Controller
     {
         try
         {
-            var updatedVoiceActor = await _voiceActorService.UpdateVoiceActor(voiceActorId, voiceActorUpdate.Name);
+            var voiceActorUpdateRequestAsValueObject = _mapper.Map<VoiceActor>(voiceActorUpdate);
+            var updatedVoiceActor = await _voiceActorService.UpdateVoiceActor(voiceActorId, voiceActorUpdateRequestAsValueObject);
             var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(updatedVoiceActor);
             return Ok(voiceActorResponseDTO);
         }
@@ -89,9 +92,9 @@ public class VoiceActorController : Controller
         {
             return NotFound("No voice actor found with the following id: " + voiceActorId);
         }
-        catch (ArgumentException e)
+        catch (AutoMapperMappingException ex)
         {
-            return BadRequest(e.Message);
+            return BadRequest(ex.InnerException.Message);
         }
     }
     

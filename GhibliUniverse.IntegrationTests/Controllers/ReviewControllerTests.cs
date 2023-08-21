@@ -4,7 +4,7 @@ using AutoMapper;
 using GhibliUniverse.API.DTOs;
 using GhibliUniverse.API.Mapper;
 using GhibliUniverse.Core.Context;
-using GhibliUniverse.Core.Domain.ValueObjects;
+using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.IntegrationTests.TestUtils;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
@@ -14,7 +14,8 @@ namespace GhibliUniverse.IntegrationTests.Controllers;
 
 public class ReviewControllerTests
 {
-    private readonly MappingProfiles _mappingProfiles;
+    private readonly MappingProfiles _apiMappingProfiles;
+    private readonly Core.Repository.MappingProfiles.MappingProfiles _coreMappingProfiles;
     private readonly MapperConfiguration _mapperConfiguration;
     private readonly IMapper _mapper;
     private readonly GhibliUniverseContext _context;
@@ -22,9 +23,15 @@ public class ReviewControllerTests
 
     public ReviewControllerTests()
     {
-        _mappingProfiles = new MappingProfiles();
+        _apiMappingProfiles = new MappingProfiles();
+
+        _coreMappingProfiles = new Core.Repository.MappingProfiles.MappingProfiles();
         
-        _mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile(_mappingProfiles));
+        _mapperConfiguration = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile(_apiMappingProfiles);
+            cfg.AddProfile(_coreMappingProfiles);
+        });
         
         _mapper = new Mapper(_mapperConfiguration);
 
@@ -44,7 +51,8 @@ public class ReviewControllerTests
     {
         var reviews = await _context.Reviews
             .ToListAsync();
-        var reviewResponseDTOS = _mapper.Map<List<ReviewResponseDTO>>(reviews);
+        var reviewValueObjects = _mapper.Map<List<Review>>(reviews);
+        var reviewResponseDTOS = _mapper.Map<List<ReviewResponseDTO>>(reviewValueObjects);
         var expectedResult = JsonConvert.SerializeObject(reviewResponseDTOS,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
@@ -60,7 +68,8 @@ public class ReviewControllerTests
     {
         var reviews = await _context.Reviews
             .ToListAsync();
-        var reviewResponseDTO = _mapper.Map<ReviewResponseDTO>(reviews[1]);
+        var reviewValueObjects = _mapper.Map<Review>(reviews[1]);
+        var reviewResponseDTO = _mapper.Map<ReviewResponseDTO>(reviewValueObjects);
         var expectedResult = JsonConvert.SerializeObject(reviewResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
@@ -94,7 +103,8 @@ public class ReviewControllerTests
             new StringContent(reviewRequestDTOAsJSON, Encoding.UTF8, "application/json"));
         var reviews = await _context.Reviews
             .ToListAsync();
-        var reviewResponseDTO = _mapper.Map<ReviewResponseDTO>(reviews[2]);
+        var reviewValueObjects = _mapper.Map<Review>(reviews[2]);
+        var reviewResponseDTO = _mapper.Map<ReviewResponseDTO>(reviewValueObjects);
         var expectedResult = JsonConvert.SerializeObject(reviewResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
         var actualHttpStatusCode = response.StatusCode;

@@ -1,20 +1,19 @@
+using System;
 using System.Text;
 using GhibliUniverse.Core.Domain.ValueObjects;
 
-namespace GhibliUniverse.Core.Domain.Models;
-
-public record Review()
+namespace GhibliUniverse.Core.Domain.Models
 {
-    public Guid Id { get; set; }
-    public Rating Rating { get; set; }
-    
-    public Guid FilmId { get; set; }
-    public Film Film { get; set; } = null!;
-    
-    public override string ToString()
+    public class Review
     {
-        var str = new StringBuilder();
-        str.Append(Rating);
-        return str.ToString();
+        public Guid Id { get; set; }
+        public Rating Rating { get; set; }
+        
+        public override string ToString()
+        {
+            var str = new StringBuilder();
+            str.Append(Rating);
+            return str.ToString();
+        }
     }
 }

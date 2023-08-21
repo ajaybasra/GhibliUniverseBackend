@@ -6,8 +6,8 @@ public interface IVoiceActorService
 {
     Task<List<VoiceActor>> GetAllVoiceActors();
     Task<VoiceActor> GetVoiceActorById(Guid voiceActorId);
-    Task<List<Film>> GetFilmsByVoiceActor(Guid voiceActorId);
-    Task<VoiceActor> CreateVoiceActor(string name);
-    Task<VoiceActor> UpdateVoiceActor(Guid voiceActorId, string name);
+    Task<List<VoiceActorFilm>> GetFilmsByVoiceActor(Guid voiceActorId);
+    Task<VoiceActor> CreateVoiceActor(VoiceActor voiceActorCreateRequest);
+    Task<VoiceActor> UpdateVoiceActor(Guid voiceActorId, VoiceActor voiceActorUpdateRequest);
     Task DeleteVoiceActor(Guid voiceActorId);
 }

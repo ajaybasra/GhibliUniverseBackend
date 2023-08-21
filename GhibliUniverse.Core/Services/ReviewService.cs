@@ -1,8 +1,5 @@
 using System.Text;
-using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
-using GhibliUniverse.Core.Domain.Models.Exceptions;
-using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Repository;
 
 namespace GhibliUniverse.Core.Services;
@@ -25,14 +22,14 @@ public class ReviewService : IReviewService
         return await _reviewRepository.GetReviewById(reviewId);
     }
 
-    public async Task<Review> CreateReview(Guid filmId, int rating)
+    public async Task<Review> CreateReview(Guid filmId, Review reviewCreateRequest)
     {
-        return await _reviewRepository.CreateReview(filmId, rating);
+        return await _reviewRepository.CreateReview(filmId, reviewCreateRequest);
     }
 
-    public async Task<Review> UpdateReview(Guid reviewId, int rating)
+    public async Task<Review> UpdateReview(Guid reviewId, Review reviewUpdateRequest)
     {
-        return await _reviewRepository.UpdateReview(reviewId, rating);
+        return await _reviewRepository.UpdateReview(reviewId, reviewUpdateRequest);
     }
     public async Task DeleteReview(Guid reviewId)
     {

@@ -14,32 +14,18 @@ public class FilmService : IFilmService
         _filmRepository = filmRepository;
     }
     
-    public async Task<List<FilmWrapper>> GetAllFilms()
+    public async Task<List<Film>> GetAllFilms()
     {
         var films = await _filmRepository.GetAllFilms();
-        var wrappedFilms = films.Select(film => new FilmWrapper(film)
-        {
-            FilmReviewInfo = new FilmReviewInfo
-            {
-                AverageRating = CalculateAverageRating(film.Reviews),
-                NumberOfRatings = film.Reviews.Count
-            }
-        }).ToList();
-        return wrappedFilms;
+        films.ForEach(CalculateAndSetReviewInfo);
+        return films;
     }
 
-    public async Task<FilmWrapper> GetFilmById(Guid filmId)
+    public async Task<Film> GetFilmById(Guid filmId)
     {
         var film = await _filmRepository.GetFilmById(filmId);
-        var wrappedFilm = new FilmWrapper(film)
-        {
-            FilmReviewInfo = new FilmReviewInfo()
-            {
-                AverageRating = CalculateAverageRating(film.Reviews),
-                NumberOfRatings = film.Reviews.Count
-            }
-        };
-        return wrappedFilm;
+        CalculateAndSetReviewInfo(film);
+        return film;
     }
 
     public async Task<List<VoiceActor>> GetVoiceActorsByFilm(Guid filmId)
@@ -47,14 +33,16 @@ public class FilmService : IFilmService
         return await _filmRepository.GetVoiceActorsByFilm(filmId);
     }
 
-    public async Task<Film> CreateFilm(string title, string description, string director, string composer, int releaseYear)
+    public async Task<Film> CreateFilm(Film filmRequest)
     {
-        return await _filmRepository.CreateFilm(title, description, director, composer, releaseYear);
+        return await _filmRepository.CreateFilm(filmRequest);
     }
 
     public async Task<Film> UpdateFilm(Guid filmId, Film updatedFilm)
     {
-        return await _filmRepository.UpdateFilm(filmId, updatedFilm);
+        var film = await _filmRepository.UpdateFilm(filmId, updatedFilm);
+        CalculateAndSetReviewInfo(film);
+        return film;
     }
 
     public async Task DeleteFilm(Guid filmId)
@@ -110,6 +98,15 @@ public class FilmService : IFilmService
 
         double totalRating = reviews.Sum(review => review.Rating.Value);
         return totalRating / reviews.Count;
+    }
+    
+    private void CalculateAndSetReviewInfo(Film film)
+    {
+        var averageRating = CalculateAverageRating(film.FilmInfo.Reviews);
+        var numberOfRatings = film.FilmInfo.Reviews.Count;
+    
+        film.FilmReviewInfo.AverageRating = averageRating;
+        film.FilmReviewInfo.NumberOfRatings = numberOfRatings;
     }
     
 }

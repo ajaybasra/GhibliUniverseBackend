@@ -63,53 +63,49 @@ public class ReviewServiceTests
     }
     
     [Fact]
-    public async Task CreateFilm_PersistsNewlyCreatedReview_WhenCalled()
+    public async Task CreateReview_PersistsNewlyCreatedReview_WhenCalled()
     {
+        var newReviewId = Guid.NewGuid();  
+        var newRating = Rating.From(10);
+
         _mockedReviewRepository
-            .Setup(x => x.CreateReview(Guid.Empty, 10))
-            .Callback((Guid id, int rating) =>
+            .Setup(x => x.CreateReview(It.IsAny<Guid>(), It.IsAny<Review>()))
+            .Callback((Guid id, Review review) =>
             {
-                var newReview = new Review()
-                {
-                    Id = id,
-                    Rating = Rating.From(rating)
-                };
-        
-                _reviews.Add(newReview);
+                review.Id = newReviewId;
+                _reviews.Add(review);
             });
-        
-        await _reviewService.CreateReview(Guid.Empty, 10);
+
+        await _reviewService.CreateReview(newReviewId, new Review() { Rating = newRating });
         _mockedReviewRepository.Setup(x => x.GetReviewById(_reviews[2].Id)).ReturnsAsync(_reviews[2]);
-        
+
         var reviewId = _reviews[2].Id;
         var reviewCount = _reviews.Count;
         var review = _reviews[2];
-         
+
         Assert.Equal(3, reviewCount);
         Assert.Equal(reviewId, review.Id);
     }
-    
-    [Fact]
-    public async Task CreateReview_ThrowsRatingOutOfRangeException_WhenGivenInvalidRating()
-    {
-        _mockedReviewRepository.Setup(x => x.CreateReview(Guid.Empty, -1)).Throws(new Rating.RatingOutOfRangeException(-1));
 
-        await Assert.ThrowsAsync<Rating.RatingOutOfRangeException>(() => _reviewService.CreateReview(Guid.Empty, -1));
-    }
-    
+
+
     [Fact]
     public async Task UpdateReview_UpdatesReviewRating_WhenCalled()
     {
         var reviewId = _reviews[0].Id;
-        _mockedReviewRepository.Setup(x => x.UpdateReview(reviewId, 9)).Callback((Guid id, int rating) =>
+        _mockedReviewRepository.Setup(x => x.UpdateReview(reviewId, new Review() {Rating = Rating.From(10)})).Callback((Guid id, Review updatedReview) =>
         {
-            _reviews[0].Rating = Rating.From(rating);
+            var reviewToUpdate = _reviews.FirstOrDefault(va => va.Id == id);
+            if (reviewToUpdate != null)
+            {
+                reviewToUpdate.Rating = updatedReview.Rating;
+            }
 
         });
-        await _reviewService.UpdateReview(reviewId, 9);
+        await _reviewService.UpdateReview(reviewId, new Review() {Rating = Rating.From(10)});
         var reviewWithUpdatedName = _reviews[0];
 
-        Assert.Equal(Rating.From(9), reviewWithUpdatedName.Rating);
+        Assert.Equal(Rating.From(10), reviewWithUpdatedName.Rating);
     }
 
     [Fact]

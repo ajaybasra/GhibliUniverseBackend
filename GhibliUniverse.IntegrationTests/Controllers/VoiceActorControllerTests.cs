@@ -16,7 +16,8 @@ namespace GhibliUniverse.IntegrationTests.Controllers;
 
 public class VoiceActorControllerTests
 {
-    private readonly MappingProfiles _mappingProfiles;
+    private readonly MappingProfiles _apiMappingProfiles;
+    private readonly Core.Repository.MappingProfiles.MappingProfiles _coreMappingProfiles;
     private readonly MapperConfiguration _mapperConfiguration;
     private readonly IMapper _mapper;
     private readonly GhibliUniverseContext _context;
@@ -24,9 +25,15 @@ public class VoiceActorControllerTests
 
     public VoiceActorControllerTests()
     {
-        _mappingProfiles = new MappingProfiles();
+        _apiMappingProfiles = new MappingProfiles();
+
+        _coreMappingProfiles = new Core.Repository.MappingProfiles.MappingProfiles();
         
-        _mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile(_mappingProfiles));
+        _mapperConfiguration = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile(_apiMappingProfiles);
+            cfg.AddProfile(_coreMappingProfiles);
+        });
         
         _mapper = new Mapper(_mapperConfiguration);
 
@@ -47,7 +54,8 @@ public class VoiceActorControllerTests
     {
         var voiceActors = await _context.VoiceActors
             .Select(voiceActor => voiceActor).ToListAsync();
-        var voiceActorResponseDTOS = _mapper.Map<List<VoiceActorResponseDTO>>(voiceActors);
+        var voiceActorValueObjects = _mapper.Map<List<VoiceActor>>(voiceActors);
+        var voiceActorResponseDTOS = _mapper.Map<List<VoiceActorResponseDTO>>(voiceActorValueObjects);
         var expectedResult = JsonConvert.SerializeObject(voiceActorResponseDTOS,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
@@ -64,7 +72,8 @@ public class VoiceActorControllerTests
     {
         var voiceActors = await _context.VoiceActors
             .Select(voiceActor => voiceActor).ToListAsync();
-        var voiceActorResponseDto = _mapper.Map<VoiceActorResponseDTO>(voiceActors[1]);
+        var voiceActorValueObject = _mapper.Map<VoiceActor>(voiceActors[1]);
+        var voiceActorResponseDto = _mapper.Map<VoiceActorResponseDTO>(voiceActorValueObject);
         var expectedResult = JsonConvert.SerializeObject(voiceActorResponseDto,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
@@ -91,7 +100,8 @@ public class VoiceActorControllerTests
             .Select(voiceActor => voiceActor)
             .ToListAsync();
 
-        var filmResponseDTOS = _mapper.Map<List<FilmResponseDTO>>(voiceActors[0].Films);
+        var filmValueObjects = _mapper.Map<List<VoiceActorFilm>>(voiceActors[0].Films);
+        var filmResponseDTOS = _mapper.Map<List<VoiceActorFilmResponseDTO>>(filmValueObjects);
 
         var serializerSettings = new JsonSerializerSettings
         {
@@ -132,7 +142,8 @@ public class VoiceActorControllerTests
             new StringContent(voiceActorRequestDTOAsJson, Encoding.UTF8, "application/json"));
         var voiceActors = await _context.VoiceActors
             .Select(voiceActor => voiceActor).ToListAsync();
-        var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(voiceActors[2]);
+        var voiceActorValueObject = _mapper.Map<VoiceActor>(voiceActors[2]);
+        var voiceActorResponseDTO = _mapper.Map<VoiceActorResponseDTO>(voiceActorValueObject);
         var expectedResult = JsonConvert.SerializeObject(voiceActorResponseDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
         var actualHttpStatusCode = response.StatusCode;

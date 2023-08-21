@@ -15,7 +15,7 @@ steps:
   - wait
 
   - label: ":docker: Building Image and Pushing to Cloudsmith"
-    # branches: 'main'
+    branches: "main"
     command: ops/scripts/build-and-push.sh
     agents:
       queue: fma-dev
@@ -24,20 +24,20 @@ steps:
 
   - label: ":k8s: Deploy to tests"
     command: ops/scripts/deploy.sh
-    # branches: main
+    branches: main
     env:
       ENVIRONMENT: "test"
     agents:
       queue: "europa-preprod-fma"
 
   - block: "Deploy to production"
-    # branches: "main"
+    branches: "main"
 
   - wait
 
   - label: ":partyparrot: Deploy to production"
     command: ops/scripts/deploy.sh
-    # branches: main
+    branches: main
     env:
       ENVIRONMENT: "production"
     agents:

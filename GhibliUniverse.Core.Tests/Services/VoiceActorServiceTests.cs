@@ -1,4 +1,3 @@
-using GhibliUniverse.Core.DataPersistence;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Domain.ValueObjects;
@@ -76,7 +75,7 @@ public class VoiceActorServiceTests
     {
         var voiceActorId = _voiceActors[0].Id;
         _mockedVoiceActorRepository.Setup(x => x.GetFilmsByVoiceActor(voiceActorId)).ReturnsAsync(_voiceActors[0].Films);
-        _voiceActors[0].Films.Add(new Film());
+        _voiceActors[0].Films.Add(new VoiceActorFilm());
 
         var films = await _voiceActorService.GetFilmsByVoiceActor(voiceActorId);
 
@@ -100,52 +99,50 @@ public class VoiceActorServiceTests
     public async Task CreateVoiceActor_PersistsNewlyCreatedVoiceActor_WhenCalled()
     {
         var newVoiceActorName = "John Doe";
-        _mockedVoiceActorRepository
-            .Setup(x => x.CreateVoiceActor(newVoiceActorName))
-            .Callback((string name) =>
-            {
-                var newVoiceActor = new VoiceActor()
-                {
-                    Id = Guid.NewGuid(),
-                    Name = ValidatedString.From(name)
-                };
+        var newVoiceActorId = Guid.NewGuid(); 
 
-                _voiceActors.Add(newVoiceActor);
+        _mockedVoiceActorRepository
+            .Setup(x => x.CreateVoiceActor(It.IsAny<VoiceActor>()))  
+            .Callback((VoiceActor voiceActor) =>
+            {
+                voiceActor.Id = newVoiceActorId; 
+                _voiceActors.Add(voiceActor);
             });
 
-        await _voiceActorService.CreateVoiceActor(newVoiceActorName);
-        var voiceActorId = _voiceActors[^1].Id;
+        await _voiceActorService.CreateVoiceActor(new VoiceActor() { Name = ValidatedString.From(newVoiceActorName) });
 
         var voiceActorCount = _voiceActors.Count;
-        var voiceActor = _voiceActors[^1];
+        var voiceActor = _voiceActors[^1];  
 
-        Assert.Equal(3, voiceActorCount);
-        Assert.Equal(voiceActorId, voiceActor.Id);
+        Assert.Equal(3, voiceActorCount); 
+        Assert.Equal(newVoiceActorId, voiceActor.Id);
+        Assert.Equal(newVoiceActorName, voiceActor.Name.Value);
     }
-
-    [Fact]
-    public async Task CreateVoiceActor_ThrowsArgumentException_WhenGivenInvalidInput()
-    {
-        _mockedVoiceActorRepository.Setup(x => x.CreateVoiceActor("")).ThrowsAsync(new ArgumentException());
-
-        await Assert.ThrowsAsync<ArgumentException>(() => _voiceActorService.CreateVoiceActor(""));
-    }
+    
 
     [Fact]
     public async Task UpdateVoiceActor_UpdatesVoiceActorName_WhenCalled()
     {
         var voiceActorId = _voiceActors[0].Id;
-        _mockedVoiceActorRepository.Setup(x => x.UpdateVoiceActor(voiceActorId, "Joe Doe"))
-            .Callback((Guid voiceActorId, string newName) =>
+
+        _mockedVoiceActorRepository.Setup(x => x.UpdateVoiceActor(voiceActorId, It.IsAny<VoiceActor>()))
+            .Callback((Guid id, VoiceActor updatedVoiceActor) =>
             {
-                _voiceActors[0].Name = ValidatedString.From(newName);
+                var voiceActorToUpdate = _voiceActors.FirstOrDefault(va => va.Id == id);
+                if (voiceActorToUpdate != null)
+                {
+                    voiceActorToUpdate.Name = updatedVoiceActor.Name;
+                }
             });
 
-        await _voiceActorService.UpdateVoiceActor(voiceActorId, "Joe Doe");
+        var updatedName = "Joe Doe";
+        await _voiceActorService.UpdateVoiceActor(voiceActorId, new VoiceActor() { Name = ValidatedString.From(updatedName) });
+
         var voiceActorWithUpdatedName = _voiceActors[0];
 
-        Assert.Equal(ValidatedString.From("Joe Doe"), voiceActorWithUpdatedName.Name);
+        Assert.Equal(ValidatedString.From(updatedName), voiceActorWithUpdatedName.Name);
     }
+
      
     [Fact]
     public async Task DeleteVoiceActor_RemovesActorWithMatchingIdFromVoiceActorList_WhenGivenVoiceActorId()

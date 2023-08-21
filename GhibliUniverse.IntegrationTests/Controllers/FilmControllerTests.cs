@@ -16,7 +16,8 @@ namespace GhibliUniverse.IntegrationTests.Controllers;
 
 public class FilmControllerTests
 {
-    private readonly MappingProfiles _mappingProfiles;
+    private readonly MappingProfiles _apiMappingProfiles;
+    private readonly Core.Repository.MappingProfiles.MappingProfiles _coreMappingProfiles;
     private readonly MapperConfiguration _mapperConfiguration;
     private readonly IMapper _mapper;
     private readonly GhibliUniverseContext _context;
@@ -24,9 +25,15 @@ public class FilmControllerTests
 
     public FilmControllerTests()
     {
-        _mappingProfiles = new MappingProfiles();
+        _apiMappingProfiles = new MappingProfiles();
         
-        _mapperConfiguration = new MapperConfiguration(cfg => cfg.AddProfile(_mappingProfiles));
+        _coreMappingProfiles = new Core.Repository.MappingProfiles.MappingProfiles();
+        
+        _mapperConfiguration = new MapperConfiguration(cfg =>
+        {
+            cfg.AddProfile(_apiMappingProfiles);
+            cfg.AddProfile(_coreMappingProfiles);
+        });
         
         _mapper = new Mapper(_mapperConfiguration);
 
@@ -136,7 +143,8 @@ public class FilmControllerTests
             .Include(f => f.VoiceActors)
             .Select(film => film)
             .ToListAsync();
-        var voiceActorResponseDTOS = _mapper.Map<List<VoiceActorResponseDTO>>(films[1].VoiceActors);
+        var voiceActorValueObjects = _mapper.Map<List<VoiceActor>>(films[1].VoiceActors);
+        var voiceActorResponseDTOS = _mapper.Map<List<VoiceActorResponseDTO>>(voiceActorValueObjects);
         var expectedResult = JsonConvert.SerializeObject(voiceActorResponseDTOS,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
@@ -158,17 +166,17 @@ public class FilmControllerTests
     [Fact]
     public async Task CreateFilmEndpoint_Returns200StatusCode_WhenGivenValidInput()
     {
-        var film = new Film()
+        var filmRequestDTO = new FilmRequestDTO()
         {
-            Id = Guid.Parse("30000000-0040-0000-0000-000000000001"),
-            Title = ValidatedString.From("Not Spirited Awayz"),
-            Description = ValidatedString.From("This is a description..z"),
-            Director = ValidatedString.From("Lebronz"),
-            Composer = ValidatedString.From("MJz"),
-            ReleaseYear = ReleaseYear.From(1996),
+            Title = "Not Spirited Awayz",
+            Description = "This is a description..z",
+            Director = "Lebronz",
+            Composer = "MJz",
+            ReleaseYear = 1996,
         };
+        
         var filmRequestDTOAsJson = JsonConvert.SerializeObject(
-            _mapper.Map<FilmRequestDTO>(film),
+            filmRequestDTO,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
 
         var response = await _httpClient.PostAsync("/api/Film",
@@ -235,7 +243,8 @@ public class FilmControllerTests
             .Include(f => f.VoiceActors)
             .Select(film => film)
             .ToListAsync();
-        var voiceActorResponseDTOS = _mapper.Map<List<VoiceActorResponseDTO>>(films[1].VoiceActors);
+        var voiceActorValueObjects = _mapper.Map<List<VoiceActor>>(films[1].VoiceActors);
+        var voiceActorResponseDTOS = _mapper.Map<List<VoiceActorResponseDTO>>(voiceActorValueObjects);
         var expectedResult = JsonConvert.SerializeObject(voiceActorResponseDTOS,
             new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver() });
     
