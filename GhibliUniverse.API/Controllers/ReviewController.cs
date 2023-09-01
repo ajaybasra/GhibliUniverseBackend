@@ -2,9 +2,9 @@ using AutoMapper;
 using GhibliUniverse.API.DTOs;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
-using GhibliUniverse.Core.Domain.ValueObjects;
 using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace GhibliUniverse.API.Controllers;
 
@@ -22,6 +22,8 @@ public class ReviewController : Controller
     }
     
     [HttpGet]
+    [SwaggerOperation(Summary = "Get All Reviews", Description = "Get all reviews.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns all existing reviews.")]
     public async Task<IActionResult> GetAllReviews()
     {
         var reviews = await _reviewService.GetAllReviews();
@@ -30,6 +32,9 @@ public class ReviewController : Controller
     }
     
     [HttpGet("{reviewId:guid}")]
+    [SwaggerOperation(Summary = "Get Review", Description = "Get review by id.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns review matching specified id.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Review with specified id cannot be found.")]
     public async Task<IActionResult> GetReviewById(Guid reviewId)
     {
         try
@@ -45,6 +50,10 @@ public class ReviewController : Controller
     }
 
     [HttpPost("{filmId:guid}")] 
+    [SwaggerOperation(Summary = "Create Review", Description = "Create review.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns newly created review.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Film with specified id cannot be found.")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Request was formatted incorrectly.")]
     public async Task<IActionResult> CreateReview(Guid filmId, [FromBody] ReviewRequestDTO reviewCreate)
     {
         if (!ModelState.IsValid)
@@ -68,6 +77,10 @@ public class ReviewController : Controller
     }
     
     [HttpPut("{reviewId:guid}")]
+    [SwaggerOperation(Summary = "Update Review", Description = "Update review by id.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Review updated successfully.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Review with specified id cannot be found.")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Request was formatted incorrectly.")]
     public async Task<IActionResult> UpdateReview(Guid reviewId, [FromBody] ReviewRequestDTO reviewUpdate)
     {
         try
@@ -89,6 +102,9 @@ public class ReviewController : Controller
     }
     
     [HttpDelete("{reviewId:guid}")]
+    [SwaggerOperation(Summary = "Delete Review", Description = "Delete review by id.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Review deleted successfully.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Review with specified id cannot be found.")]
     public async Task<IActionResult> DeleteReview(Guid reviewId)
     {
         try

@@ -1,12 +1,10 @@
 using AutoMapper;
 using GhibliUniverse.API.DTOs;
-using GhibliUniverse.API.Mapper;
 using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
-using GhibliUniverse.Core.Domain.ValueObjects;
-using GhibliUniverse.Core.Repository;
 using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace GhibliUniverse.API.Controllers;
 
@@ -24,6 +22,8 @@ public class FilmController : Controller
     }
     
     [HttpGet]
+    [SwaggerOperation(Summary = "Get All Films", Description = "Get all films.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns all existing films.")]
     public async Task<IActionResult> GetAllFilms()
     {
         var films = await _filmService.GetAllFilms();
@@ -32,6 +32,9 @@ public class FilmController : Controller
     }
     
     [HttpGet("{filmId:guid}")]
+    [SwaggerOperation(Summary = "Get Film", Description = "Get film by id.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns film matching specified id.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Film with specified id cannot be found.")]
     public async Task<IActionResult> GetFilmById(Guid filmId)
     {
         try
@@ -47,6 +50,9 @@ public class FilmController : Controller
     }
     
     [HttpGet("{filmId:guid}/voiceActors")]
+    [SwaggerOperation(Summary = "Get Voice Actors by Film", Description = "Get voice actors by film.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns all existing voice actors for the film id you specify.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Film with specified id cannot be found.")]
     public async Task<IActionResult> GetVoiceActorsByFilm(Guid filmId)
     {
         try
@@ -62,6 +68,9 @@ public class FilmController : Controller
     }
 
     [HttpPost]
+    [SwaggerOperation(Summary = "Create Film", Description = "Create film.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns newly created film.")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Request was formatted incorrectly.")]
     public async Task<IActionResult> CreateFilm([FromBody] FilmRequestDTO filmCreate)
     {
         if (await _filmService.FilmTitleAlreadyExists(filmCreate.Title)) // migrate
@@ -88,6 +97,9 @@ public class FilmController : Controller
     }
     
     [HttpPost("{filmId:guid}/LinkVoiceActor")]
+    [SwaggerOperation(Summary = "Link Voice Actor", Description = "Link voice actor.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns success message.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Model with specified id cannot be found.")]
     public async Task<IActionResult> LinkVoiceActor(Guid filmId, [FromBody] Guid voiceActorId)
     {
         try
@@ -102,6 +114,9 @@ public class FilmController : Controller
     }
     
     [HttpPost("{filmId:guid}/UnlinkVoiceActor")]
+    [SwaggerOperation(Summary = "Unlink Voice Actor", Description = "Unlink voice actor.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns success message.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Model with specified id cannot be found.")]
     public async Task<IActionResult> UnlinkVoiceActor(Guid filmId, [FromBody] Guid voiceActorId)
     {
         try
@@ -116,6 +131,10 @@ public class FilmController : Controller
     }
     
     [HttpPut("{filmId:guid}")]
+    [SwaggerOperation(Summary = "Update Film", Description = "Update film by id.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Film updated successfully.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Film with specified id cannot be found.")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Request was formatted incorrectly.")]
     public async Task<IActionResult> UpdateFilm(Guid filmId, [FromBody] FilmRequestDTO filmUpdate)
     {
         try
@@ -136,6 +155,9 @@ public class FilmController : Controller
     }
 
     [HttpDelete("{filmId:guid}")]
+    [SwaggerOperation(Summary = "Delete Film", Description = "Delete film by id.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Film deleted successfully.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Film with specified id cannot be found.")]
     public async Task<IActionResult> DeleteFilm(Guid filmId)
     {
         try

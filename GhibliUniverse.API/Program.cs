@@ -3,6 +3,7 @@ using GhibliUniverse.Core.Repository;
 using GhibliUniverse.Core.Services;
 using GhibliUniverse.Core.Utils;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,16 @@ builder.Services.AddScoped<IFilmRepository, FilmRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IVoiceActorRepository, VoiceActorRepository>();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Ghibli Universe API",
+        Description = "An ASP.NET Core Web API for managing voice actors, films, and reviews associated with Studio Ghibli films.",
+    });
+    options.EnableAnnotations(); 
+});
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowOrigin", builder =>

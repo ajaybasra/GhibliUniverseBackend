@@ -4,6 +4,7 @@ using GhibliUniverse.Core.Domain.Models;
 using GhibliUniverse.Core.Domain.Models.Exceptions;
 using GhibliUniverse.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace GhibliUniverse.API.Controllers;
 
@@ -22,6 +23,8 @@ public class VoiceActorController : Controller
     }
     
     [HttpGet]
+    [SwaggerOperation(Summary = "Get All Voice Actors", Description = "Get all voice actors.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns all existing voice actors.")]
     public async Task<IActionResult> GetAllVoiceActors()
     {
         var voiceActors = await _voiceActorService.GetAllVoiceActors();
@@ -30,6 +33,9 @@ public class VoiceActorController : Controller
     }
     
     [HttpGet("{voiceActorId:guid}")]
+    [SwaggerOperation(Summary = "Get Voice Actor", Description = "Get voice actor by id.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns voice actor matching specified id.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Voice actor with specified id cannot be found.")]
     public async Task<IActionResult> GetVoiceActorById(Guid voiceActorId)
     {
         try
@@ -45,6 +51,9 @@ public class VoiceActorController : Controller
     }
     
     [HttpGet("{voiceActorId:guid}/films")]
+    [SwaggerOperation(Summary = "Get Films by Voice Actor", Description = "Get films by voice actor.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns all existing films for the voice actor id you specify.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Voice actor with specified id cannot be found.")]
     public async Task<IActionResult> GetFilmsByVoiceActor(Guid voiceActorId)
     {
         try
@@ -60,6 +69,9 @@ public class VoiceActorController : Controller
     }
     
     [HttpPost]
+    [SwaggerOperation(Summary = "Create Voice Actor", Description = "Create voice actor.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Returns newly created voice actor.")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Request was formatted incorrectly.")]
     public async Task<IActionResult> CreateVoiceActor([FromBody] VoiceActorRequestDTO voiceActorCreate)
     {
         if (!ModelState.IsValid)
@@ -79,6 +91,10 @@ public class VoiceActorController : Controller
     }
     
     [HttpPut("{voiceActorId:guid}")]
+    [SwaggerOperation(Summary = "Update Voice Actor", Description = "Update voice actor by id.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Voice actor updated successfully.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Voice actor with specified id cannot be found.")]
+    [SwaggerResponse(StatusCodes.Status400BadRequest, "Request was formatted incorrectly.")]
     public async Task<IActionResult> UpdateVoiceActor(Guid voiceActorId, [FromBody] VoiceActorRequestDTO voiceActorUpdate)
     {
         try
@@ -99,6 +115,9 @@ public class VoiceActorController : Controller
     }
     
     [HttpDelete("{voiceActorId:guid}")]
+    [SwaggerOperation(Summary = "Delete Voice Actor", Description = "Delete voice actor by id.")]
+    [SwaggerResponse(StatusCodes.Status200OK, "Voice actor deleted successfully.")]
+    [SwaggerResponse(StatusCodes.Status404NotFound, "Voice actor with specified id cannot be found.")]
     public async Task<IActionResult> DeleteVoiceActor(Guid voiceActorId)
     {
         try
