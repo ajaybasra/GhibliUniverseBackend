@@ -19,7 +19,7 @@ docker-compose build
 docker-compose up -d
 ```
 
-Open your browser and navigate to http://localhost:8080/swagger/index.html.](https://localhost:7212/swagger/index.html. This opens up Swagger UI allowing you to make calls to the API which talk to a persisting PostgreSQL db.
+Open your browser and navigate to http://localhost:8080/swagger/index.html. This opens up Swagger UI allowing you to make calls to the API which talk to a persisting PostgreSQL db.
 
 ### Running Console Project
 
