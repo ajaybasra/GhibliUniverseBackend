@@ -64,7 +64,8 @@ Below you can see that we have a one-to-many relationship between `Film` and `Re
 `Review` cannot exist without a parent `Film` (composition) and when a film is deleted, so are associated reviews.
 
 
-<img width="342" alt="Screenshot 2023-09-06 at 11 22 00 AM" src="https://github.com/myob-fma/ajay-project-ghibli/assets/66146062/e41a00e8-7cda-4471-977e-4f5d9afa77b3">
+<img width="342" alt="ghibli-erd" src="https://github.com/ajaybasra/GhibliUniverseBackend/assets/66146062/91d145ea-d674-44a1-aa11-247dc3bbab96">
+
 
 ## Testing Strategy
 
